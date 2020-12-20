@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.sppan.base.dao.mapper.PersonnelMapper">
+
+    <!-- 员工年龄分组 -->
+    <select id="queryAgeGroup" resultType="net.sppan.base.vo.PersonnelVo">
+        SELECT COUNT(0) AS 'under20',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 20 and age &lt; 25 and quit = #{quit} ) AS 'age2025',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 25 and age &lt; 30 and quit = #{quit}) AS 'age2530',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 30 and age &lt; 35 and quit = #{quit}) AS 'age3035',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 35 and age &lt; 40 and quit = #{quit}) AS 'age3540',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 40 and age &lt; 45 and quit = #{quit}) AS 'age4045',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 45 and age &lt; 50 and quit = #{quit}) AS 'age4550',
+            (SELECT COUNT(0)  FROM tb_personnel WHERE age &gt;= 50) AS 'greater50'
+        FROM tb_personnel  personnel WHERE personnel.age &lt; 20 and quit = #{quit}
+    </select>
+
+
+
+    <select id="queryCountByJob" resultType="integer">
+        SELECT COUNT(0) FROM tb_personnel WHERE quit = '0'
+    </select>
+
+    <select id="queryCountByQuit"  resultType="integer">
+        SELECT COUNT(0) FROM tb_personnel WHERE quit = '1'
+    </select>
+
+    <select id="queryCount" resultType="integer">
+        SELECT COUNT(0) FROM tb_personnel
+    </select>
+    <select id="queryTypeGroup" resultType="net.sppan.base.vo.PersonnelTypeVo">
+        SELECT tb_personnel.type,COUNT(0) As count FROM tb_personnel where quit = #{quit} GROUP BY tb_personnel.type order by count desc
+    </select>
+
+    <select id="queryEntryDateGroup" resultType="net.sppan.base.vo.PersonnelTypeVo">
+        SELECT YEAR(entry_date) AS type, COUNT(0) AS count FROM tb_personnel where quit = #{quit} GROUP BY  YEAR(entry_date)
+    </select>
+    <select id="queryMonthGroup" resultType="net.sppan.base.vo.PersonnelMonthVo">
+        SELECT TIMESTAMPDIFF(MONTH,entry_date,DATE_FORMAT(NOW(), '%Y-%m-%d')) AS `month`,COUNT(0) AS count FROM tb_personnel where quit = #{quit} GROUP BY `month`
+    </select>
+
+    <select id="queryProvinceGroup" resultType="net.sppan.base.vo.PersonnelTypeVo">
+        SELECT province AS 'type',COUNT(0) AS count  FROM tb_personnel where quit = #{quit} GROUP BY province ORDER BY count  DESC
+    </select>
+    <select id="queryEduTypeGroup" resultType="net.sppan.base.vo.PersonnelEduVo">
+        SELECT education,type,COUNT(0) AS count  FROM tb_personnel where quit = #{quit} GROUP BY education,type ORDER BY education,type
+    </select>
+    <select id="queryCityGroup" resultType="net.sppan.base.vo.PersonnelTypeVo">
+        SELECT city AS 'type',COUNT(0) AS count FROM tb_personnel where quit = #{quit} GROUP BY city
+    </select>
+
+    <select id="queryQuitRate" resultType="java.util.Map">
+        SELECT COUNT(*) AS quitNum,
+        (SELECT COUNT(*) FROM tb_personnel WHERE DATE_FORMAT(entry_date,'%Y-%m-%d') &lt;= #{endDate}) -
+        (SELECT COUNT(*) FROM tb_personnel WHERE DATE_FORMAT(quit_date,'%Y-%m-%d')  &lt; #{startDate} AND quit_date IS NOT NULL) AS jobNum
+        FROM tb_personnel WHERE DATE_FORMAT(quit_date,'%Y-%m') = #{month};
+    </select>
+
+    <select id="queryQuitTypeCount" resultType="net.sppan.base.vo.PersonnelQuitCountVo">
+        SELECT YEAR(quit_date) AS `year`,type,count(0) AS count FROM tb_personnel WHERE quit = '1' GROUP BY `year`,type ORDER BY `year` DESC
+    </select>
+    <select id="queryQuitDayCount" resultType="net.sppan.base.vo.PersonnelQuitDayVo">
+        SELECT YEAR(quit_date) AS `year`,
+               TIMESTAMPDIFF(DAY,entry_date,DATE_FORMAT(quit_date, '%Y-%m-%d')) AS `day`,
+               COUNT(0) AS count
+        FROM tb_personnel where quit = '1'  GROUP BY `year`,`day`
+        ORDER BY `year` DESC
+    </select>
+
+    <select id="queryQuitTotalCount" resultType="net.sppan.base.vo.PersonnelQuitDayVo">
+        SELECT TIMESTAMPDIFF(DAY,entry_date,DATE_FORMAT(quit_date, '%Y-%m-%d')) AS `day`,
+               COUNT(0) AS count
+        FROM tb_personnel where quit = '1'  GROUP BY `day`
+    </select>
+    <select id="queryEduGroup" resultType="net.sppan.base.vo.PersonnelEduVo">
+        SELECT education,COUNT(0) AS count FROM tb_personnel WHERE quit = #{quit} GROUP BY education ORDER BY count DESC
+    </select>
+    <select id="qurtyJobAgeGroup" resultType="net.sppan.base.vo.PersonnelJobAgeVo">
+        select COUNT(0) AS count,CONCAT(substring(idcard,9,1),'0后') AS ageGroup FROM tb_personnel WHERE quit = '0' GROUP BY ageGroup;
+    </select>
+    <select id="queryJobAgeTypeGroup" resultType="net.sppan.base.vo.PersonnelAgeGroupVo">
+        SELECT type,COUNT(0) AS count,'under20' AS ageName  FROM tb_personnel WHERE age &lt; 20 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'age2025' AS ageName  FROM tb_personnel WHERE age  &gt;= 20 and age &lt; 25 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'age2530' AS ageName  FROM tb_personnel WHERE age &gt;= 25 and age &lt; 30 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'age3035' AS ageName  FROM tb_personnel WHERE age &gt;= 30 and age &lt; 35 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'age3540' AS ageName  FROM tb_personnel WHERE age &gt;= 35 and age &lt; 40 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'age4045' AS ageName  FROM tb_personnel WHERE age &gt;= 40 and age &lt; 45 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'age4550' AS ageName  FROM tb_personnel WHERE age &gt;= 45 and age &lt; 50 and quit = '0' GROUP BY type
+        UNION ALL
+        SELECT type,COUNT(0) AS count,'greater50' AS ageName  FROM tb_personnel WHERE age &gt; 50 and quit = '0' GROUP BY type
+    </select>
+
+
+</mapper>

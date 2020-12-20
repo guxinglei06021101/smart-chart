@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.sppan.base.dao.mapper.PersonnelNumberMapper">
+
+    <delete id="delAll">DELETE FROM tb_personnel_number</delete>
+
+    <select id="queryQuitRate" resultType="net.sppan.base.entity.PersonnelNumber">
+        SELECT * FROM tb_personnel_number ORDER BY `year` DESC,`month` ASC
+    </select>
+
+    <select id="queryJobNum" resultType="net.sppan.base.entity.PersonnelNumber">
+        SELECT * FROM tb_personnel_number  ORDER BY `year` ASC,`month` ASC
+    </select>
+</mapper>
