@@ -108,7 +108,7 @@ public class PersonnelNumberServiceImpl extends ServiceImpl<PersonnelNumberMappe
         return getBaseMapper().queryJobNum();
     }
 
-    private  Date startDay(int y,int m){
+    private static   Date startDay(int y,int m){
         Calendar calendar1 = Calendar.getInstance();
         calendar1.set(Calendar.YEAR,y);
         calendar1.set(Calendar.MONTH,m-1);
@@ -116,12 +116,31 @@ public class PersonnelNumberServiceImpl extends ServiceImpl<PersonnelNumberMappe
         return calendar1.getTime();
     }
 
-    private  String endDay(int y,int m){
+    private static String endDay(int y,int m){
         Calendar calendar1 = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         calendar1.set(Calendar.YEAR,y);
         calendar1.set(Calendar.MONTH,m);
         calendar1.set(Calendar.DAY_OF_MONTH,0);
         return sdf.format(calendar1.getTime());
+    }
+
+    public static void main(String[] args) {
+        SimpleDateFormat sdfMonth = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
+        int startYear = 2016;
+        Date nowDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(nowDate);
+        //获取年
+        int endYear = calendar.get(Calendar.YEAR);
+        for(int y=startYear;y<=endYear;y++) {
+            for (int m = 1; m <= 12; m++) {
+                Date startDate = startDay(y, m);
+                String endDate = endDay(y, m);
+                String month = sdfMonth.format(startDate);
+                System.out.println(sdfDay.format(startDate) +":"+ endDate +":"+month);
+            }
+        }
     }
 }

@@ -77,7 +77,24 @@
         SELECT education,COUNT(0) AS count FROM tb_personnel WHERE quit = #{quit} GROUP BY education ORDER BY count DESC
     </select>
     <select id="qurtyJobAgeGroup" resultType="net.sppan.base.vo.PersonnelJobAgeVo">
-        select COUNT(0) AS count,CONCAT(substring(idcard,9,1),'0后') AS ageGroup FROM tb_personnel WHERE quit = '0' GROUP BY ageGroup;
+        /*select COUNT(0) AS count,CONCAT(substring(idcard,9,1),'0后') AS ageGroup FROM tb_personnel WHERE quit = '0' GROUP BY ageGroup;*/
+        SELECT COUNT(0) AS count,'其他' AS ageGroup  FROM (
+        SELECT idcard,substring(idcard,7,4) AS years FROM tb_personnel WHERE quit = '0' HAVING  years <1975)temp
+        UNION ALL
+        SELECT COUNT(0) AS count,'75后' AS ageGroup  FROM (
+        SELECT idcard,substring(idcard,7,4) AS years FROM tb_personnel WHERE quit = '0' HAVING years >= 1975 AND years <1980)temp
+        UNION ALL
+        SELECT COUNT(0) AS count,'80后' AS ageGroup  FROM (
+        SELECT idcard,substring(idcard,7,4) AS years FROM tb_personnel WHERE quit = '0' HAVING years >= 1980 AND years <1990)temp
+        UNION ALL
+        SELECT COUNT(0) AS count,'90后' AS ageGroup  FROM (
+        SELECT idcard,substring(idcard,7,4) AS years FROM tb_personnel WHERE quit = '0' HAVING years >= 1990 AND years <1995)temp
+        UNION ALL
+        SELECT COUNT(0) AS count,'95后' AS ageGroup  FROM (
+        SELECT idcard,substring(idcard,7,4) AS years FROM tb_personnel WHERE quit = '0' HAVING years >= 1995 AND years <2000)temp
+        UNION ALL
+        SELECT COUNT(0) AS count,'00后' AS ageGroup  FROM (
+        SELECT idcard,substring(idcard,7,4) AS years FROM tb_personnel WHERE quit = '0' HAVING years >= 2000 )temp
     </select>
     <select id="queryJobAgeTypeGroup" resultType="net.sppan.base.vo.PersonnelAgeGroupVo">
         SELECT type,COUNT(0) AS count,'under20' AS ageName  FROM tb_personnel WHERE age &lt; 20 and quit = '0' GROUP BY type
