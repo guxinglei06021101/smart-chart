@@ -420,7 +420,7 @@ public class PersonnelController extends BaseController {
                     log.info(JSON.toJSONString(personnel));
                 }catch (Exception e){
                     e.printStackTrace();
-                    return JsonResult.failure("上传失败，第"+(line+1)+"行数据存在异常:"+JSON.toJSONString(personnel)+"，/r/n异常原因："+e.getMessage());
+                    return JsonResult.failure("上传失败，第"+(line+1)+"行数据存在异常:\r\n"+JSON.toJSONString(personnel)+";\r\n异常原因："+e.getMessage());
                 }
             }
 

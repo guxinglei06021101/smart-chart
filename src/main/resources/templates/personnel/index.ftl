@@ -21,6 +21,7 @@
     <link href="${ctx!}/assets/css/style.css?v=4.1.0" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="${ctx!}/assets/echart/css/jquery.shCircleLoader.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx!}/assets/echart/css/xcConfirm.css" />
 
     <style>
         a[class="button-selectimg"] {
@@ -111,6 +112,7 @@
 <script src="${ctx!}/assets/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
 <script src="${ctx!}/assets/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
 <script src="${ctx!}/assets/echart/js/jquery.shCircleLoader-min.js"></script>
+<script src="${ctx!}/assets/echart/js/xcConfirm.js"></script>
 <!-- Peity -->
 <script src="${ctx!}/assets/js/plugins/peity/jquery.peity.min.js"></script>
 
@@ -225,10 +227,10 @@
 
 	        var files =  $('#avatar')[0].files[0];
 	        if(files == null){
-	            alert('请选择文件');
+                window.wxc.xcConfirm('请选择文件', window.wxc.xcConfirm.typeEnum.info);
 	            return ;
 	        }
-            var r = confirm("确定上传吗？")
+            var r = window.wxc.xcConfirm('确定上传吗？', window.wxc.xcConfirm.typeEnum.confirm);
             if (r != true) {
                 return ;
             }
@@ -250,16 +252,16 @@
                     $('#loader').hide();
                     console.log(data);
                     $('#table_list').bootstrapTable("refresh");
-                    if (data.code == '0') {
-                        alert('上传成功！');
-                    }
+                    //alert(data.message);
+                    window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.success);
                     $('#jobBtn').attr('disabled',false);
                     $('#quitBtn').attr('disabled',false);
                 },
                 error:function(response){
                     $('#loader').hide();
                     console.log(response);
-                    alert(response.responseJSON.message);
+                    //alert(response.responseJSON.message);
+                    window.wxc.xcConfirm(response.responseJSON.message, window.wxc.xcConfirm.typeEnum.error);
                     $('#jobBtn').attr('disabled',false);
                     $('#quitBtn').attr('disabled',false);
                 }
