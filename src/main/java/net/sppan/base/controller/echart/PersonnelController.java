@@ -435,16 +435,6 @@ public class PersonnelController extends BaseController {
         return JsonResult.success("上传成功！");
     }
 
-    private String getCellVal(Cell cell){
-        try {
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return cell.getStringCellValue();
-    }
-
-
 
     @GetMapping("/list")
     public IPage<Personnel> queryList(){

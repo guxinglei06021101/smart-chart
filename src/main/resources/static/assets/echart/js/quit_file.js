@@ -362,204 +362,207 @@ function linchar(){
 //折线图
 var linchartQuitType="";
 function lincharQuitType(){
-    var url = "/personnel/queryQuitTypeRate";
-    linchartQuitType= echarts.init(document.getElementById("line-chart-quit"));
+    /*var url = "/personnel/queryQuitTypeRate";
     ajax_get(url,function(result){
         var yearArr = [];
         result.forEach(function(item){
             yearArr.push(item.year+"");
         });
-        option = {
-            tooltip: {//鼠标指上时的标线
-                trigger: 'axis',
-                formatter: '{b}<br/> {a0}: {c0}%<br/>{a1}: {c1}%<br/>{a2}: {c2}%<br/>{a3}: {c3}%',
-                axisPointer: {
-                    lineStyle: {
-                        color: '#fff'
-                    }
-                }
-            },
-            legend: {
-                icon: 'rect',
-                itemWidth: 14,
-                itemHeight: 5,
-                itemGap: 13,
-                data: yearArr,
-                right: '5px',
-                top: '10px',
-                textStyle: {
-                    fontSize: 12,
+
+    })*/
+
+    option = {
+        tooltip: {//鼠标指上时的标线
+            trigger: 'axis',
+            formatter: '{b}<br/> {a0}: {c0}%<br/>{a1}: {c1}%<br/>{a2}: {c2}%<br/>{a3}: {c3}%',
+            axisPointer: {
+                lineStyle: {
                     color: '#fff'
                 }
-            },
-            grid: {
-                left: '3%',
-                right: '3%',
-                bottom: '5%',
-                top: '18%',
-                containLabel: true,
-                z: 22
-            },
-            xAxis: [{
-                type: 'category',
-                boundaryGap: false,
-                axisLine: {
-                    lineStyle: {
-                        color: '#57617B'
-                    }
-                },
-                axisLabel: {
-                    textStyle: {
-                        color:'#fff',
-                    },
-                },
-                data: ['高管','管理层','文员','操作','司机','后勤']
-            }],
-            yAxis: [{
-                type: 'value',
-                axisTick: {
-                    show: false
-                },
-                axisLine: {
-                    lineStyle: {
-                        color: '#57617B',
-
-                    }
-                },
-                axisLabel: {
-                    margin: 10,
-                    formatter: '{value}%',
-                    textStyle: {
-                        fontSize: 14
-                    },
-                    textStyle: {
-                        color:'#fff',
-                    },
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: 'rgba(255,255,255,.2)',
-                        type:'dotted',
-                    }
+            }
+        },
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: ['2020','2019','2018','2017'],
+            right: '5px',
+            top: '10px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '3%',
+            bottom: '5%',
+            top: '18%',
+            containLabel: true,
+            z: 22
+        },
+        xAxis: [{
+            type: 'category',
+            boundaryGap: false,
+            axisLine: {
+                lineStyle: {
+                    color: '#57617B'
                 }
-            }],
-            series: [{
-                name: yearArr[0],
-                type: 'line',
-                smooth: true,
-                lineStyle: {
-                    normal: {
-                        width: 2
-                    }
-                },
-                areaStyle: {
-                    normal: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0,
-                            color: 'rgba(137, 189, 27, 0.3)'
-                        }, {
-                            offset: 0.8,
-                            color: 'rgba(137, 189, 27, 0)'
-                        }], false),
-                        shadowColor: 'rgba(0, 0, 0, 0.1)',
-                        shadowBlur: 10
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        color: 'rgb(137,189,27)'
-                    }
-                },
-                data: [result[0].seniorRate,result[0].managementRate,result[0].officeRate,result[0].operationRate,result[0].driverRate,result[0].logisticsRate]
-            }, {
-                name: yearArr[1],
-                type: 'line',
-                smooth: true,
-                lineStyle: {
-                    normal: {
-                        width: 2
-                    }
-                },
-                areaStyle: {
-                    normal: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0,
-                            color: 'rgba(0, 136, 212, 0.3)'
-                        }, {
-                            offset: 0.8,
-                            color: 'rgba(0, 136, 212, 0)'
-                        }], false),
-                        shadowColor: 'rgba(0, 0, 0, 0.1)',
-                        shadowBlur: 10
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        color: 'rgb(0,136,212)'
-                    }
-                },
-                data: [result[1].seniorRate,result[1].managementRate,result[1].officeRate,result[1].operationRate,result[1].driverRate,result[1].logisticsRate]
-            }, {
-                name: yearArr[2],
-                type: 'line',
-                smooth: true,
-                lineStyle: {
-                    normal: {
-                        width: 2
-                    }
-                },
-                areaStyle: {
-                    normal: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0,
-                            color: 'rgba(219, 50, 51, 0.3)'
-                        }, {
-                            offset: 0.8,
-                            color: 'rgba(219, 50, 51, 0)'
-                        }], false),
-                        shadowColor: 'rgba(0, 0, 0, 0.1)',
-                        shadowBlur: 10
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        color: 'rgb(219,50,51)'
-                    }
-                },
-                data: [result[2].seniorRate,result[2].managementRate,result[2].officeRate,result[2].operationRate,result[2].driverRate,result[2].logisticsRate]
             },
-                {
-                    name: yearArr[3],
-                    type: 'line',
-                    smooth: true,
-                    lineStyle: {
-                        normal: {
-                            width: 2
-                        }
-                    },
-                    areaStyle: {
-                        normal: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                offset: 0,
-                                color: 'rgba(255,154,0, 0.3)'
-                            }, {
-                                offset: 0.8,
-                                color: 'rgba(255,154,0, 0)'
-                            }], false),
-                            shadowColor: 'rgba(0, 0, 0, 0.1)',
-                            shadowBlur: 10
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: 'rgba(255,154,0)'
-                        }
-                    },
-                    data: [result[3].seniorRate,result[3].managementRate,result[3].officeRate,result[3].operationRate,result[3].driverRate,result[3].logisticsRate]
-                },]
-        };
-        linchartQuitType.setOption(option);
-    })
+            axisLabel: {
+                textStyle: {
+                    color:'#fff',
+                },
+            },
+            data: ['高管','管理层','文员','操作','司机','后勤']
+        }],
+        yAxis: [{
+            type: 'value',
+            axisTick: {
+                show: false
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#57617B',
+
+                }
+            },
+            axisLabel: {
+                margin: 10,
+                formatter: '{value}%',
+                textStyle: {
+                    fontSize: 14
+                },
+                textStyle: {
+                    color:'#fff',
+                },
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(255,255,255,.2)',
+                    type:'dotted',
+                }
+            }
+        }],
+        series: [{
+            name: '2020',
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(137, 189, 27, 0.3)'
+                    }, {
+                        offset: 0.8,
+                        color: 'rgba(137, 189, 27, 0)'
+                    }], false),
+                    shadowColor: 'rgba(0, 0, 0, 0.1)',
+                    shadowBlur: 10
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: 'rgb(137,189,27)'
+                }
+            },
+            //data: [result[1].seniorRate,result[1].managementRate,result[1].officeRate,result[1].operationRate,result[1].driverRate,result[1].logisticsRate]
+            data: [0,1.27,3.74,14.52,3.89,5.44]
+        }, {
+            name: '2019',
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(0, 136, 212, 0.3)'
+                    }, {
+                        offset: 0.8,
+                        color: 'rgba(0, 136, 212, 0)'
+                    }], false),
+                    shadowColor: 'rgba(0, 0, 0, 0.1)',
+                    shadowBlur: 10
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: 'rgb(0,136,212)'
+                }
+            },
+            data: [0.14,1.72,4.82,16.63,5.11,7.78]
+        }, {
+            name: '2018',
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(219, 50, 51, 0.3)'
+                    }, {
+                        offset: 0.8,
+                        color: 'rgba(219, 50, 51, 0)'
+                    }], false),
+                    shadowColor: 'rgba(0, 0, 0, 0.1)',
+                    shadowBlur: 10
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: 'rgb(219,50,51)'
+                }
+            },
+            data: [0.94,1.82,5.02,16.54,4.84,7.52]
+        },
+            {
+                name: '2017',
+                type: 'line',
+                smooth: true,
+                lineStyle: {
+                    normal: {
+                        width: 2
+                    }
+                },
+                areaStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0,
+                            color: 'rgba(255,154,0, 0.3)'
+                        }, {
+                            offset: 0.8,
+                            color: 'rgba(255,154,0, 0)'
+                        }], false),
+                        shadowColor: 'rgba(0, 0, 0, 0.1)',
+                        shadowBlur: 10
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: 'rgba(255,154,0)'
+                    }
+                },
+                data: [0.69,2.90,6.22,15.82,5.94,7.17]
+            },]
+    };
+    linchartQuitType= echarts.init(document.getElementById("line-chart-quit"));
+    linchartQuitType.setOption(option);
 }
 
 

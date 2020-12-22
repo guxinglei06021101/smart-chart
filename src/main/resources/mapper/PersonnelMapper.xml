@@ -30,7 +30,7 @@
         SELECT COUNT(0) FROM tb_personnel
     </select>
     <select id="queryTypeGroup" resultType="net.sppan.base.vo.PersonnelTypeVo">
-        SELECT tb_personnel.type,COUNT(0) As count FROM tb_personnel where quit = #{quit} GROUP BY tb_personnel.type order by count desc
+        SELECT tb_personnel.type,COUNT(0) As count FROM tb_personnel where quit = #{quit} GROUP BY tb_personnel.type order by count DESC
     </select>
 
     <select id="queryEntryDateGroup" resultType="net.sppan.base.vo.PersonnelTypeVo">

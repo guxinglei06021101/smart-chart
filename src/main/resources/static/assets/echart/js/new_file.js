@@ -830,7 +830,7 @@ function pieCharJobAge(){
                     type:'pie',
                     selectedMode: 'single',
                     radius: [0, '50%'],
-                    center:["50%","48%"],
+                    center:["50%","65%"],
                     label: {
                         normal: {
                             position: 'outside',
