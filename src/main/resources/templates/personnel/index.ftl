@@ -230,40 +230,47 @@
                 window.wxc.xcConfirm('请选择文件', window.wxc.xcConfirm.typeEnum.info);
 	            return ;
 	        }
-            var r = window.wxc.xcConfirm('确定上传吗？', window.wxc.xcConfirm.typeEnum.confirm);
-            if (r != true) {
-                return ;
-            }
-            $('#loader').show();
-            $('#jobBtn').attr('disabled',true);
-            $('#quitBtn').attr('disabled',true);
-            var formData = new FormData();
-            formData.append("files",files);
-            formData.append("quit",quit);
-            $.ajax({
-                url:'/personnel/upload',
-                dataType:'json',
-                type:'POST',
-                //async: false,
-                data: formData,
-                processData : false, // 使数据不做处理
-                contentType : false, // 不要设置Content-Type请求头
-                success: function(data){
-                    $('#loader').hide();
-                    console.log(data);
-                    $('#table_list').bootstrapTable("refresh");
-                    //alert(data.message);
-                    window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.success);
-                    $('#jobBtn').attr('disabled',false);
-                    $('#quitBtn').attr('disabled',false);
-                },
-                error:function(response){
-                    $('#loader').hide();
-                    console.log(response);
-                    //alert(response.responseJSON.message);
-                    window.wxc.xcConfirm(response.responseJSON.message, window.wxc.xcConfirm.typeEnum.error);
-                    $('#jobBtn').attr('disabled',false);
-                    $('#quitBtn').attr('disabled',false);
+
+            window.wxc.xcConfirm('确定上传吗？', "confirm", {
+                title: "提示",
+                btn: parseInt("0011",2),
+                onOk: function(){
+                    $('#loader').show();
+                    $('#jobBtn').attr('disabled',true);
+                    $('#quitBtn').attr('disabled',true);
+                    var formData = new FormData();
+                    formData.append("files",files);
+                    formData.append("quit",quit);
+                    $.ajax({
+                        url:'/personnel/upload',
+                        dataType:'json',
+                        type:'POST',
+                        //async: false,
+                        data: formData,
+                        processData : false, // 使数据不做处理
+                        contentType : false, // 不要设置Content-Type请求头
+                        success: function(data){
+                            $('#loader').hide();
+                            console.log(data);
+                            $('#table_list').bootstrapTable("refresh");
+                            //alert(data.message);
+                            if(data.code == '0'){
+                                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.success);
+                            }else{
+                                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.error);
+                            }
+                            $('#jobBtn').attr('disabled',false);
+                            $('#quitBtn').attr('disabled',false);
+                        },
+                        error:function(response){
+                            $('#loader').hide();
+                            console.log(response);
+                            //alert(response.responseJSON.message);
+                            window.wxc.xcConfirm(response.responseJSON.message, window.wxc.xcConfirm.typeEnum.error);
+                            $('#jobBtn').attr('disabled',false);
+                            $('#quitBtn').attr('disabled',false);
+                        }
+                    });
                 }
             });
 	    }
