@@ -366,18 +366,8 @@ function lincharQuitType(){
     linchartQuitType= echarts.init(document.getElementById("line-chart-quit"));
     ajax_get(url,function(result){
         var yearArr = [];
-        var rateArr = [];
-        var typeArr = [];
         result.forEach(function(item){
             yearArr.push(item.year+"");
-            var rate = [];
-            var type = [];
-            item.rateVoList.forEach(function (rateVo){
-                rate.push(rateVo.rate);
-                type.push(rateVo.type);
-            });
-            rateArr.push(rate);
-            typeArr = type;
         });
         option = {
             tooltip: {//鼠标指上时的标线
@@ -423,7 +413,7 @@ function lincharQuitType(){
                         color:'#fff',
                     },
                 },
-                data: typeArr
+                data: ['高管','管理层','文员','操作','司机','后勤']
             }],
             yAxis: [{
                 type: 'value',
@@ -480,7 +470,7 @@ function lincharQuitType(){
                         color: 'rgb(137,189,27)'
                     }
                 },
-                data: rateArr[0]
+                data: [result[0].seniorRate,result[0].managementRate,result[0].officeRate,result[0].operationRate,result[0].driverRate,result[0].logisticsRate]
             }, {
                 name: yearArr[1],
                 type: 'line',
@@ -508,7 +498,7 @@ function lincharQuitType(){
                         color: 'rgb(0,136,212)'
                     }
                 },
-                data: rateArr[1]
+                data: [result[1].seniorRate,result[1].managementRate,result[1].officeRate,result[1].operationRate,result[1].driverRate,result[1].logisticsRate]
             }, {
                 name: yearArr[2],
                 type: 'line',
@@ -536,7 +526,7 @@ function lincharQuitType(){
                         color: 'rgb(219,50,51)'
                     }
                 },
-                data: rateArr[2]
+                data: [result[2].seniorRate,result[2].managementRate,result[2].officeRate,result[2].operationRate,result[2].driverRate,result[2].logisticsRate]
             },
                 {
                     name: yearArr[3],
@@ -565,7 +555,7 @@ function lincharQuitType(){
                             color: 'rgba(255,154,0)'
                         }
                     },
-                    data: rateArr[3]
+                    data: [result[3].seniorRate,result[3].managementRate,result[3].officeRate,result[3].operationRate,result[3].driverRate,result[3].logisticsRate]
                 },]
         };
         linchartQuitType.setOption(option);

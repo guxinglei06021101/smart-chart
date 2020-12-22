@@ -304,45 +304,203 @@ function pieChar(){
         });
 }
 
-//饼状图
+//折线图
 var pieChartJobAgeGroup="";
 function pieCharJobAgeGroup(){
     var url = "/personnel/qurtyJobAgeGroup";
     ajax_get(url,function(result){
-        var date = [];
+        var data = [];
         result.forEach(function (item) {
-            date.push({name:item.ageGroup,value:item.count});
+            data.push(item.rate);
         });
-        var option = {
-            color:["#6A5ACD","#fea31e","#24998d","#4682B4","#99cc33","#4f8bf9"],
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+        option = {
+            tooltip: {//鼠标指上时的标线
+                trigger: 'axis',
+                formatter: '{b}<br/> {a0}: {c0}%<br/>{a1}: {c1}%<br/>{a2}: {c2}%<br/>{a3}: {c3}%',
+                axisPointer: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            legend: {
+                icon: 'rect',
+                itemWidth: 14,
+                itemHeight: 5,
+                itemGap: 13,
+                data: ['2020','2019','2018','2017'],
+                right: '5px',
+                top: '10px',
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff'
+                }
             },
             grid: {
-                left: '6%',
-                right: '3%',
-                bottom: '5%',
+                left: '3%',
+                right: '5%',
+                bottom: '3%',
                 top: '15%',
                 containLabel: true,
                 z: 22
             },
-            series: [
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                axisLine: {
+                    lineStyle: {
+                        color: '#57617B'
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        color:'#fff',
+                    },
+                },
+                data: ['其他', '75后', '80后','90后','95后','00后']
+            }],
+            yAxis: [{
+                type: 'value',
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#57617B',
+
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value}%',
+                    margin: 10,
+                    textStyle: {
+                        fontSize: 14
+                    },
+                    textStyle: {
+                        color:'#fff',
+                    },
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.2)',
+                        type:'dotted',
+                    }
+                }
+            }],
+            series: [ {
+                name: '2019',
+                type: 'line',
+                smooth: true,
+                lineStyle: {
+                    normal: {
+                        width: 2
+                    }
+                },
+                areaStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0,
+                            color: 'rgba(0, 136, 212, 0.3)'
+                        }, {
+                            offset: 0.8,
+                            color: 'rgba(0, 136, 212, 0)'
+                        }], false),
+                        shadowColor: 'rgba(0, 0, 0, 0.1)',
+                        shadowBlur: 10
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(0,136,212)'
+                    }
+                },
+                data: [13.5,15.79,36.60,18.38,14.64,1.09]
+            }, {
+                name: '2018',
+                type: 'line',
+                smooth: true,
+                lineStyle: {
+                    normal: {
+                        width: 2
+                    }
+                },
+                areaStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0,
+                            color: 'rgba(219, 50, 51, 0.3)'
+                        }, {
+                            offset: 0.8,
+                            color: 'rgba(219, 50, 51, 0)'
+                        }], false),
+                        shadowColor: 'rgba(0, 0, 0, 0.1)',
+                        shadowBlur: 10
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(219,50,51)'
+                    }
+                },
+                data: [14.16,15.71,36.48,19.29,13.90,0.46]
+            },
                 {
-                    name:'员工年龄分布',
-                    type:'pie',
-                    selectedMode: 'single',
-                    radius: [0, '60%'],
-                    center:["50%","48%"],
-                    label: {
+                    name: '2017',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
                         normal: {
-                            position: 'outside',
-                            formatter: "{b}:{d}%"
+                            width: 2
                         }
                     },
-                    data:date
-                }
-            ]
+                    areaStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: 'rgba(255,154,0, 0.3)'
+                            }, {
+                                offset: 0.8,
+                                color: 'rgba(255,154,0, 0)'
+                            }], false),
+                            shadowColor: 'rgba(0, 0, 0, 0.1)',
+                            shadowBlur: 10
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(255,154,0)'
+                        }
+                    },
+                    data: [13.70,15.43,39.07,20.79,11.01,0.00]
+                },{
+                    name: '2020',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        normal: {
+                            width: 2
+                        }
+                    },
+                    areaStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: 'rgba(137, 189, 27, 0.3)'
+                            }, {
+                                offset: 0.8,
+                                color: 'rgba(137, 189, 27, 0)'
+                            }], false),
+                            shadowColor: 'rgba(0, 0, 0, 0.1)',
+                            shadowBlur: 10
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: 'rgb(137,189,27)'
+                        }
+                    },
+                    data: data,
+                },]
         };
         pieChartJobAgeGroup= echarts.init(document.getElementById("pie-chart-jobAgeGroup"));
         pieChartJobAgeGroup.setOption(option);

@@ -328,21 +328,32 @@ public class PersonnelController extends BaseController {
         for(String year:collect.keySet()){
             PersonnelQuitTypeRateVo quitTypeRateVo = new PersonnelQuitTypeRateVo();
             quitTypeRateVo.setYear(year);
-            List<PersonnelTypeRateVo> rateVoList = new ArrayList<>();
             List<PersonnelQuitCountVo> personnelQuitCountList = collect.get(year);
             for(PersonnelQuitCountVo personnelQuitCountVo:personnelQuitCountList){
-                BigDecimal count = BigDecimal.valueOf(personnelQuitCountVo.getCount());
+                BigDecimal count = BigDecimal.valueOf(personnelQuitCountVo.getCount()*100);
                 Integer yearCount = yearCountMap.get(year);
                 BigDecimal rate = BigDecimal.ZERO;
                 if(yearCount != 0 ){
                      rate = count.divide(new BigDecimal(yearCount), 2, BigDecimal.ROUND_HALF_UP);
                 }
-                PersonnelTypeRateVo personnelTypeRateVo = new PersonnelTypeRateVo();
-                personnelTypeRateVo.setRate(rate);
-                personnelTypeRateVo.setType(personnelQuitCountVo.getType());
-                rateVoList.add(personnelTypeRateVo);
+
+                JobTypeEnum jobTypeEnum = JobTypeEnum.getByName(personnelQuitCountVo.getType());
+                switch (jobTypeEnum){
+                    case DRIVER: quitTypeRateVo.setDriverRate(rate);
+                        break;
+                    case OFFICE: quitTypeRateVo.setOfficeRate(rate);
+                        break;
+                    case SENIOR: quitTypeRateVo.setSeniorRate(rate);
+                        break;
+                    case LOGISTICS: quitTypeRateVo.setLogisticsRate(rate);
+                        break;
+                    case OPERATION: quitTypeRateVo.setOperationRate(rate);
+                        break;
+                    case MANAGEMENT:quitTypeRateVo.setManagementRate(rate);
+                        break;
+                    default:
+                }
             }
-            quitTypeRateVo.setRateVoList(rateVoList);
             result.add(quitTypeRateVo);
         }
         return  result;
@@ -374,38 +385,43 @@ public class PersonnelController extends BaseController {
 
         if(null != sheet){
             for(int line = 1; line <= sheet.getLastRowNum();line++){
-                Row row = sheet.getRow(line);
-                if(null == row ||row.getCell(0) == null ){
-                    continue;
-                }
-                if(1 != row.getCell(0).getCellType()){
-                    throw new Exception("单元格类型不是文本类型！");
-                }
-                row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
                 Personnel personnel = new Personnel();
-                personnel.setName( row.getCell(0).getStringCellValue());
-                personnel.setCode(row.getCell(1).getStringCellValue());
-                personnel.setIdcard(row.getCell(2).getStringCellValue());
-                personnel.setEntryDate(row.getCell(3).getDateCellValue());
-                if("1".equals(quit)){
-                    personnel.setQuitDate(row.getCell(4).getDateCellValue());
+                try{
+                    Row row = sheet.getRow(line);
+                    if(null == row ||row.getCell(0) == null ){
+                        continue;
+                    }
+                    if(1 != row.getCell(0).getCellType()){
+                        throw new Exception("单元格类型不是文本类型！");
+                    }
+                    row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+                    personnel.setName( row.getCell(0).getStringCellValue());
+                    personnel.setCode(row.getCell(1).getStringCellValue());
+                    personnel.setIdcard(row.getCell(2).getStringCellValue());
+                    personnel.setEntryDate(row.getCell(3).getDateCellValue());
+                    if("1".equals(quit)){
+                        personnel.setQuitDate(row.getCell(4).getDateCellValue());
+                    }
+                    personnel.setDepartment(row.getCell(5).getStringCellValue());
+                    personnel.setPost(row.getCell(6).getStringCellValue());
+                    personnel.setPostRank(row.getCell(7).getStringCellValue());
+                    personnel.setCity(row.getCell(8).getStringCellValue().replace("市",""));
+                    row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
+                    personnel.setAge(Integer.parseInt(row.getCell(9).getStringCellValue()));
+                    personnel.setSex(row.getCell(10).getStringCellValue());
+                    personnel.setEducation(row.getCell(11).getStringCellValue());
+                    personnel.setProvince(row.getCell(12).getStringCellValue());
+                    personnel.setType(row.getCell(13).getStringCellValue());
+                    personnel.setProvincialArea(row.getCell(14).getStringCellValue());
+                    personnel.setDistribution(row.getCell(15).getStringCellValue());
+                    personnel.setQuit(quit);
+                    personnel.setCreateDate(nowDate);
+                    personnels.add(personnel);
+                    log.info(JSON.toJSONString(personnel));
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return JsonResult.failure("上传失败，第"+(line+1)+"行数据存在异常:"+JSON.toJSONString(personnel)+"，/r/n异常原因："+e.getMessage());
                 }
-                personnel.setDepartment(row.getCell(5).getStringCellValue());
-                personnel.setPost(row.getCell(6).getStringCellValue());
-                personnel.setPostRank(row.getCell(7).getStringCellValue());
-                personnel.setCity(row.getCell(8).getStringCellValue().replace("市",""));
-                row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
-                personnel.setAge(Integer.parseInt(row.getCell(9).getStringCellValue()));
-                personnel.setSex(row.getCell(10).getStringCellValue());
-                personnel.setEducation(row.getCell(11).getStringCellValue());
-                personnel.setProvince(row.getCell(12).getStringCellValue());
-                personnel.setType(row.getCell(13).getStringCellValue());
-                personnel.setProvincialArea(row.getCell(14).getStringCellValue());
-                personnel.setDistribution(row.getCell(15).getStringCellValue());
-                personnel.setQuit(quit);
-                personnel.setCreateDate(nowDate);
-                personnels.add(personnel);
-                log.info(JSON.toJSONString(personnel));
             }
 
             Map<String, Object> columnMap = new HashMap<>();
@@ -418,6 +434,17 @@ public class PersonnelController extends BaseController {
         }
         return JsonResult.success("上传成功！");
     }
+
+    private String getCellVal(Cell cell){
+        try {
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return cell.getStringCellValue();
+    }
+
+
 
     @GetMapping("/list")
     public IPage<Personnel> queryList(){
@@ -478,8 +505,23 @@ public class PersonnelController extends BaseController {
     }
 
     @GetMapping("/qurtyJobAgeGroup")
-    public List<PersonnelJobAgeVo> queryAgeGroup(){
-        return personnelService.queryJobAgeGroup();
+    public List<PersonnelTypeRateVo> queryAgeGroup(){
+        List<PersonnelTypeRateVo> result = new ArrayList<>();
+        List<PersonnelJobAgeVo> personnelTypeVos = personnelService.queryJobAgeGroup();
+        if(CollectionUtils.isEmpty(personnelTypeVos)){
+            return result;
+        }
+        int total = 0;
+        for(PersonnelJobAgeVo personnelTypeVo:personnelTypeVos){
+            total = total + personnelTypeVo.getCount();
+        }
+        for(PersonnelJobAgeVo personnelTypeVo:personnelTypeVos){
+            PersonnelTypeRateVo personnelTypeRateVo = new PersonnelTypeRateVo();
+            personnelTypeRateVo.setType(personnelTypeVo.getAgeGroup());
+            personnelTypeRateVo.setRate(new BigDecimal(personnelTypeVo.getCount()*100).divide(new BigDecimal(total),2,BigDecimal.ROUND_HALF_UP));
+            result.add(personnelTypeRateVo);
+        }
+        return result;
     }
 
     @GetMapping("/queryTypeGroup/{quit}")

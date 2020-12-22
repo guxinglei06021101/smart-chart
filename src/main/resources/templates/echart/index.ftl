@@ -110,7 +110,7 @@
                 在职员工年龄分布
             </div>
             <div class="graduateyear">
-                <div class="pie-chart" id="pie-chart-jobAgeGroup"></div>
+                <div class="line-chart" id="pie-chart-jobAgeGroup"></div>
             </div>
         </div>
 
