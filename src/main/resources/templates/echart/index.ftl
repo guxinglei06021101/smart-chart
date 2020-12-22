@@ -76,6 +76,14 @@
     <div class="main-left">
 
         <div class="border-container containertop borderno-container">
+            <div class="name-title tile-size-color">
+                在职员工学历分布图
+            </div>
+            <div id="courserate">
+                <div class="progress1-chart" id="progress1-chart"></div>
+            </div>
+        </div>
+        <div class="border-container containerbottom">
             <h5 class="name-title tile-size-color">
                 在职员工年龄分布占比图
             </h5>
@@ -98,14 +106,7 @@
                 </ul>
             </div>
         </div>
-        <div class="border-container containerbottom">
-            <div class="name-title tile-size-color">
-                在职员工学历分布图
-            </div>
-            <div id="courserate">
-                <div class="progress1-chart" id="progress1-chart"></div>
-            </div>
-        </div>
+
     </div>
 
     <div class="main-middle">
