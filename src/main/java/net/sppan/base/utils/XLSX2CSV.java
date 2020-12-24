@@ -108,16 +108,16 @@ public class XLSX2CSV {
                 curstr.add(null);
             }
             currentCol = thisCol;
-
+            curstr.add(formattedValue);
             // Number or string?
-            try {
+            /*try {
                 Double.parseDouble(formattedValue);
                 curstr.add(formattedValue);
             } catch (NumberFormatException e) {
                 // output.append('"');
                 curstr.add(formattedValue);
                 //   output.append('"');
-            }
+            }*/
         }
 
         @Override
