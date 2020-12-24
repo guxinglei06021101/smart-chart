@@ -38,7 +38,7 @@
                 </#if>
                 <form method="post" action="${ctx!}/admin/login" id="frm">
                     <h4 class="no-margins">登录</h4>
-                    <p class="m-t-md"> 欢迎使用后端管理系统</p>
+                    <p class="m-t-md"> 欢迎使用图表看板系统</p>
                     <input type="text" class="form-control uname" name="username" id="username" placeholder="用户名" />
                     <input type="password" class="form-control pword m-b" name="password" id="password"  placeholder="密码" />
 <!--                    <a href="" class="forget">忘记密码了？</a>-->

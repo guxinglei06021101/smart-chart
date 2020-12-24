@@ -29,7 +29,7 @@ public class IndexController extends BaseController{
 
 	@RequestMapping(value={"/","/index"})
 	public String index(){
-		return "personnel/index";
+		return "admin/login";
 	}
 
 	@RequestMapping(value={"/echart"})
