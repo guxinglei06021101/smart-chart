@@ -465,7 +465,8 @@ public class PersonnelController extends BaseController {
         xlsx2csv.process();
         ArrayList<ArrayList<String>> output = xlsx2csv.get_output();
         p.close();   //释放
-        List<Personnel> personnels = new ArrayList<>(1000);
+        List<Personnel> personnels = new ArrayList<>(output.size());
+
         for(int i=1;i<output.size();i++){
             List<String> list = output.get(i);
             try {
@@ -497,13 +498,12 @@ public class PersonnelController extends BaseController {
                 throw new Exception("上传失败，第"+(i+1)+"行数据存在异常:\r\n"+JSON.toJSONString(list)+";\r\n异常原因："+e.getMessage());
                 //return JsonResult.failure("上传失败，第"+(i+1)+"行数据存在异常:\r\n"+JSON.toJSONString(list)+";\r\n异常原因："+e.getMessage());
             }
-            if(personnels.size() == 1000){
-                personnelService.saveBatch(personnels);
-                personnels = new ArrayList<>(1000);
-            }
         }
         if(personnels.size() >0){
-            personnelService.saveBatch(personnels);
+            Map<String, Object> columnMap = new HashMap<>();
+            columnMap.put("quit",quit);
+            personnelService.removeByMap(columnMap);
+            personnelService.saveBatch(personnels,1000);
         }
         personnelNumberService.addBatchPersonnelNumber();
         return JsonResult.success("上传成功！");
