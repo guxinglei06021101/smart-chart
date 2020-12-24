@@ -13,9 +13,13 @@ import net.sppan.base.enums.EducationEnum;
 import net.sppan.base.enums.JobTypeEnum;
 import net.sppan.base.service.IPersonnelNumberService;
 import net.sppan.base.service.IPersonnelService;
+import net.sppan.base.utils.XLSX2CSV;
 import net.sppan.base.vo.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -23,13 +27,17 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -365,25 +373,33 @@ public class PersonnelController extends BaseController {
         return personnelNumberService.queryQuitRate();
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/uploadFile")
     @ResponseBody
-    public JsonResult upload(@RequestParam("files") MultipartFile file,@RequestParam("quit") String quit) throws Exception{
+    @Transactional(rollbackFor = Exception.class)
+    public JsonResult uploadFile(@RequestParam("files") MultipartFile file,@RequestParam("quit") String quit) throws Exception{
 
-
+        log.info("开始上传...");
         String fileName = file.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
         InputStream ins = file.getInputStream();
+        log.info("获取文件流...");
         Workbook wb = null;
         if(suffix.equals("xlsx")){
             wb = new XSSFWorkbook(ins);
         }else{
             wb = new HSSFWorkbook(ins);
         }
+        log.info("上传获取sheet...");
         Sheet sheet = wb.getSheetAt(0);
-        List<Personnel> personnels = new ArrayList<>();
+        List<Personnel> personnels = new ArrayList<>(1000);
         Date nowDate = new Date();
 
         if(null != sheet){
+            log.info("上传获取数据中...");
+            Map<String, Object> columnMap = new HashMap<>();
+            columnMap.put("quit",quit);
+            personnelService.removeByMap(columnMap);
+
             for(int line = 1; line <= sheet.getLastRowNum();line++){
                 Personnel personnel = new Personnel();
                 try{
@@ -391,10 +407,10 @@ public class PersonnelController extends BaseController {
                     if(null == row ||row.getCell(0) == null ){
                         continue;
                     }
-                    if(1 != row.getCell(0).getCellType()){
-                        throw new Exception("单元格类型不是文本类型！");
-                    }
-                    row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+//                    if(1 != row.getCell(0).getCellType()){
+//                        throw new Exception("单元格类型不是文本类型！");
+//                    }
+//                    row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
                     personnel.setName( row.getCell(0).getStringCellValue());
                     personnel.setCode(row.getCell(1).getStringCellValue());
                     personnel.setIdcard(row.getCell(2).getStringCellValue());
@@ -406,7 +422,7 @@ public class PersonnelController extends BaseController {
                     personnel.setPost(row.getCell(6).getStringCellValue());
                     personnel.setPostRank(row.getCell(7).getStringCellValue());
                     personnel.setCity(row.getCell(8).getStringCellValue().replace("市",""));
-                    row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
+                    //row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
                     personnel.setAge(Integer.parseInt(row.getCell(9).getStringCellValue()));
                     personnel.setSex(row.getCell(10).getStringCellValue());
                     personnel.setEducation(row.getCell(11).getStringCellValue());
@@ -416,24 +432,83 @@ public class PersonnelController extends BaseController {
                     personnel.setDistribution(row.getCell(15).getStringCellValue());
                     personnel.setQuit(quit);
                     personnel.setCreateDate(nowDate);
-                    personnels.add(personnel);
                     log.info(JSON.toJSONString(personnel));
+                    personnels.add(personnel);
+                    if(personnels.size() == 1000){
+                        personnelService.saveBatch(personnels);
+                        personnels = new ArrayList<>(1000);
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                     return JsonResult.failure("上传失败，第"+(line+1)+"行数据存在异常:\r\n"+JSON.toJSONString(personnel)+";\r\n异常原因："+e.getMessage());
                 }
             }
-
-            Map<String, Object> columnMap = new HashMap<>();
-            columnMap.put("quit",quit);
-            personnelService.removeByMap(columnMap);
-
-            personnelService.saveBatch(personnels,1000);
-
+            if(personnels.size() >0){
+                personnelService.saveBatch(personnels);
+            }
             personnelNumberService.addBatchPersonnelNumber();
         }
         return JsonResult.success("上传成功！");
     }
+
+    @ResponseBody
+    @PostMapping("/upload")
+    @Transactional(rollbackFor = Exception.class)
+    public JsonResult upload(@RequestParam("files") MultipartFile file,@RequestParam("quit") String quit) throws Exception{
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date nowDate = new Date();
+        ZipSecureFile.setMinInflateRatio(-1.0d);
+        OPCPackage p = OPCPackage.open(file.getInputStream());
+        // 20代表最大列数
+        XLSX2CSV xlsx2csv = new XLSX2CSV(p, 20);
+        xlsx2csv.process();
+        ArrayList<ArrayList<String>> output = xlsx2csv.get_output();
+        p.close();   //释放
+        List<Personnel> personnels = new ArrayList<>(1000);
+        for(int i=1;i<output.size();i++){
+            List<String> list = output.get(i);
+            try {
+                log.info(JSON.toJSONString(list));
+                Personnel personnel = new Personnel();
+                personnel.setName(list.get(0));
+                personnel.setCode(list.get(1));
+                personnel.setIdcard(list.get(2));
+                personnel.setEntryDate(sdf.parse(list.get(3)));
+                if ("1".equals(quit)) {
+                    personnel.setQuitDate(sdf.parse(list.get(4)));
+                }
+                personnel.setDepartment(list.get(5));
+                personnel.setPost(list.get(6));
+                personnel.setPostRank(list.get(7));
+                personnel.setCity(list.get(8).replace("市", ""));
+                personnel.setAge(Integer.parseInt(list.get(9)));
+                personnel.setSex(list.get(10));
+                personnel.setEducation(list.get(11));
+                personnel.setProvince(list.get(12));
+                personnel.setType(list.get(13));
+                personnel.setProvincialArea(list.get(14));
+                personnel.setDistribution(list.get(15));
+                personnel.setQuit(quit);
+                personnel.setCreateDate(nowDate);
+                personnels.add(personnel);
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new Exception("上传失败，第"+(i+1)+"行数据存在异常:\r\n"+JSON.toJSONString(list)+";\r\n异常原因："+e.getMessage());
+                //return JsonResult.failure("上传失败，第"+(i+1)+"行数据存在异常:\r\n"+JSON.toJSONString(list)+";\r\n异常原因："+e.getMessage());
+            }
+            if(personnels.size() == 1000){
+                personnelService.saveBatch(personnels);
+                personnels = new ArrayList<>(1000);
+            }
+        }
+        if(personnels.size() >0){
+            personnelService.saveBatch(personnels);
+        }
+        personnelNumberService.addBatchPersonnelNumber();
+        return JsonResult.success("上传成功！");
+    }
+
 
 
     @GetMapping("/list")
