@@ -494,7 +494,7 @@ public class PersonnelController extends BaseController {
                 personnels.add(personnel);
             }catch (Exception e){
                 e.printStackTrace();
-                throw new Exception("上传失败，第"+(i+1)+"行数据存在异常:\r\n"+JSON.toJSONString(list)+";\r\n异常原因："+e.getMessage());
+                throw new Exception("上传失败，第"+(i+1)+"行数据存在异常:<br>"+JSON.toJSONString(list)+";<br>异常原因："+e.getMessage());
                 //return JsonResult.failure("上传失败，第"+(i+1)+"行数据存在异常:\r\n"+JSON.toJSONString(list)+";\r\n异常原因："+e.getMessage());
             }
             if(personnels.size() == 1000){
