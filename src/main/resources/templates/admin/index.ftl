@@ -70,9 +70,9 @@
                             </a>
                     </li>
                     <li>
-                        <a class="J_menuItem" href="${ctx!}/dataChart/index">
+                        <a class="J_menuItem" href="${ctx!}/chart/index">
                             <i class="fa fa-history"></i>
-                            <span class="nav-label">看板</span>
+                            <span class="nav-label">图表</span>
                         </a>
                     </li>
                     <@shiro.hasPermission name="system:user:index">

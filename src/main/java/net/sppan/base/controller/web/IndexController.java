@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -56,6 +57,11 @@ public class IndexController extends BaseController{
 	@RequestMapping(value={"/importData"})
 	public String importData(ModelMap map){
 		return "echart/import-data";
+	}
+
+	@GetMapping(value={"/chart/index"})
+	public String dataChart(){
+		return "chart/index";
 	}
 
 
