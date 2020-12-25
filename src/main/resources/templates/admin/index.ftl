@@ -51,7 +51,7 @@
                     </li>
                     <@shiro.hasPermission name="system:user:index">
                     <li>
-                        <a class="J_menuItem" href="${ctx!}/index">
+                        <a class="J_menuItem" href="${ctx!}/personnel/index">
                             <i class="fa fa-home"></i>
                             <span class="nav-label">主页</span>
                         </a>
@@ -68,6 +68,12 @@
                                 <i class="fa fa-history"></i>
                                 <span class="nav-label">离职</span>
                             </a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="${ctx!}/dataChart/index">
+                            <i class="fa fa-history"></i>
+                            <span class="nav-label">看板</span>
+                        </a>
                     </li>
                     <@shiro.hasPermission name="system:user:index">
                     <li>

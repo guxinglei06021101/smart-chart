@@ -1,12 +1,12 @@
 package net.sppan.base.controller.web;
 
-import java.util.List;
 
 import net.sppan.base.controller.BaseController;
-import net.sppan.base.entity.User;
 import net.sppan.base.service.IPersonnelService;
 import net.sppan.base.service.IUserService;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,17 @@ public class IndexController extends BaseController{
 
 	@RequestMapping(value={"/","/index"})
 	public String index(){
+		Subject subject = SecurityUtils.getSubject();
+		boolean isLogin = subject.isAuthenticated();
+		if(isLogin){
+			return "admin/index";
+		}
 		return "admin/login";
+	}
+
+	@RequestMapping(value={"/personnel/index"})
+	public String personnelList(){
+		return "personnel/index";
 	}
 
 	@RequestMapping(value={"/echart"})
