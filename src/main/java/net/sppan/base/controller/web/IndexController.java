@@ -64,5 +64,10 @@ public class IndexController extends BaseController{
 		return "chart/index";
 	}
 
+	@GetMapping(value={"/chart/add"})
+	public String addChart(){
+		return "chart/add";
+	}
+
 
 }

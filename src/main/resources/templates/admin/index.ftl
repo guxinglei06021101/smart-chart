@@ -75,6 +75,13 @@
                             <span class="nav-label">图表</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="J_menuItem" href="${ctx!}/chart/add">
+                            <i class="fa fa-pie-chart"></i>
+                            <span class="nav-label">制图</span>
+                        </a>
+                    </li>
+
                     <@shiro.hasPermission name="system:user:index">
                     <li>
                         <a href="#">

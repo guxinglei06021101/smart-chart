@@ -30,10 +30,19 @@ body{
 }
 .main-middle{
     float: left;
-    width: 44%;
-    height: 100%;
-    padding: 0 5px;
+    width: 40%;
+    height: 50%;
+    padding: 5px 5px;
+    background: #040f3c;
 }
+.main-form{
+    float: left;
+    width: 60%;
+    height: 100%;
+    padding: 5px 5px;
+    background: #f0f0f0;
+}
+
 
 .border-container {
     position: relative;
@@ -72,7 +81,7 @@ body{
     color: #fff;
 }
 .containertop{
-	height: 55%;
+	height: 100%;
 }
 .containerbottom{
 	height: 42%;
