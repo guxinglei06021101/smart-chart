@@ -48,6 +48,10 @@
             border: 0px;
             display: none;
         }
+        .chartImg{
+            height: 60px;
+            width: 60px;
+        }
     </style>
 </head>
 
@@ -74,15 +78,27 @@
                             <!-- Example Card View -->
                             <div class="example-wrap">
                                 <div class="example">
-                                    <div class="col-sm-2">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">类型</span>
-                                            <select id="quit" onchange="return search(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 80%;">
-                                                <option value="">全部</option>
-                                                <option value="0">饼状图</option>
-                                                <option value="1">折线图</option>
-                                                <option value="2">柱状图</option>
-                                            </select>
+                                    <div class="form-group">
+                                        <div class="col-sm-2">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">类型</span>
+                                                <select id="type" onchange="return search(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 80%;">
+                                                    <option value="">全部</option>
+                                                    <option value="pie">饼状图</option>
+                                                    <option value="line">折线图</option>
+                                                    <option value="bar">柱状图</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">状态</span>
+                                                <select id="status" onchange="return searchStatus(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 80%;">
+                                                    <option value="">全部</option>
+                                                    <option value="enable">可用</option>
+                                                    <option value="disable">禁用</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <table id="table_list"></table>
@@ -156,21 +172,41 @@
             },
             //数据列
             columns: [{
-                title: "ID",
-                field: "id",
+                title: "",
+                field: "type",
+                formatter: function(value,row,index){
+                    if (value == 'bar'){
+                        return '<img class="chartImg"  src="${ctx!}/assets/img/bar.png"/>';
+                    }else if(value == 'pie'){
+                        return '<img class="chartImg"  src="${ctx!}/assets/img/pie.png"/>';
+                    }else if(value == 'line'){
+                        return '<img class="chartImg"  src="${ctx!}/assets/img/line.png"/>';
+                    }
+                    return '';
+                }
 
             },{
                 title: "名称",
                 field: "name"
             },{
                 title: "类型",
-                field: "type"
-            },{
-                title: "是否可用",
-                field: "dr",
+                field: "type",
                 formatter: function(value,row,index){
-                    if (value == '0')
-                        return '<span class="label label-primary">可用</span>';
+                    if (value == 'bar'){
+                        return '柱状图';
+                    }else if(value == 'pie'){
+                        return '饼图';
+                    }else if(value == 'line'){
+                        return '折线图';
+                    }
+                    return '-';
+                }
+            },{
+                title: "状态",
+                field: "status",
+                formatter: function(value,row,index){
+                    if (value == 'enable')
+                        return '<span class="label label-success">可用</span>';
                     return '<span class="label label-danger">已禁用</span>';
                 }
             },{
@@ -185,7 +221,19 @@
                 field: 'remark'
             },{
                 title: "操作",
-                field: "id"
+                field: "id",
+                formatter: function (value, row, index) {
+
+                    var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-info btn-xs" type="button" onclick="del1(\''+row.id+'\')"><i class="fa fa-info-circle"></i>&nbsp;详情</button> &nbsp;</@shiro.hasPermission>';
+                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:edit"><button class="btn btn-primary btn-xs" type="button" onclick="edit1(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;修改</button> &nbsp;</@shiro.hasPermission>';
+                    if(row.status == 'enable'){
+                        operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:grant"><button class="btn btn-danger btn-xs" type="button" onclick="updateStatus(\''+row.id+'\',\'disable\')"><i class="fa fa-ban"></i>&nbsp;禁用</button> &nbsp;</@shiro.hasPermission>';
+                    }else{
+                        operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:grant"><button class="btn btn-success btn-xs" type="button" onclick="updateStatus(\''+row.id+'\',\'enable\')"><i class="fa fa-check-square-o"></i>&nbsp;启用</button> &nbsp;</@shiro.hasPermission>';
+                    }
+                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-times-circle"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
+                    return operateHtml;
+                }
             }]
         });
     });
@@ -197,17 +245,58 @@
     }
     
 
-    function search(quit) {
-
+    function search(type) {
         $('#table_list').bootstrapTable('refresh', {
             query:
                 {
-                    quit:quit
+                    type:type,
+                    status:$("#status").val()
                 }
         });
     }
+    function searchStatus(status) {
+        $('#table_list').bootstrapTable('refresh', {
+            query:
+                {
+                    type:$("#type").val(),
+                    status:status
+                }
+        });
+    }
+
     function addChart() {
         alert('新增图表');
+    }
+    function del(id){
+        layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "${ctx!}/chart/delete/" + id,
+                success: function(msg){
+                    layer.msg(msg.message, {time: 2000},function(){
+                        $('#table_list').bootstrapTable("refresh");
+                        layer.close(index);
+                    });
+                }
+            });
+        });
+    }
+    function updateStatus(id,option){
+        layer.confirm('确定要操作吗?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "${ctx!}/chart/updateStatus",
+                data:{id:id,status:option},
+                success: function(msg){
+                    layer.msg(msg.message, {time: 2000},function(){
+                        $('#table_list').bootstrapTable("refresh");
+                        layer.close(index);
+                    });
+                }
+            });
+        });
     }
 </script>
 </body>

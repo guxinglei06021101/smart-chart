@@ -16,6 +16,7 @@ public class Chart extends BaseEntity {
     private Integer id;
     private String name;
     private String type;
+    private String status;
     private String legendData;
     private String xName;
     private String xData;
