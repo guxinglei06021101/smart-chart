@@ -46,11 +46,8 @@
                                         <option value="radar" >雷达图</option>
                                         <option value="funnel" >漏斗图</option>
                                         <option value="gauge" >仪表盘</option>
-
-
                                     </select>
                                 </div>
-
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>图表标题：</label>
@@ -87,7 +84,7 @@
                                 <div class="col-sm-6">
                                     <div class="input-group">
                                         <span class="input-group-addon">X轴名称</span>
-                                        <input id="xAxisDataTypeId" name="seriesType" class="form-control" placeholder="X轴名称" type="text" value="自定义1,自定义2,自定义3">
+                                        <input id="xAxisDataTypeId" name="seriesType" class="form-control" placeholder="X轴名称" type="text" value="自定义1,自定义2,自定义3,自定义4,自定义5">
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +94,7 @@
                                 <div class="col-sm-6">
                                     <div class="input-group">
                                         <span class="input-group-addon">X轴数值</span>
-                                        <input id="xAxisDataId" name="seriesData" class="form-control" placeholder="" type="text" value="100,100,100">
+                                        <input id="xAxisDataId" name="seriesData" class="form-control" placeholder="" type="text" value="100,200,300,400,500">
                                     </div>
                                 </div>
                             </div>
