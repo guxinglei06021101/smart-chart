@@ -341,7 +341,7 @@ function settingOption(){
                 radar: [{
                     indicator: indicator,
                     center: ['50%', '52%'],
-                    radius: '60%',
+                    radius: '70%',
                     startAngle: 90,
                     name: {
                         formatter: '{value}',
