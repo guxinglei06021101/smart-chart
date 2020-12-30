@@ -26,8 +26,16 @@ $(function(){
         data = data.replace(reg5,",");
         $(this).val(data);
        xAxisData = data.split(',');
+       const max = Math.max.apply(null,xAxisData);
+       $("#xAxisMaxValId").val(max);
+       xAxisMaxVal = max;
        optionChart();
         });
+
+    $("#xAxisMaxValId").keyup(function(){
+        xAxisMaxVal = $(this).val();
+        optionChart();
+    });
 
     $("#xAxisDataTypeId").keyup(function(){
         let data = $(this).val();
@@ -42,6 +50,7 @@ $(function(){
     });
 });
 
+let xAxisMaxVal = 500;
 let chartType = "bar";
 let yAxisName = "自定义Y轴名称";
 let xAxisData = [100,200,300,400,500];
@@ -57,20 +66,19 @@ let reg5 = new RegExp("、","g");//g,表示全部替换。
 //柱状图
 let chart="";
 function optionChart(){
-    let option = settingOption();
+    settingOption();
     chart= echarts.init(document.getElementById("bar-chart"));
-    chart.setOption({});
-    chart.setOption(option);
+    chart.setOption(option,true);
 }
 
 window.onresize = function(){
     chart.resize();    //若有多个图表变动，可多写
 }
 
-
+var option;
 function settingOption(){
     //var type = $("#chartTypeId").val();
-    let option ;
+    const  length =  xAxisDataType.length;
     switch(chartType){
         case 'bar':
             option = {
@@ -78,7 +86,7 @@ function settingOption(){
                     formatter:'{b}:{c}',
                     trigger:'axis',
                     axisPointer: {
-                        type:'cross',
+                        type:'shadow',
                         lineStyle: {
                             color: '#fff',
                             type:'dashed'
@@ -176,14 +184,13 @@ function settingOption(){
         break;
         case 'pie':
             const data = [];
-            const  length =  xAxisDataType.length;
             for(let i=0;i<length;i++){
                 data.push({name:xAxisDataType[i],value:xAxisData[i]});
             }
             option = {
                 color:["#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"],
                 tooltip: {
-                    formatter:'{b}:{c}%',
+                    formatter:'{b}: {c}',
                     trigger:'item',
                     axisPointer: {
                         type:'none',
@@ -217,7 +224,7 @@ function settingOption(){
                         label: {
                             normal: {
                                 position: 'outside',
-                                formatter: "{b}:{d}"
+                                formatter: "{b}: {d}%"
                             }
                         },
                         data:data,
@@ -238,6 +245,7 @@ function settingOption(){
                         }
                     }
                 },
+                radar:[{}],
                 grid: {
                     left: '5%',
                     right: '5%',
@@ -321,9 +329,80 @@ function settingOption(){
                     data: xAxisData
                 }]
             };
-        break;
+            break;
+        case 'radar':
+            let indicator  = [];
+            for(let i=0;i<length;i++){
+                indicator.push({text: xAxisDataType[i],max: xAxisMaxVal});
+            }
+            option = {
+                color: ['#623ad1', '#3383fc'],
+                tooltip: {},
+                radar: [{
+                    indicator: indicator,
+                    center: ['50%', '52%'],
+                    radius: '60%',
+                    startAngle: 90,
+                    name: {
+                        formatter: '{value}',
+                        textStyle: {
+                            fontSize: 12, //外圈标签字体大小
+                            color: '#FFF' //外圈标签字体颜色
+                        }
+                    },
+                    splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
+                        show: true,
+                        areaStyle: { // 分隔区域的样式设置。
+                            color: [], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
+                        }
+                    },
+                    axisLine: { //指向外圈文本的分隔线样式
+                        lineStyle: {
+                            color: '#24214e'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#24214e', // 分隔线颜色
+                            width: 1, // 分隔线线宽
+                        }
+                    }
+                }, ],
+                series: [{
+                    name: '雷达图',
+                    type: 'radar',
+                    data: [
+                        {
+                            name: yAxisName,
+                            value: xAxisData,
+                            symbolSize:5,
+                            areaStyle: {
+                                normal: { // 单项区域填充样式
+                                    color: {
+                                        type: 'linear',
+                                        x: 0, //右
+                                        y: 0, //下
+                                        x2: 1, //左
+                                        y2: 1, //上
+                                        colorStops: [{
+                                            offset: 0,
+                                            color: '#3cd2f3'
+                                        },
+                                            {
+                                                offset: 1,
+                                                color: '#306eff'
+                                            }],
+                                        globalCoord: false
+                                    },
+                                    opacity: 0.3 // 区域透明度
+
+                                }
+                            },
+                        }]
+                }]
+            }
+            break;
     };
-    return option;
 }
 
 

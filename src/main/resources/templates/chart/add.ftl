@@ -99,6 +99,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">X轴最大值：</label>
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">X轴最大值</span>
+                                        <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="text" value="500">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">属性设置：</label>
                                 <div class="col-sm-6">
                                     <table>
