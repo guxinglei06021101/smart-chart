@@ -14,11 +14,24 @@ $(function(){
 
      $("#yAxisId").keyup(function(){
          yAxisName = $(this).val();
+         let yAxisNameArr = yAxisName.split("");
+         yAxisPortraitName = "";
+         for(let i=0;i<yAxisNameArr.length;i++){
+             yAxisPortraitName = yAxisPortraitName + yAxisNameArr[i] + '\n';
+         }
+          toolbox = {
+             feature: {
+                 saveAsImage: {
+                     backgroundColor: '#040f3c',
+                     name: yAxisName
+                 },
+             }
+         }
          optionChart();
           });
 
-   $("#xAxisDataId").keyup(function(){
-        var data = $(this).val();
+   /*$("#xAxisDataId").keyup(function(){
+        let data = $(this).val();
         data = data.replace(reg1,",");
         data = data.replace(reg2,",");
         data = data.replace(reg3,",");
@@ -30,7 +43,7 @@ $(function(){
        $("#xAxisMaxValId").val(max);
        xAxisMaxVal = max;
        optionChart();
-        });
+        });*/
 
     $("#xAxisMaxValId").keyup(function(){
         xAxisMaxVal = $(this).val();
@@ -46,22 +59,63 @@ $(function(){
             data = data.replace(reg5,",");
             $(this).val(data);
         xAxisDataType = data.split(',');
+        legend = {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '6px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        }
+        tableHead();
+        tableChange();
         optionChart();
     });
+    tableHead();
+    tableChange();
 });
 
+let chartColor = "#4f92fa";
 let xAxisMaxVal = 500;
 let chartType = "bar";
 let yAxisName = "自定义Y轴名称";
+let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [100,200,300,400,500];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
-
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
 let reg3 = new RegExp("；","g");//g,表示全部替换。
 let reg4 = new RegExp(" ","g");//g,表示全部替换。
 let reg5 = new RegExp("、","g");//g,表示全部替换。
+
+let toolbox = {
+    feature: {
+        saveAsImage: {
+            backgroundColor: '#040f3c',
+            name: yAxisName,
+            title:'下载图表'
+        },
+    }
+}
+let legend = {
+        icon: 'rect',
+        itemWidth: 14,
+        itemHeight: 5,
+        itemGap: 13,
+        data: xAxisDataType,
+        right: '20px',
+        top: '6px',
+        textStyle: {
+            fontSize: 12,
+            color: '#fff'
+        }
+    }
 
 //柱状图
 let chart="";
@@ -78,335 +132,437 @@ window.onresize = function(){
 var option;
 function settingOption(){
     //var type = $("#chartTypeId").val();
-    const  length =  xAxisDataType.length;
     switch(chartType){
         case 'bar':
-            option = {
-                tooltip: {
-                    formatter:'{b}:{c}',
-                    trigger:'axis',
-                    axisPointer: {
-                        type:'shadow',
-                        lineStyle: {
-                            color: '#fff',
-                            type:'dashed'
-                        }
-                    }
-                },
-                 grid: {
-                     left: '6%',
-                     right: '3%',
-                     bottom: '6%',
-                     top: '20%',
-                     containLabel: true,
-                     z: 22
-                 },
-                xAxis: {
-                    show:true,
-                    name:'',
-                    nameTextStyle:{
-                        color:"#fff",
-                        fontSize:12,//坐标值得具体的颜色，
-                    },
-                    data: xAxisDataType,       //横坐标
-                    axisLabel:{
-                        textStyle: {
-                            color:'#fff',
-                            fontSize:12,
-                        }
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            type: 'solid',
-                            color:'#24214e',
-                            width:'1',                                                //坐标线的宽度
-                        }
-                    },
-                },
-                yAxis: {
-                    show:true,
-                    name: yAxisName,
-                    nameTextStyle:{
-                        color:"#fff",
-                        fontSize:12,//坐标值得具体的颜色，
-                    },
-                    nameLocation:"center",
-                    nameGap:40,
-                    nameRotate:-270,
-                    axisLabel: {
-                        textStyle: {
-                            color: '#fff',
-                            fontSize:10,//坐标值得具体的颜色
-                        }
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            type: 'solid',
-                            color:'#24214e',
-                            width:'1  ',                                                //坐标线的宽度
-
-                        }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: "#24214e",
-                        }
-                    }
-                },
-                series: [{
-                    type: chartType,
-                    barWidth:20,
-                    data:xAxisData,
-                    label: {
-                        normal: {
-                            show: true,
-                            position: "top",
-                            textStyle: {
-                                color: "#fffff",
-                                fontSize: 12
-                            }
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: new echarts.graphic.LinearGradient(
-                                0, 0, 0, 1,
-                                [
-                                    {offset: 0, color: '#4f92fa'},                   //柱图渐变色
-                                    {offset: 0.5, color: '#565cf8'},                 //柱图渐变色
-                                    {offset: 1, color: '#5d29f7'},                   //柱图渐变色
-                                ]
-                            )
-                        }
-                    },
-                }]
-            };
+            barChart();
         break;
         case 'pie':
-            const data = [];
-            for(let i=0;i<length;i++){
-                data.push({name:xAxisDataType[i],value:xAxisData[i]});
-            }
-            option = {
-                color:["#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"],
-                tooltip: {
-                    formatter:'{b}: {c}',
-                    trigger:'item',
-                    axisPointer: {
-                        type:'none',
-                        lineStyle: {
-                            color: '#fff',
-                            type:'dashed'
-                        }
-                    }
-                },
-                xAxis:{
-                    show:false
-                },
-                yAxis:{
-                    show:false
-                },
-                /*toolbox: {
-                    feature: {
-                        dataView: {show: true, readOnly: false},
-                        magicType: {show: false, type: ['line', 'bar']},
-                        restore: {show: false},
-                        saveAsImage: {show: true}
-                    }
-                },*/
-                series: [
-                    {
-                        name:yAxisName,
-                        type:'pie',
-                        selectedMode: 'single',
-                        radius: [0, '50%'],
-                        center:["50%","48%"],
-                        label: {
-                            normal: {
-                                position: 'outside',
-                                formatter: "{b}: {d}%"
-                            }
-                        },
-                        data:data,
-                    }
-                ]
-            };
+            pieChart();
         break;
         case 'line':
-            option = {
-                tooltip: {//鼠标指上时的标线
-                    trigger: 'axis',
-                    formatter: '{b}: {c0}',
-                    axisPointer: {
-                        type:'cross',
-                        lineStyle: {
-                            color: '#fff',
-                            type:'dashed'
-                        }
-                    }
-                },
-                radar:[{}],
-                grid: {
-                    left: '5%',
-                    right: '5%',
-                    bottom: '10%',
-                    top: '15%',
-                    containLabel: true,
-                    z: 22
-                },
-                xAxis: [{
-                    show:true,
-                    type: 'category',
-                    boundaryGap: false,
-                    axisLine: {
-                        lineStyle: {
-                            color: '#57617B'
-                        }
-                    },
-                    axisLabel: {
-                        textStyle: {
-                            color:'#fff',
-                        },
-                    },
-                    data: xAxisDataType
-                }],
-                yAxis: [{
-                    show:true,
-                    name:yAxisName,
-                    type: 'value',
-                    axisTick: {
-                        show: false
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: '#57617B',
-
-                        }
-                    },
-                    axisLabel: {
-                        formatter: '{value}',
-                        margin: 10,
-                        textStyle: {
-                            fontSize: 14
-                        },
-                        textStyle: {
-                            color:'#fff',
-                        },
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(255,255,255,.2)',
-                            type:'dotted',
-                        }
-                    }
-                }],
-                series: [{
-                    type: 'line',
-                    smooth: true,
-                    lineStyle: {
-                        normal: {
-                            width: 2
-                        }
-                    },
-                    areaStyle: {
-                        normal: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                offset: 0,
-                                color: 'rgba(137, 189, 27, 0.3)'
-                            }, {
-                                offset: 0.8,
-                                color: 'rgba(137, 189, 27, 0)'
-                            }], false),
-                            shadowColor: 'rgba(0, 0, 0, 0.1)',
-                            shadowBlur: 10
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: 'rgb(137,189,27)'
-                        }
-                    },
-                    data: xAxisData
-                }]
-            };
+            lineChart();
             break;
         case 'radar':
-            let indicator  = [];
-            for(let i=0;i<length;i++){
-                indicator.push({text: xAxisDataType[i],max: xAxisMaxVal});
-            }
-            option = {
-                color: ['#623ad1', '#3383fc'],
-                tooltip: {},
-                radar: [{
-                    indicator: indicator,
-                    center: ['50%', '52%'],
-                    radius: '70%',
-                    startAngle: 90,
-                    name: {
-                        formatter: '{value}',
-                        textStyle: {
-                            fontSize: 12, //外圈标签字体大小
-                            color: '#FFF' //外圈标签字体颜色
-                        }
-                    },
-                    splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
-                        show: true,
-                        areaStyle: { // 分隔区域的样式设置。
-                            color: [], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
-                        }
-                    },
-                    axisLine: { //指向外圈文本的分隔线样式
-                        lineStyle: {
-                            color: '#24214e'
-                        }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: '#24214e', // 分隔线颜色
-                            width: 1, // 分隔线线宽
-                        }
-                    }
-                }, ],
-                series: [{
-                    name: '雷达图',
-                    type: 'radar',
-                    data: [
-                        {
-                            name: yAxisName,
-                            value: xAxisData,
-                            symbolSize:5,
-                            areaStyle: {
-                                normal: { // 单项区域填充样式
-                                    color: {
-                                        type: 'linear',
-                                        x: 0, //右
-                                        y: 0, //下
-                                        x2: 1, //左
-                                        y2: 1, //上
-                                        colorStops: [{
-                                            offset: 0,
-                                            color: '#3cd2f3'
-                                        },
-                                            {
-                                                offset: 1,
-                                                color: '#306eff'
-                                            }],
-                                        globalCoord: false
-                                    },
-                                    opacity: 0.3 // 区域透明度
-
-                                }
-                            },
-                        }]
-                }]
-            }
+            radarChart();
+            break;
+        case 'funnel':
+            funnelChart();
+            break;
+        case 'gauge':
+            gaugeChart();
             break;
     };
 }
+//柱状图
+function barChart() {
+    option = {
+        tooltip: {
+            formatter:'{b}:{c}',
+            trigger:'axis',
+            axisPointer: {
+                type:'shadow',
+                lineStyle: {
+                    color: '#fff',
+                    type:'dashed'
+                }
+            }
+        },
+        toolbox: toolbox,
+        legend: legend,
+        grid: {
+            left: '6%',
+            right: '3%',
+            bottom: '6%',
+            top: '20%',
+            containLabel: true,
+            z: 22
+        },
+        xAxis: {
+            show:true,
+            name:'',
+            nameTextStyle:{
+                color:"#fff",
+                fontSize:12,//坐标值得具体的颜色，
+            },
+            data: xAxisDataType,       //横坐标
+            axisLabel:{
+                textStyle: {
+                    color:'#fff',
+                    fontSize:12,
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    type: 'solid',
+                    color:'#24214e',
+                    width:'1',                                                //坐标线的宽度
+                }
+            },
+        },
+        yAxis: {
+            show:true,
+            name: yAxisPortraitName,
+            nameTextStyle:{
+                color:"#fff",
+                fontSize:12,//坐标值得具体的颜色，
+            },
+            nameLocation:"center",
+            nameGap:40,
+            nameRotate:0,
+            axisLabel: {
+                textStyle: {
+                    color: '#fff',
+                    fontSize:10,//坐标值得具体的颜色
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    type: 'solid',
+                    color:'#24214e',
+                    width:'1  ',                                                //坐标线的宽度
 
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: "#24214e",
+                }
+            }
+        },
+        series: [{
+            type: chartType,
+            barWidth:20,
+            data:xAxisData,
+            label: {
+                normal: {
+                    show: true,
+                    position: "top",
+                    textStyle: {
+                        color: "#fffff",
+                        fontSize: 12
+                    }
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(
+                        0, 0, 0, 1,
+                        [
+                            {offset: 0, color: '#4f92fa'},                   //柱图渐变色
+                            {offset: 0.5, color: '#565cf8'},                 //柱图渐变色
+                            {offset: 1, color: '#5d29f7'},                   //柱图渐变色
+                        ]
+                    )
+                }
+            },
+        }]
+    };
+}
+//饼状图
+function pieChart() {
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name:xAxisDataType[i],value:xAxisData[i]});
+    }
+    option = {
+        color:["#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"],
+        tooltip: {
+            formatter:'{b}: {c}',
+            trigger:'item',
+            axisPointer: {
+                type:'none',
+                lineStyle: {
+                    color: '#fff',
+                    type:'dashed'
+                }
+            }
+        },
+        toolbox: toolbox,
+        legend: legend,
+        series: [
+            {
+                name:yAxisName,
+                type:'pie',
+                selectedMode: 'single',
+                radius: [0, '50%'],
+                center:["50%","48%"],
+                label: {
+                    normal: {
+                        position: 'outside',
+                        formatter: "{b}: {d}%"
+                    }
+                },
+                data:data,
+            }
+        ]
+    };
+}
+//折线图
+function lineChart() {
+    option = {
+        tooltip: {//鼠标指上时的标线
+            trigger: 'axis',
+            formatter: '{b}: {c0}',
+            axisPointer: {
+                type:'cross',
+                lineStyle: {
+                    color: '#fff',
+                    type:'dashed'
+                }
+            }
+        },
+        toolbox: toolbox,
+        legend: legend,
+        grid: {
+            left: '6%',
+            right: '3%',
+            bottom: '6%',
+            top: '20%',
+            containLabel: true,
+            z: 22
+        },
+        xAxis: {
+            show:true,
+            name:'',
+            nameTextStyle:{
+                color:"#fff",
+                fontSize:12,//坐标值得具体的颜色，
+            },
+            data: xAxisDataType,       //横坐标
+            axisLabel:{
+                textStyle: {
+                    color:'#fff',
+                    fontSize:12,
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    type: 'solid',
+                    color:'#24214e',
+                    width:'1',                                                //坐标线的宽度
+                }
+            },
+        },
+        yAxis: {
+            show:true,
+            name: yAxisPortraitName,
+            nameTextStyle:{
+                color:"#fff",
+                fontSize:12,//坐标值得具体的颜色，
+            },
+            nameLocation:"center",
+            nameGap:40,
+            nameRotate:0,
+            axisLabel: {
+                textStyle: {
+                    color: '#fff',
+                    fontSize:10,//坐标值得具体的颜色
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    type: 'solid',
+                    color:'#24214e',
+                    width:'1  ',                                                //坐标线的宽度
 
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: "#24214e",
+                }
+            }
+        },
+        series: [{
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(137, 189, 27, 0.3)'
+                    }, {
+                        offset: 0.8,
+                        color: 'rgba(137, 189, 27, 0)'
+                    }], false),
+                    shadowColor: 'rgba(0, 0, 0, 0.1)',
+                    shadowBlur: 10
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: chartColor,
+                }
+            },
+            data: xAxisData
+        }]
+    };
+}
+//雷达图
+function radarChart() {
+    const  length =  xAxisDataType.length;
+    let indicator  = [];
+    for(let i=0;i<length;i++){
+        indicator.push({text: xAxisDataType[i],max: xAxisMaxVal});
+    }
+    option = {
+        color: ['#623ad1', '#3383fc'],
+        toolbox: toolbox,
+        legend: legend,
+        tooltip: {},
+        radar: [{
+            indicator: indicator,
+            center: ['50%', '52%'],
+            radius: '70%',
+            startAngle: 90,
+            name: {
+                formatter: '{value}',
+                textStyle: {
+                    fontSize: 12, //外圈标签字体大小
+                    color: '#FFF' //外圈标签字体颜色
+                }
+            },
+            splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
+                show: true,
+                areaStyle: { // 分隔区域的样式设置。
+                    color: [], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
+                }
+            },
+            axisLine: { //指向外圈文本的分隔线样式
+                lineStyle: {
+                    color: '#24214e'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#24214e', // 分隔线颜色
+                    width: 1, // 分隔线线宽
+                }
+            }
+        }, ],
+        series: [{
+            name: '雷达图',
+            type: 'radar',
+            data: [
+                {
+                    name: yAxisName,
+                    value: xAxisData,
+                    symbolSize:5,
+                    areaStyle: {
+                        normal: { // 单项区域填充样式
+                            color: {
+                                type: 'linear',
+                                x: 0, //右
+                                y: 0, //下
+                                x2: 1, //左
+                                y2: 1, //上
+                                colorStops: [{
+                                    offset: 0,
+                                    color: '#3cd2f3'
+                                },
+                                    {
+                                        offset: 1,
+                                        color: '#306eff'
+                                    }],
+                                globalCoord: false
+                            },
+                            opacity: 0.3 // 区域透明度
 
+                        }
+                    },
+                }]
+        }]
+    }
+}
+//漏斗图
+function funnelChart() {
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name: xAxisDataType[i],value: xAxisData[i]});
+    }
+    option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c}"
+        },
+        toolbox: toolbox,
+        legend: legend,
+        series: [
+            {
+                name:yAxisName,
+                type:'funnel',
+                left: '10%',
+                top: 60,
+                //x2: 80,
+                bottom: 30,
+                width: '80%',
+                // height: {totalHeight} - y - y2,
+                min: 0,
+                max: xAxisMaxVal,
+                minSize: '0',
+                maxSize: xAxisMaxVal,
+                sort: 'ascending',
+                gap: 4,
+                label: {
+                    show: true,
+                    position: 'inside'
+                },
+                labelLine: {
+                    length: 10,
+                    lineStyle: {
+                        width: 3,
+                        type: 'solid'
+                    }
+                },
+                itemStyle: {
+                    borderColor: '#57617B',
+                    borderWidth: 1
+                },
+                emphasis: {
+                    label: {
+                        fontSize: 20
+                    }
+                },
+                data:data
+            }
+        ]
+    };
+}
+//仪表盘
+function gaugeChart() {
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name: xAxisDataType[i],value: xAxisData[i]});
+    }
+    option = {
+        tooltip: {
+            formatter: '{a} <br/>{b} : {c}'
+        },
+        toolbox: toolbox,
+        legend: legend,
+        series: [
+            {
+                name: yAxisName,
+                type: 'gauge',
+                max: xAxisMaxVal,
+                detail: {formatter: '{value}'},
+                title: {
+                    show:false,
+                    color:'#fff'
+                },
+                data: data
+            }
+        ]
+    };
+}
 
 function ajax_get(url,successfunction){
     $.ajax({
@@ -431,4 +587,70 @@ function ajax_get(url,successfunction){
                         console.log(e.responseText);
                     }
                 });
+}
+
+function tableChange() {
+    $("#tableId").find("tr").each(function(){
+        var tdArr = $(this).children();
+        var len = xAxisDataType.length;
+        xAxisData = [];
+        for(let i=1;i<=len;i++){
+            xAxisData.push(tdArr.eq(i).find('input').val());
+        }
+        const max = Math.max.apply(null,xAxisData);
+        $("#xAxisMaxValId").val(max);
+        chartColor = tdArr.eq(len+1).find('input').val();
+    });
+}
+
+function tableHead() {
+    var result="";
+    result += "<thead><tr>";
+    result += "<th>系列名称</th>";
+    xAxisDataType.forEach(function (item) {
+        result +="<th>"+item+"</th>";
+    });
+    result += "<th>颜色</th>";
+    result +="<th>操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+    result +="</tr></thead><tbody><tr v-for=\"item in search(keywords)\" >";
+    result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
+    var val = 0;
+    xAxisDataType.forEach(function (item) {
+        val = val + 100;
+        result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
+    });
+    result += "<td><input style=\"width: 60px;padding: 2px;text-align: center\" onchange='colorChange()' class=\"form-control\" type=\"color\" ></td><td></td></tr></tbody>";
+    $("#tableId").html(result);
+}
+function addTableTr() {
+    let trLen = $("#tableId").find("tr").length;
+    if(trLen > 5){
+        alert("最多只能添加5条数据");
+        return;
+    }
+    let val = 0;
+    let result ="<tr><td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列"+trLen+"\"></td>";
+    xAxisDataType.forEach(function (item) {
+        val = val+100;
+        result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
+    });
+    result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onchange='colorChange()' class=\"form-control\" type=\"color\" ></td>";
+    result +="<td><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
+    result +="</tr>";
+    $("#tableId").append(result);
+}
+
+function dataKeyup() {
+    tableChange();
+    optionChart();
+}
+
+function colorChange() {
+    tableChange();
+    optionChart();
+}
+
+function removeTr(obj) {
+    let tr = $(obj).parent().parent();
+    tr.remove();
 }

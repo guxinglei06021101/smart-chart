@@ -55,7 +55,6 @@
                                     <div class="input-group">
                                         <span class="input-group-addon">标题</span>
                                         <input id="titleId" name="title" class="form-control" placeholder="图表标题" type="text" value="自定义图表标题">
-
                                     </div>
                                 </div>
                             </div>
@@ -80,6 +79,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">Y轴最大值：</label>
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Y轴最大值</span>
+                                        <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="text" value="500">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">X轴数据：</label>
                                 <div class="col-sm-6">
                                     <div class="input-group">
@@ -89,36 +97,33 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">X轴数据：</label>
-                                <div class="col-sm-6">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">X轴数值</span>
-                                        <input id="xAxisDataId" name="seriesData" class="form-control" placeholder="" type="text" value="100,200,300,400,500">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">X轴最大值：</label>
-                                <div class="col-sm-6">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">X轴最大值</span>
-                                        <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="text" value="500">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">属性设置：</label>
-                                <div class="col-sm-6">
-                                    <table>
-                                        <tr>
-                                            <th>名称</th>
-                                            <th>数值</th>
+                            <div class="form-group" >
+                                    <table id="tableId" class="table table-bordered table-hover table-striped">
+                                        <thead>
+                                        <tr>　　
+                                            <th>系列</th>
+                                            <th>自定义1</th>
+                                            <th>自定义2</th>
+                                            <th>自定义3</th>
+                                            <th>自定义4</th>
+                                            <th>自定义5</th>
                                             <th>颜色</th>
+                                            <th>操作 &nbsp;&nbsp;<a href="#" onclick="addTableTr()"  class="btn btn-success">✚</a></th>
                                         </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in search(keywords)" >
+                                            <td><input style="width: 120px;padding: 0px;text-align: center" class="form-control" type="text" value="系列名称"></td>
+                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="100"></td>
+                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="200"></td>
+                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="300"></td>
+                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="400"></td>
+                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="500"></td>
+                                            <td><input style="width: 60px;padding: 2px;text-align: center" class="form-control" type="color" ></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
                                     </table>
-                                </div>
-
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">描述：</label>
