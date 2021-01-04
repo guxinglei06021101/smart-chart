@@ -1,5 +1,4 @@
 $(function(){
-    optionChart();
     $("#chartTitleId").html($("#titleId").val());
 
     $("#titleId").keyup(function(){
@@ -48,6 +47,7 @@ $(function(){
     $("#xAxisMaxValId").keyup(function(){
         xAxisMaxVal = $(this).val();
         optionChart();
+        alert(xAxisMaxVal);
     });
 
     $("#xAxisDataTypeId").keyup(function(){
@@ -59,34 +59,23 @@ $(function(){
             data = data.replace(reg5,",");
             $(this).val(data);
         xAxisDataType = data.split(',');
-        legend = {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '20px',
-            top: '6px',
-            textStyle: {
-                fontSize: 12,
-                color: '#fff'
-            }
-        }
         tableHead();
         tableChange();
         optionChart();
     });
     tableHead();
     tableChange();
+    optionChart();
 });
 
-let chartColor = "#4f92fa";
+let chartColor = ["#3b5ede"];
 let xAxisMaxVal = 500;
 let chartType = "bar";
 let yAxisName = "自定义Y轴名称";
 let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
-let xAxisData = [100,200,300,400,500];
+let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
+var legendData = ['系列1'];
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
@@ -102,22 +91,21 @@ let toolbox = {
             title:'下载图表'
         },
     }
-}
+};
 let legend = {
         icon: 'rect',
         itemWidth: 14,
         itemHeight: 5,
         itemGap: 13,
-        data: xAxisDataType,
+        data: legendData,
         right: '20px',
         top: '6px',
         textStyle: {
             fontSize: 12,
             color: '#fff'
         }
-    }
+    };
 
-//柱状图
 let chart="";
 function optionChart(){
     settingOption();
@@ -153,11 +141,43 @@ function settingOption(){
             break;
     };
 }
+
 //柱状图
 function barChart() {
+    var series = [];
+    for(let i=0;i<xAxisData.length;i++){
+        series.push({
+            name:legendData[i],
+            type: chartType,
+            barWidth:20,
+            data:xAxisData[i],
+            label: {
+                normal: {
+                    show: true,
+                    position: "top",
+                    textStyle: {
+                        color: "#fff",
+                        fontSize: 12
+                    }
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(
+                        0, 0, 0, 1,
+                        [
+                            {offset: 0, color: chartColor[i]},                   //柱图渐变色
+                            {offset: 0.5, color: chartColor[i]},                 //柱图渐变色
+                            {offset: 1, color: chartColor[i]},                   //柱图渐变色
+                        ]
+                    )
+                }
+            },
+        });
+    }
+
     option = {
         tooltip: {
-            formatter:'{b}:{c}',
             trigger:'axis',
             axisPointer: {
                 type:'shadow',
@@ -177,7 +197,7 @@ function barChart() {
             containLabel: true,
             z: 22
         },
-        xAxis: {
+        xAxis: [{
             show:true,
             name:'',
             nameTextStyle:{
@@ -198,8 +218,8 @@ function barChart() {
                     width:'1',                                                //坐标线的宽度
                 }
             },
-        },
-        yAxis: {
+        }],
+        yAxis: [{
             show:true,
             name: yAxisPortraitName,
             nameTextStyle:{
@@ -228,34 +248,8 @@ function barChart() {
                     color: "#24214e",
                 }
             }
-        },
-        series: [{
-            type: chartType,
-            barWidth:20,
-            data:xAxisData,
-            label: {
-                normal: {
-                    show: true,
-                    position: "top",
-                    textStyle: {
-                        color: "#fffff",
-                        fontSize: 12
-                    }
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: new echarts.graphic.LinearGradient(
-                        0, 0, 0, 1,
-                        [
-                            {offset: 0, color: '#4f92fa'},                   //柱图渐变色
-                            {offset: 0.5, color: '#565cf8'},                 //柱图渐变色
-                            {offset: 1, color: '#5d29f7'},                   //柱图渐变色
-                        ]
-                    )
-                }
-            },
-        }]
+        }],
+        series: series,
     };
 }
 //饼状图
@@ -300,10 +294,43 @@ function pieChart() {
 }
 //折线图
 function lineChart() {
+    var series = [];
+    for(let i=0;i<xAxisData.length;i++){
+        series.push({
+            name:legendData[i],
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: chartColor[i].colorRgb(0.5),
+                    }, {
+                        offset: 1,
+                        color: chartColor[i].colorRgb(0),
+                    }], false),
+                    shadowColor: 'rgba(0, 0, 0, 0.1)',
+                    shadowBlur: 10
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: chartColor[i],
+                }
+            },
+            data: xAxisData[i],
+        });
+    }
+
     option = {
         tooltip: {//鼠标指上时的标线
             trigger: 'axis',
-            formatter: '{b}: {c0}',
+            //formatter: '{b}: {c0}',
             axisPointer: {
                 type:'cross',
                 lineStyle: {
@@ -323,8 +350,9 @@ function lineChart() {
             z: 22
         },
         xAxis: {
-            show:true,
             name:'',
+            type: 'category',
+            boundaryGap: false,
             nameTextStyle:{
                 color:"#fff",
                 fontSize:12,//坐标值得具体的颜色，
@@ -345,7 +373,6 @@ function lineChart() {
             },
         },
         yAxis: {
-            show:true,
             name: yAxisPortraitName,
             nameTextStyle:{
                 color:"#fff",
@@ -374,34 +401,7 @@ function lineChart() {
                 }
             }
         },
-        series: [{
-            type: 'line',
-            smooth: true,
-            lineStyle: {
-                normal: {
-                    width: 2
-                }
-            },
-            areaStyle: {
-                normal: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(137, 189, 27, 0.3)'
-                    }, {
-                        offset: 0.8,
-                        color: 'rgba(137, 189, 27, 0)'
-                    }], false),
-                    shadowColor: 'rgba(0, 0, 0, 0.1)',
-                    shadowBlur: 10
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: chartColor,
-                }
-            },
-            data: xAxisData
-        }]
+        series: series
     };
 }
 //雷达图
@@ -412,7 +412,7 @@ function radarChart() {
         indicator.push({text: xAxisDataType[i],max: xAxisMaxVal});
     }
     option = {
-        color: ['#623ad1', '#3383fc'],
+        color: chartColor,
         toolbox: toolbox,
         legend: legend,
         tooltip: {},
@@ -590,17 +590,37 @@ function ajax_get(url,successfunction){
 }
 
 function tableChange() {
-    $("#tableId").find("tr").each(function(){
+    xAxisData = [];
+    chartColor = [];
+    legendData = [];
+    var xAxisMaxData = [];
+    $("#tbodyId").find("tr").each(function(){
         var tdArr = $(this).children();
         var len = xAxisDataType.length;
-        xAxisData = [];
+        var xAxisArr = [];
+        legendData.push(tdArr.eq(0).find('input').val());
         for(let i=1;i<=len;i++){
-            xAxisData.push(tdArr.eq(i).find('input').val());
+            xAxisArr.push(tdArr.eq(i).find('input').val());
+            xAxisMaxData.push(tdArr.eq(i).find('input').val());
         }
-        const max = Math.max.apply(null,xAxisData);
-        $("#xAxisMaxValId").val(max);
-        chartColor = tdArr.eq(len+1).find('input').val();
+        xAxisData.push(xAxisArr);
+        chartColor.push(tdArr.eq(len+1).find('input').val());
     });
+    const max = Math.max.apply(null,xAxisMaxData);
+    $("#xAxisMaxValId").val(max);
+    legend = {
+        icon: 'rect',
+        itemWidth: 14,
+        itemHeight: 5,
+        itemGap: 13,
+        data: legendData,
+        right: '20px',
+        top: '6px',
+        textStyle: {
+            fontSize: 12,
+            color: '#fff'
+        }
+    };
 }
 
 function tableHead() {
@@ -612,14 +632,14 @@ function tableHead() {
     });
     result += "<th>颜色</th>";
     result +="<th>操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
-    result +="</tr></thead><tbody><tr v-for=\"item in search(keywords)\" >";
+    result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
     result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
     var val = 0;
     xAxisDataType.forEach(function (item) {
         val = val + 100;
         result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
     });
-    result += "<td><input style=\"width: 60px;padding: 2px;text-align: center\" onchange='colorChange()' class=\"form-control\" type=\"color\" ></td><td></td></tr></tbody>";
+    result += "<td><input style=\"width: 60px;padding: 2px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\"#3b5ede\" ></td><td></td></tr></tbody>";
     $("#tableId").html(result);
 }
 function addTableTr() {
@@ -634,10 +654,11 @@ function addTableTr() {
         val = val+100;
         result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
     });
-    result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onchange='colorChange()' class=\"form-control\" type=\"color\" ></td>";
+    result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\"#3b5ede\"></td>";
     result +="<td><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
     result +="</tr>";
     $("#tableId").append(result);
+    dataKeyup();
 }
 
 function dataKeyup() {
@@ -645,12 +666,34 @@ function dataKeyup() {
     optionChart();
 }
 
-function colorChange() {
-    tableChange();
-    optionChart();
-}
-
 function removeTr(obj) {
     let tr = $(obj).parent().parent();
     tr.remove();
+    dataKeyup();
 }
+
+//十六进制颜色值的正则表达式
+var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+/*16进制颜色转为RGB格式*/
+String.prototype.colorRgb = function(opacity){
+    var sColor = this.toLowerCase();
+    if(sColor && reg.test(sColor)){
+        if(sColor.length === 4){
+            var sColorNew = "#";
+            for(var i=1; i<4; i+=1){
+                sColorNew += sColor.slice(i,i+1).concat(sColor.slice(i,i+1));
+            }
+            sColor = sColorNew;
+        }
+        //处理六位的颜色值
+        var sColorChange = [];
+        for(var i=1; i<7; i+=2){
+            sColorChange.push(parseInt("0x"+sColor.slice(i,i+2)));
+        }
+       // return "rgb(" + sColorChange.join(",") + ")";
+//或
+        return "rgba(" + sColorChange.join(",") + ","+opacity+")";
+    }else{
+        return sColor;
+    }
+};

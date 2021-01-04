@@ -99,30 +99,6 @@
 
                             <div class="form-group" >
                                     <table id="tableId" class="table table-bordered table-hover table-striped">
-                                        <thead>
-                                        <tr>　　
-                                            <th>系列</th>
-                                            <th>自定义1</th>
-                                            <th>自定义2</th>
-                                            <th>自定义3</th>
-                                            <th>自定义4</th>
-                                            <th>自定义5</th>
-                                            <th>颜色</th>
-                                            <th>操作 &nbsp;&nbsp;<a href="#" onclick="addTableTr()"  class="btn btn-success">✚</a></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-for="item in search(keywords)" >
-                                            <td><input style="width: 120px;padding: 0px;text-align: center" class="form-control" type="text" value="系列名称"></td>
-                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="100"></td>
-                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="200"></td>
-                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="300"></td>
-                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="400"></td>
-                                            <td><input style="width: 60px;padding: 0px;text-align: center" class="form-control" type="text" value="500"></td>
-                                            <td><input style="width: 60px;padding: 2px;text-align: center" class="form-control" type="color" ></td>
-                                            <td></td>
-                                        </tr>
-                                        </tbody>
                                     </table>
                             </div>
                             <div class="form-group">
