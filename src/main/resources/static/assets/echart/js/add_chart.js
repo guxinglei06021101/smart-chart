@@ -8,7 +8,7 @@ $(function(){
 
     $("#chartTypeId").change(function(){
         chartType = $(this).val();
-        optionChart();
+        showTableTr();
      });
 
      $("#yAxisId").keyup(function(){
@@ -29,27 +29,6 @@ $(function(){
          optionChart();
           });
 
-   /*$("#xAxisDataId").keyup(function(){
-        let data = $(this).val();
-        data = data.replace(reg1,",");
-        data = data.replace(reg2,",");
-        data = data.replace(reg3,",");
-        data = data.replace(reg4,",");
-        data = data.replace(reg5,",");
-        $(this).val(data);
-       xAxisData = data.split(',');
-       const max = Math.max.apply(null,xAxisData);
-       $("#xAxisMaxValId").val(max);
-       xAxisMaxVal = max;
-       optionChart();
-        });*/
-
-    $("#xAxisMaxValId").keyup(function(){
-        xAxisMaxVal = $(this).val();
-        optionChart();
-        alert(xAxisMaxVal);
-    });
-
     $("#xAxisDataTypeId").keyup(function(){
         let data = $(this).val();
             data = data.replace(reg1,",");
@@ -61,14 +40,18 @@ $(function(){
         xAxisDataType = data.split(',');
         tableHead();
         tableChange();
-        optionChart();
+        showTableTr();
     });
     tableHead();
     tableChange();
     optionChart();
+
 });
 
+/*let showTableColor = true;*/
+let showTableOperate = true;
 let chartColor = ["#3b5ede"];
+let colorArr = ["#3b5ede","#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"];
 let xAxisMaxVal = 500;
 let chartType = "bar";
 let yAxisName = "自定义Y轴名称";
@@ -255,12 +238,14 @@ function barChart() {
 //饼状图
 function pieChart() {
     var data = [];
+    var pieColorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
-        data.push({name:xAxisDataType[i],value:xAxisData[i]});
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        pieColorArr.push($("#colorPieId_"+i).val());
     }
     option = {
-        color:["#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"],
+        color:pieColorArr,
         tooltip: {
             formatter:'{b}: {c}',
             trigger:'item',
@@ -411,6 +396,40 @@ function radarChart() {
     for(let i=0;i<length;i++){
         indicator.push({text: xAxisDataType[i],max: xAxisMaxVal});
     }
+    var series = [];
+    for(let i=0;i<xAxisData.length;i++) {
+        series.push({
+            name:legendData[i],
+            type: 'radar',
+            data: [
+                {
+                    name: legendData[i],
+                    value: xAxisData[i],
+                    symbolSize:5,
+                    areaStyle: {
+                        normal: { // 单项区域填充样式
+                            color: {
+                                type: 'linear',
+                                x: 0, //右
+                                y: 0, //下
+                                x2: 1, //左
+                                y2: 1, //上
+                                colorStops: [{
+                                    offset: 0,
+                                    color: chartColor[i]
+                                },
+                                    {
+                                        offset: 1,
+                                        color: chartColor[i]
+                                    }],
+                                globalCoord: false
+                            },
+                            opacity: 0.3 // 区域透明度
+                        }
+                    },
+                }]
+        });
+    }
     option = {
         color: chartColor,
         toolbox: toolbox,
@@ -418,6 +437,7 @@ function radarChart() {
         tooltip: {},
         radar: [{
             indicator: indicator,
+            triggerEvent:true,   //开启雷达图的边角名称可点击
             center: ['50%', '52%'],
             radius: '70%',
             startAngle: 90,
@@ -446,48 +466,20 @@ function radarChart() {
                 }
             }
         }, ],
-        series: [{
-            name: '雷达图',
-            type: 'radar',
-            data: [
-                {
-                    name: yAxisName,
-                    value: xAxisData,
-                    symbolSize:5,
-                    areaStyle: {
-                        normal: { // 单项区域填充样式
-                            color: {
-                                type: 'linear',
-                                x: 0, //右
-                                y: 0, //下
-                                x2: 1, //左
-                                y2: 1, //上
-                                colorStops: [{
-                                    offset: 0,
-                                    color: '#3cd2f3'
-                                },
-                                    {
-                                        offset: 1,
-                                        color: '#306eff'
-                                    }],
-                                globalCoord: false
-                            },
-                            opacity: 0.3 // 区域透明度
-
-                        }
-                    },
-                }]
-        }]
+        series: series
     }
 }
 //漏斗图
 function funnelChart() {
     var data = [];
+    var pieColorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
-        data.push({name: xAxisDataType[i],value: xAxisData[i]});
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        pieColorArr.push($("#colorPieId_"+i).val());
     }
     option = {
+        color:pieColorArr,
         tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c}"
@@ -608,6 +600,7 @@ function tableChange() {
     });
     const max = Math.max.apply(null,xAxisMaxData);
     $("#xAxisMaxValId").val(max);
+    xAxisMaxVal = max;
     legend = {
         icon: 'rect',
         itemWidth: 14,
@@ -630,16 +623,23 @@ function tableHead() {
     xAxisDataType.forEach(function (item) {
         result +="<th>"+item+"</th>";
     });
-    result += "<th>颜色</th>";
-    result +="<th>操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+    result += "<th id=\"colorthId_0\">颜色</th>";
+    result +="<th id=\"operatethId_0\">操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+
     result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
     result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
     var val = 0;
-    xAxisDataType.forEach(function (item) {
+    let length = xAxisDataType.length;
+    for(let i=0;i<length;i++){
         val = val + 100;
-        result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
-    });
-    result += "<td><input style=\"width: 60px;padding: 2px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\"#3b5ede\" ></td><td></td></tr></tbody>";
+        result += "<td>" ;
+        result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\">" ;
+        result += "<input id=\"colorPieId_"+i+"\" style=\"width: 60px;height: 25px;padding: 2px;margin-top:5px;text-align: center;display:none\" oninput=\"dataKeyup()\" class=\"form-control\" type=\"color\" value=\""+colorArr[i]+"\">" ;
+        result += "</td>";
+    }
+    result += "<td id=\"colorthId_1\"><input style=\"width: 60px;padding: 2px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\""+colorArr[0]+"\" ></td>";
+    result +="<td id=\"operatethId_1\"></td>";
+    result +="</tr></tbody>";
     $("#tableId").html(result);
 }
 function addTableTr() {
@@ -649,13 +649,13 @@ function addTableTr() {
         return;
     }
     let val = 0;
-    let result ="<tr><td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列"+trLen+"\"></td>";
+    let result ="<tr id=\"datatrId_"+trLen+"\"><td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列"+trLen+"\"></td>";
     xAxisDataType.forEach(function (item) {
-        val = val+100;
+        val = val+100*trLen;
         result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
     });
-    result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\"#3b5ede\"></td>";
-    result +="<td><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
+    result +="<td id=\"colorthId_"+trLen+"\"><input style=\"width: 60px;padding: 0px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\""+colorArr[trLen-1]+"\"></td>";
+    result +="<td id=\"operatethId_"+trLen+"\"><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
     result +="</tr>";
     $("#tableId").append(result);
     dataKeyup();
@@ -670,6 +670,43 @@ function removeTr(obj) {
     let tr = $(obj).parent().parent();
     tr.remove();
     dataKeyup();
+}
+
+function showTableTr() {
+    switch (chartType) {
+        case 'pie':
+            showTableOperate = false;
+            break;
+        case 'funnel':
+            showTableOperate = false;
+            break;
+        default:
+            showTableOperate = true;
+    }
+
+    let typeLen = xAxisDataType.length;
+    let trLen = $("#tableId").find("tr").length;
+    if(showTableOperate){
+        for(let i=0;i<=trLen;i++){
+            $("#colorthId_"+i).show();
+            $("#operatethId_"+i).show();
+            $("#datatrId_"+(i+1)).show();
+        }
+        for(let i=0;i<=typeLen;i++){
+            $("#colorPieId_"+i).hide();
+        }
+
+    }else {
+        for(let i=0;i<=trLen;i++){
+            $("#colorthId_"+i).hide();
+            $("#operatethId_"+i).hide();
+            $("#datatrId_"+(i+1)).hide();
+        }
+        for(let i=0;i<=typeLen;i++){
+            $("#colorPieId_"+i).show();
+        }
+    }
+    optionChart();
 }
 
 //十六进制颜色值的正则表达式

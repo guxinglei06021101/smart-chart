@@ -30,14 +30,14 @@ body{
 }
 .main-middle{
     float: left;
-    width: 40%;
-    height: 50%;
+    width: 60%;
+    height: 60%;
     padding: 5px 5px;
     background: #040f3c;
 }
 .main-form{
     float: left;
-    width: 60%;
+    width: 40%;
     height: 100%;
     padding: 5px 5px;
     background: #f0f0f0;
@@ -54,6 +54,9 @@ body{
 	border-top: none;
 	border-bottom: none;
 }*/
+#tableId{
+	margin-top: 10px;
+}
 .name-title{  
     background: #4545e3;
     padding: 8px 14px;
