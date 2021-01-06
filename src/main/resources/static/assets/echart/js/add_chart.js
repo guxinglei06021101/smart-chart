@@ -484,14 +484,14 @@ function radarChart() {
 //漏斗图
 function funnelChart() {
     var data = [];
-    var pieColorArr = [];
+    var colorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
-        pieColorArr.push($("#colorPieId_"+i).val());
+        colorArr.push($("#colorPieId_"+i).val());
     }
     option = {
-        color:pieColorArr,
+        color:colorArr,
         tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c}"
@@ -553,23 +553,55 @@ function funnelChart() {
 }
 //仪表盘
 function gaugeChart() {
-    var data = [];
+    let data = [];
+    let colorArr = [];
     const  length =  xAxisDataType.length;
+    var dataTotal = 0.0;
+    var colorRateArr = [];
     for(let i=0;i<length;i++){
-        data.push({name: xAxisDataType[i],value: xAxisData[i]});
+        dataTotal = dataTotal + parseFloat(xAxisData[0][i]);
+        data.push({name: xAxisDataType[i],value: xAxisData[0][i]});
+        colorArr.push($("#colorPieId_"+i).val());
+    }
+
+    var rate = 0.0;
+    for(let i=0;i<length;i++){
+        rate =  rate + parseFloat(xAxisData[0][i])/parseFloat(dataTotal);
+        let x = [(rate).toFixed(1),colorArr[i]];
+        colorRateArr.push(x);
     }
     option = {
         tooltip: {
             formatter: '{a} <br/>{b} : {c}'
         },
         toolbox: toolbox,
-        legend: legend,
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '6px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        },
         series: [
             {
-                name: yAxisName,
+                name: xAxisDataType,
                 type: 'gauge',
                 max: xAxisMaxVal,
                 detail: {formatter: '{value}'},
+                axisLine: {            // 坐标轴线
+                    lineStyle: {       // 属性lineStyle控制线条样式
+                        color: colorRateArr,//修改指针颜色,指针颜色根据仪表盘颜色变化
+                        width: 3,
+                        shadowColor : '#fff', //默认透明
+                        shadowBlur: 10
+                    }
+                },
                 title: {
                     show:false,
                     color:'#fff'
@@ -702,6 +734,9 @@ function showTableTr() {
             showTableOperate = false;
             break;
         case 'funnel':
+            showTableOperate = false;
+            break;
+        case 'gauge':
             showTableOperate = false;
             break;
         default:
