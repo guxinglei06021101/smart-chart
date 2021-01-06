@@ -258,10 +258,22 @@ function pieChart() {
             }
         },
         toolbox: toolbox,
-        legend: legend,
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '6px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        },
         series: [
             {
-                name:yAxisName,
+                name:xAxisDataType,
                 type:'pie',
                 selectedMode: 'single',
                 radius: [0, '50%'],
@@ -485,10 +497,22 @@ function funnelChart() {
             formatter: "{a} <br/>{b} : {c}"
         },
         toolbox: toolbox,
-        legend: legend,
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '6px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        },
         series: [
             {
-                name:yAxisName,
+                name:xAxisDataType,
                 type:'funnel',
                 left: '10%',
                 top: 60,
