@@ -8,6 +8,7 @@ import net.sppan.base.controller.BaseController;
 import net.sppan.base.entity.Chart;
 import net.sppan.base.service.IChartService;
 import net.sppan.base.vo.ChartUpdateStatusVo;
+import net.sppan.base.vo.chart.ChartUpdateVo;
 import org.apache.commons.lang3.StringUtils;
 import net.sppan.base.vo.chart.ChartSaveVo;
 import org.springframework.beans.BeanUtils;
@@ -68,6 +69,25 @@ public class ChartController extends BaseController {
         }
 
         return JsonResult.success("操作成功");
+    }
+
+    @PostMapping(value = "/update")
+    public JsonResult update(@Validated ChartUpdateVo chartUpdateVo, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            String errorMsg = bindingResult.getFieldError().getDefaultMessage();
+            return JsonResult.failure(errorMsg);
+        }
+        try{
+            Chart chart = new Chart();
+            BeanUtils.copyProperties(chartUpdateVo,chart);
+            chart.setYMax(new BigDecimal(chartUpdateVo.getYMax()));
+            chartService.updateById(chart);
+        }catch (Exception e){
+            e.printStackTrace();
+            return JsonResult.failure(e.getMessage());
+        }
+        return JsonResult.success("修改成功");
     }
 
 

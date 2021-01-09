@@ -66,15 +66,17 @@ $(function(){
 
     $("#submitId").click(function(){
 
-    layer.confirm('确定要提交吗?', {icon: 3, title:'提示'}, function(index){
+    layer.confirm('确定要保存吗?', {icon: 3, title:'提示'}, function(index){
         if(chartType == 'pie' || chartType == 'funnel' || chartType == 'gauge'){
             chartColor = pieColorArr;
         }
         var data = {
+            id:parseInt(id),
             name:$("#nameId").val(),
             title:$("#titleId").val(),
             type:chartType,
             xName:'',
+            yMax:xAxisMaxVal,
             yName:yAxisName,
             xData:JSON.stringify(xAxisDataType),
             seriesName:JSON.stringify(legendData),
@@ -90,7 +92,7 @@ $(function(){
                 //contentType: "application/json;charset=UTF-8",
                 dataType: "json",
                 //请求地址
-                url : '/chart/save',
+                url : '/chart/update',
                 //数据，json字符串
                 data : data,
                 //请求成功

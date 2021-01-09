@@ -12,6 +12,7 @@ $(function(){
             type:chartType,
             xName:'',
             yName:yAxisName,
+            yMax:xAxisMaxVal,
             xData:JSON.stringify(xAxisDataType),
             seriesName:JSON.stringify(legendData),
             seriesType:chartType,
