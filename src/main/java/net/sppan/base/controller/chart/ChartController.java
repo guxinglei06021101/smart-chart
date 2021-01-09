@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 
 @RestController
@@ -42,7 +43,7 @@ public class ChartController extends BaseController {
         queryWrapper.eq("dr",0);
         queryWrapper.orderByDesc("create_time");
         PageRequest pageRequest = getPageRequest();
-        IPage<Chart> page = new Page<>(pageRequest.getPageNumber(),pageRequest.getPageSize());
+        IPage<Chart> page = new Page<>(pageRequest.getPageNumber()+1,pageRequest.getPageSize());
         return chartService.page(page,queryWrapper);
     }
 
@@ -57,6 +58,8 @@ public class ChartController extends BaseController {
         try{
             Chart chart = new Chart();
             BeanUtils.copyProperties(chartSaveVo,chart);
+            chart.setYMax(new BigDecimal(chartSaveVo.getYMax()));
+            chart.setStatus("enable");
             chartService.save(chart);
 
         }catch (Exception e){

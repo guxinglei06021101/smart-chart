@@ -1,5 +1,69 @@
 $(function(){
 
+    var id = $("#id").val();
+
+    ajax_get("/chart/findById/"+id,function(result) {
+        $("#chartTitleId").html(result.title);
+        $("#titleId").val(result.title);
+        chartType = result.type;
+        $("#chartTypeId").val(chartType);
+        $("#nameId").val(result.name);
+        $("#yAxisId").val(result.yName);
+        yAxisName = result.yName;
+        var  yAxisNameArr = yAxisName.split("");
+        yAxisPortraitName = "";
+        yAxisNameArr.forEach(function(item){
+            yAxisPortraitName = yAxisPortraitName + item + "\n";
+        });
+
+        xAxisDataType = JSON.parse(result.xData);
+        $("#xAxisDataTypeId").val(xAxisDataType.join(","));
+
+        xAxisMaxVal = result.yMax;
+        legendData = JSON.parse(result.seriesName);
+        xAxisData = JSON.parse(result.seriesData);
+        chartColor = JSON.parse(result.seriesColor);
+        legend = {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: legendData,
+            right: '20px',
+            top: '6px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        };
+        toolbox = {
+            feature: {
+                saveAsImage: {
+                    backgroundColor: '#040f3c',
+                    name: yAxisName,
+                    title:'下载图表'
+                },
+            }
+        };
+        switch (chartType) {
+            case 'pie':
+                showTableOperate = false;
+                break;
+            case 'funnel':
+                showTableOperate = false;
+                break;
+            case 'gauge':
+                showTableOperate = false;
+                break;
+            default:
+                showTableOperate = true;
+                pieColorArr = colorArr;
+        }
+        tableHead();
+        tableChange();
+        showTableTr();
+    });
+
     $("#submitId").click(function(){
 
     layer.confirm('确定要提交吗?', {icon: 3, title:'提示'}, function(index){
@@ -17,7 +81,6 @@ $(function(){
             seriesType:chartType,
             seriesData:JSON.stringify(xAxisData),
             seriesColor:JSON.stringify(chartColor),
-            yMax:xAxisMaxVal,
             remark:$("#remarkId").val()
         }
             $.ajax({
@@ -33,7 +96,7 @@ $(function(){
                 //请求成功
                 success : function(result) {
                     if(result.code != 0){
-                    layer.msg(result.message,{icon: 2});
+                        layer.msg(result.message,{icon: 2});
                         return;
                     }
                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -48,7 +111,6 @@ $(function(){
                             window.parent.document.getElementById("J_iframe").src="${ctx!}/chart/index";
                         }
                     }
-
                 },
                 //请求失败，包含具体的错误信息
                 error : function(e){
@@ -57,8 +119,8 @@ $(function(){
             });
         });
     });
-    $("#chartTitleId").html($("#titleId").val());
 
+    $("#chartTitleId").html($("#titleId").val());
     $("#titleId").keyup(function(){
         $("#chartTitleId").html($(this).val());
         $("#nameId").val($(this).val());
@@ -100,9 +162,6 @@ $(function(){
         tableChange();
         showTableTr();
     });
-    tableHead();
-    tableChange();
-    optionChart();
 
 });
 
@@ -156,7 +215,9 @@ function optionChart(){
 }
 
 window.onresize = function(){
-    chart.resize();    //若有多个图表变动，可多写
+    if(chart != ""){
+        chart.resize();    //若有多个图表变动，可多写
+    }
 }
 
 var option;
@@ -741,20 +802,33 @@ function tableHead() {
     result += "<th id=\"colorthId_0\">颜色</th>";
     result +="<th id=\"operatethId_0\">操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
 
-    result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
-    result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
-    var val = 0;
+    result +="</tr></thead><tbody id=\"tbodyId\">";
+
+    var len = legendData.length;
     let length = xAxisDataType.length;
-    for(let i=0;i<length;i++){
-        val = val + 100;
-        result += "<td>" ;
-        result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\">" ;
-        result += "<input id=\"colorPieId_"+i+"\" style=\"width: 60px;height: 25px;padding: 2px;margin-top:5px;text-align: center;display:none\" oninput=\"dataKeyup()\" class=\"form-control\" type=\"color\" value=\""+colorArr[i]+"\">" ;
-        result += "</td>";
+    for(let i=0;i<len;i++){
+        if(i == 0){
+            result +="<tr>";
+        }else{
+            result +="<tr id=\"datatrId_"+i+"\">";
+        }
+        result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+legendData[i]+"\"></td>";
+        for(let k=0;k<length;k++){
+            result += "<td>" ;
+            result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+ xAxisData[i][k]+"\">" ;
+            if(i == 0){
+                result += "<input id=\"colorPieId_"+k+"\" style=\"width: 60px;height: 25px;padding: 2px;margin-top:5px;text-align: center;display:none\" oninput=\"dataKeyup()\" class=\"form-control\" type=\"color\" value=\""+pieColorArr[k]+"\">" ;
+            }
+            result += "</td>";
+        }
+        result += "<td id=\"colorthId_"+(i+1)+"\"><input style=\"width: 60px;padding: 2px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\""+colorArr[i]+"\" ></td>";
+        if(i == 0 ){
+            result +="<td id=\"operatethId_"+(i+1)+"\"></td></tr>";
+        }else{
+            result +="<td id=\"operatethId_"+(i+1)+"\"><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
+        }
     }
-    result += "<td id=\"colorthId_1\"><input style=\"width: 60px;padding: 2px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\""+colorArr[0]+"\" ></td>";
-    result +="<td id=\"operatethId_1\"></td>";
-    result +="</tr></tbody>";
+    result +="</tbody>";
     $("#tableId").html(result);
 }
 function addTableTr() {
@@ -804,6 +878,7 @@ function showTableTr() {
             break;
         default:
             showTableOperate = true;
+            pieColorArr = colorArr;
     }
 
     let typeLen = xAxisDataType.length;

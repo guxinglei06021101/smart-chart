@@ -17,6 +17,8 @@ public class ChartSaveVo {
 
     private String xName;
 
+    private String yMax;
+
     @NotBlank(message = "图表数值不能为空")
     private String xData;
 

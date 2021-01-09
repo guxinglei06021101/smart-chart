@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
     <title>图表</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -175,6 +174,18 @@
             },
             //数据列
             columns: [{
+                field: 'number',
+                title: '序号',
+                width:5 ,
+                align:'center',
+                switchable:false,
+                formatter:function(value,row,index){
+                    //return index+1; //序号正序排序从1开始
+                    var pageSize=$("#table_list").bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
+                    var pageNumber=$("#table_list").bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
+                    return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
+                }
+            },{
                 title: "",
                 field: "type",
                 formatter: function(value,row,index){
@@ -234,7 +245,7 @@
                 formatter: function (value, row, index) {
 
                     var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-info btn-xs" type="button" onclick="showDataChart(\''+row.id+'\')"><i class="fa fa-info-circle"></i>&nbsp;详情</button> &nbsp;</@shiro.hasPermission>';
-                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:edit"><button class="btn btn-primary btn-xs" type="button" onclick="edit1(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;修改</button> &nbsp;</@shiro.hasPermission>';
+                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:edit"><button class="btn btn-primary btn-xs" type="button" onclick="editDataChart(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;修改</button> &nbsp;</@shiro.hasPermission>';
                     if(row.status == 'enable'){
                         operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:grant"><button class="btn btn-danger btn-xs" type="button" onclick="updateStatus(\''+row.id+'\',\'disable\')"><i class="fa fa-ban"></i>&nbsp;禁用</button> &nbsp;</@shiro.hasPermission>';
                     }else{
@@ -292,7 +303,29 @@
     }
 
     function addChart() {
-        alert('新增图表');
+        layer.open({
+            type: 2,
+            title: '图表添加',
+            shadeClose: false,
+            maxmin: true,
+            shade: 0.6,
+            area: ['90%', '90%'],
+            content: '${ctx!}/chart/add',
+            success: function(layero,index){
+                var mask = $(".layui-layer-shade");
+                mask.appendTo(layero.parent());
+                //layer.full(index);
+            },
+            end: function (index) {
+                $('#table_list').bootstrapTable('refresh', {
+                    query:
+                        {
+                            type:$("#type").val(),
+                            status:$("#status").val()
+                        }
+                });
+            }
+        });
     }
     function del(id){
         layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
@@ -341,6 +374,32 @@
                 //layer.full(index);
             },
             end: function (index) {
+            }
+        });
+    }
+
+    function editDataChart(id) {
+        layer.open({
+            type: 2,
+            title: '图表修改',
+            shadeClose: false,
+            maxmin: true,
+            shade: 0.6,
+            area: ['90%', '90%'],
+            content: '${ctx!}/chart/edit/' + id,
+            success: function(layero,index){
+                var mask = $(".layui-layer-shade");
+                mask.appendTo(layero.parent());
+                layer.full(index);
+            },
+            end: function (index) {
+                $('#table_list').bootstrapTable('refresh', {
+                    query:
+                        {
+                            type:$("#type").val(),
+                            status:$("#status").val()
+                        }
+                });
             }
         });
     }

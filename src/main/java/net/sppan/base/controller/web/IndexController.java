@@ -77,4 +77,10 @@ public class IndexController extends BaseController{
 		return "/chart/show";
 	}
 
+	@RequestMapping("/chart/edit/{id}")
+	public String updateChartById(@PathVariable Integer id, ModelMap map){
+		map.put("id",id);
+		return "/chart/edit";
+	}
+
 }

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import net.sppan.base.entity.support.BaseEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -22,8 +23,8 @@ public class Chart extends BaseEntity {
     private String xName;
     private String xData;
     private String yName;
-    private Integer yMin;
-    private Integer yMax;
+    private BigDecimal yMin;
+    private BigDecimal yMax;
     private Integer yInterval;
     private String seriesName;
     private String seriesType;

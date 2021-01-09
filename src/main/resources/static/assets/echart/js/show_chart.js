@@ -6,15 +6,8 @@ ajax_get("/chart/findById/"+id,function(result){
 $("#chartTitleId").html(result.title);
     optionChart(result);
 });
-   /* var title = $("#title").val();
-
-    //    tableHead();
-    //    tableChange();
-        ;*/
 });
 
-/*let showTableColor = true;*/
-let showTableOperate = true;
 let chartColor = ["#3b5ede"];
 let colorArr = ["#3b5ede","#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"];
 let xAxisMaxVal = 500;
@@ -62,7 +55,7 @@ function optionChart(result){
                 color: '#fff'
             }
         };
-        let toolbox = {
+        toolbox = {
             feature: {
                 saveAsImage: {
                     backgroundColor: '#040f3c',
@@ -214,14 +207,12 @@ function barChart() {
 //饼状图
 function pieChart() {
     var data = [];
-    var pieColorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
-        pieColorArr.push($("#colorPieId_"+i).val());
     }
     option = {
-        color:pieColorArr,
+        color:chartColor,
         tooltip: {
             formatter:'{b}: {c}',
             trigger:'item',
@@ -470,7 +461,7 @@ function funnelChart() {
         color:colorArr,
         tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c}"
+            formatter: "{b} : {c}"
         },
         toolbox: toolbox,
         legend: {
