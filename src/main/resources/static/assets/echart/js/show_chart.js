@@ -1,97 +1,16 @@
 $(function(){
 
-    $("#submitId").click(function(){
-    var data = {
-    name:$("#nameId").val(),
-    title:$("#titleId").val(),
-    type:chartType,
-    xName:'',
-    yName:yAxisName,
-    xData:JSON.stringify(xAxisDataType),
-    seriesName:JSON.stringify(legendData),
-    seriesType:chartType,
-    seriesData:JSON.stringify(xAxisData),
-    seriesColor:JSON.stringify(chartColor),
-    remark:$("#remarkId").val()
-    }
+var id = $("#id").val();
 
-    layer.confirm('确定要提交吗?', {icon: 3, title:'提示'}, function(index){
-            $.ajax({
-                //请求方式
-                type : "POST",
-                //请求的媒体类型
-                //contentType: "application/json;charset=UTF-8",
-                dataType: "json",
-                //请求地址
-                url : '/chart/save',
-                //数据，json字符串
-                data : data,
-                //请求成功
-                success : function(result) {
-                if(result.code != 0){
-                layer.msg(result.message,{icon: 2});
-                return;
-                }
-                layer.msg(result.message, {time: 1000},function(){
-                         layer.close(index);
-                         window.location.href='/chart/index';
-                     });
-                //window.wxc.xcConfirm(result.message, window.wxc.xcConfirm.typeEnum.success);
-                },
-                //请求失败，包含具体的错误信息
-                error : function(e){
-                layer.msg(e.message,{icon: 2});
-                }
-            });
-        });
-    });
-    $("#chartTitleId").html($("#titleId").val());
+ajax_get("/chart/findById/"+id,function(result){
+$("#chartTitleId").html(result.title);
+    optionChart(result);
+});
+   /* var title = $("#title").val();
 
-    $("#titleId").keyup(function(){
-        $("#chartTitleId").html($(this).val());
-        $("#nameId").val($(this).val());
-    });
-
-    $("#chartTypeId").change(function(){
-        chartType = $(this).val();
-        showTableTr();
-     });
-
-     $("#yAxisId").keyup(function(){
-         yAxisName = $(this).val();
-         let yAxisNameArr = yAxisName.split("");
-         yAxisPortraitName = "";
-         for(let i=0;i<yAxisNameArr.length;i++){
-             yAxisPortraitName = yAxisPortraitName + yAxisNameArr[i] + '\n';
-         }
-          toolbox = {
-             feature: {
-                 saveAsImage: {
-                     backgroundColor: '#040f3c',
-                     name: yAxisName
-                 },
-             }
-         }
-         optionChart();
-          });
-
-    $("#xAxisDataTypeId").keyup(function(){
-        let data = $(this).val();
-            data = data.replace(reg1,",");
-            data = data.replace(reg2,",");
-            data = data.replace(reg3,",");
-            data = data.replace(reg4,"");
-            data = data.replace(reg5,",");
-            $(this).val(data);
-        xAxisDataType = data.split(',');
-        tableHead();
-        tableChange();
-        showTableTr();
-    });
-    tableHead();
-    tableChange();
-    optionChart();
-
+    //    tableHead();
+    //    tableChange();
+        ;*/
 });
 
 /*let showTableColor = true;*/
@@ -104,46 +23,57 @@ let yAxisName = "自定义Y轴名称";
 let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
-var legendData = ['系列1'];
-
-let reg1 = new RegExp("，","g");//g,表示全部替换。
-let reg2 = new RegExp(";","g");//g,表示全部替换。
-let reg3 = new RegExp("；","g");//g,表示全部替换。
-let reg4 = new RegExp(" ","g");//g,表示全部替换。
-let reg5 = new RegExp("、","g");//g,表示全部替换。
-
-let toolbox = {
-    feature: {
-        saveAsImage: {
-            backgroundColor: '#040f3c',
-            name: yAxisName,
-            title:'下载图表'
-        },
-    }
-};
-let legend = {
-        icon: 'rect',
-        itemWidth: 14,
-        itemHeight: 5,
-        itemGap: 13,
-        data: legendData,
-        right: '20px',
-        top: '6px',
-        textStyle: {
-            fontSize: 12,
-            color: '#fff'
-        }
-    };
-
-let chart="";
-function optionChart(){
-    settingOption();
-    chart= echarts.init(document.getElementById("bar-chart"));
-    chart.setOption(option,true);
-}
 
 window.onresize = function(){
     chart.resize();    //若有多个图表变动，可多写
+}
+
+
+
+
+let toolbox ={} ;
+let legend ={} ;
+var legendData = [];
+
+let chart="";
+function optionChart(result){
+    chartType = result.type;
+        //var xName = $("#xName").val();
+    yAxisName = result.yName;
+    var  yAxisNameArr = yAxisName.split("");
+    yAxisPortraitName = "";
+    yAxisNameArr.forEach(function(item){
+        yAxisPortraitName = yAxisPortraitName + item + "\n";
+    });
+    xAxisDataType = JSON.parse(result.xData);
+    legendData = JSON.parse(result.seriesName);
+    xAxisData = JSON.parse(result.seriesData);
+    chartColor = JSON.parse(result.seriesColor);
+    legend = {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: legendData,
+            right: '20px',
+            top: '6px',
+            textStyle: {
+                fontSize: 12,
+                color: '#fff'
+            }
+        };
+        let toolbox = {
+            feature: {
+                saveAsImage: {
+                    backgroundColor: '#040f3c',
+                    name: yAxisName,
+                    title:'下载图表'
+                },
+            }
+        };
+    settingOption();
+    chart= echarts.init(document.getElementById("datachartId"));
+    chart.setOption(option,true);
 }
 
 var option;
@@ -672,7 +602,6 @@ function ajax_get(url,successfunction){
                     //data : JSON.stringify(list),
                     //请求成功
                     success : function(result) {
-                        console.log(result);
                        	successfunction(result);
                     },
                     //请求失败，包含具体的错误信息

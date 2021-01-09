@@ -12,8 +12,10 @@
     <link href="${ctx!}/assets/css/animate.css" rel="stylesheet">
     <link href="${ctx!}/assets/css/style.css?v=4.1.0" rel="stylesheet">
     <link href="${ctx!}/assets/css/prettify.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${ctx!}/assets/echart/css/xcConfirm.css" />
     <link rel="stylesheet" href="${ctx!}/assets/echart/css/datachart.css"/>
-    <script type="text/javascript" src="${ctx!}/assets/echart/js/jquery-1.4.4.min.js"></script>
+
+
 </head>
 <body>
 <!--主体-->
@@ -33,7 +35,7 @@
             <div class="col-sm-12">
                 <div class="ibox float-e-margins" style="align-content: center">
                     <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="frm" method="post" action="${ctx!}/chart/save">
+                        <form class="form-horizontal m-t" id="frm" method="" action="${ctx!}/chart/save">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>类型：</label>
                                 <div class="col-sm-5">
@@ -45,6 +47,27 @@
                                         <option value="funnel" >漏斗图</option>
                                         <option value="gauge" >仪表盘</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>颜色：</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">背景色</span>
+                                        <input  id="backgroundColorId"  class="form-control"  type="color" oninput="setBackgroundColor(this)" value="#040f3c">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">字体色</span>
+                                        <input  id="fontColorId"  class="form-control"  type="color" oninput="setFontColor(this)" value="#ffffff">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">坐标线</span>
+                                        <input  id="lineColorId"  class="form-control"  type="color" oninput="setAxisLineColor(this)" value="#24214e">
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -87,15 +110,15 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">描述：</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="remark" placeholder="内容…"></textarea>
+                                    <textarea class="form-control" name="remark" id="remarkId" placeholder="内容…"></textarea>
                                 </div>
 
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-3 col-sm-offset-3">
                                     <br/>
-                                    <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="text" value="500">
-                                    <button class="btn btn-primary" type="submit">提交</button>
+                                    <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="hidden" value="500">
+                                    <button class="btn btn-primary" type="button" id="submitId">提交</button>
                                 </div>
                             </div>
                         </form>
@@ -107,9 +130,13 @@
 
 </div>
 
+<script type="text/javascript"  src="${ctx!}/assets/js/jquery.min.js?v=2.1.4"></script>
 <script type="text/javascript" src="${ctx!}/assets/echart/js/echarts.js"></script>
-<script type="text/javascript" src="${ctx!}/assets/echart/js/add_chart.js"></script>
 <script type="text/javascript" src="${ctx!}/assets/echart/js/maps.js"></script>
+<script src="${ctx!}/assets/echart/js/xcConfirm.js"></script>
+<script src="${ctx!}/assets/js/plugins/layer/layer.min.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/add_chart.js"></script>
+
 
 </body>
 </html>

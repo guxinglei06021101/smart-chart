@@ -6,14 +6,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.sppan.base.common.JsonResult;
 import net.sppan.base.controller.BaseController;
 import net.sppan.base.entity.Chart;
-import net.sppan.base.entity.Personnel;
 import net.sppan.base.service.IChartService;
 import net.sppan.base.vo.ChartUpdateStatusVo;
 import org.apache.commons.lang3.StringUtils;
 import net.sppan.base.vo.chart.ChartSaveVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -47,7 +46,6 @@ public class ChartController extends BaseController {
         return chartService.page(page,queryWrapper);
     }
 
-    @ResponseBody
     @PostMapping(value = "/save")
     public JsonResult save(@Validated ChartSaveVo chartSaveVo, BindingResult bindingResult){
 
@@ -91,4 +89,10 @@ public class ChartController extends BaseController {
         }
         return JsonResult.success();
     }
+
+    @RequestMapping("/findById/{id}")
+    public Chart findById(@PathVariable Integer id){
+        return chartService.getById(id);
+    }
+
 }

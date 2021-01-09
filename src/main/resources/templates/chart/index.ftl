@@ -52,6 +52,9 @@
             height: 60px;
             width: 60px;
         }
+        .subTable{
+        margin:20px;
+        }
     </style>
 </head>
 
@@ -189,6 +192,12 @@
                 title: "名称",
                 field: "name"
             },{
+                title: "标题",
+                field: "title"
+            },{
+                title: "Y轴名称",
+                field: "yName"
+            },{
                 title: "类型",
                 field: "type",
                 formatter: function(value,row,index){
@@ -224,7 +233,7 @@
                 field: "id",
                 formatter: function (value, row, index) {
 
-                    var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-info btn-xs" type="button" onclick="del1(\''+row.id+'\')"><i class="fa fa-info-circle"></i>&nbsp;详情</button> &nbsp;</@shiro.hasPermission>';
+                    var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-info btn-xs" type="button" onclick="showDataChart(\''+row.id+'\')"><i class="fa fa-info-circle"></i>&nbsp;详情</button> &nbsp;</@shiro.hasPermission>';
                     operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:edit"><button class="btn btn-primary btn-xs" type="button" onclick="edit1(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;修改</button> &nbsp;</@shiro.hasPermission>';
                     if(row.status == 'enable'){
                         operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:grant"><button class="btn btn-danger btn-xs" type="button" onclick="updateStatus(\''+row.id+'\',\'disable\')"><i class="fa fa-ban"></i>&nbsp;禁用</button> &nbsp;</@shiro.hasPermission>';
@@ -239,9 +248,27 @@
     });
 
     function detailFormatter(index, row) {
-        var html = [];
-        html.push('<p><b>备注:</b> ' + row.remark + '</p>');
-        return html.join('');
+
+    var result = "<div class=\"subTable\"><table class=\"table table-bordered table-hover table-striped\"><thead><tr>";
+    result += "<th>系列名称</th>";
+    var xData = JSON.parse(row.xData);
+    xData.forEach(function (item) {
+        result +="<th>"+item+"</th>";
+    });
+    result +="</tr></thead><tbody>";
+
+    var seriesData = JSON.parse(row.seriesData);
+    var seriesName = JSON.parse(row.seriesName);
+    var dataLen = seriesData.length;
+    for(let i=0;i<dataLen;i++){
+     result +="<tr><td>"+seriesName[i]+"</td>";
+     seriesData[i].forEach(function (item) {
+          result +="<td>"+item+"</td>";
+     });
+     result +="</tr>";
+    }
+    result +="</tbody></table></div>";
+        return result;
     }
     
 
@@ -296,6 +323,25 @@
                     });
                 }
             });
+        });
+    }
+
+    function showDataChart(id) {
+        layer.open({
+            type: 2,
+            title: '图表展示',
+            shadeClose: false,
+            maxmin: true,
+            shade: 0.6,
+            area: ['70%', '80%'],
+            content: '${ctx!}/chart/show/' + id,
+            success: function(layero,index){
+                var mask = $(".layui-layer-shade");
+                mask.appendTo(layero.parent());
+                //layer.full(index);
+            },
+            end: function (index) {
+            }
         });
     }
 </script>

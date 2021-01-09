@@ -2,6 +2,7 @@ package net.sppan.base.controller.web;
 
 
 import net.sppan.base.controller.BaseController;
+import net.sppan.base.entity.Chart;
 import net.sppan.base.service.IPersonnelService;
 import net.sppan.base.service.IUserService;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -69,5 +71,10 @@ public class IndexController extends BaseController{
 		return "chart/add";
 	}
 
+	@RequestMapping("/chart/show/{id}")
+	public String findById(@PathVariable Integer id, ModelMap map){
+		map.put("id",id);
+		return "/chart/show";
+	}
 
 }

@@ -15,6 +15,7 @@ public class Chart extends BaseEntity {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
     private String name;
+    private String title;
     private String type;
     private String status;
     private String legendData;
@@ -27,6 +28,7 @@ public class Chart extends BaseEntity {
     private String seriesName;
     private String seriesType;
     private String seriesData;
+    private String seriesColor;
     private Integer userId;
     private String remark;
 
