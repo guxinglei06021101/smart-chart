@@ -50,27 +50,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>颜色：</label>
-                                <div class="col-sm-3">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">背景色</span>
-                                        <input  id="backgroundColorId"  class="form-control"  type="color" oninput="setBackgroundColor(this)" value="#040f3c">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">字体色</span>
-                                        <input  id="fontColorId"  class="form-control"  type="color" oninput="setFontColor(this)" value="#ffffff">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">坐标线</span>
-                                        <input  id="lineColorId"  class="form-control"  type="color" oninput="setAxisLineColor(this)" value="#24214e">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>标题：</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
@@ -104,6 +83,33 @@
                                         <span class="input-group-addon">名称</span>
                                         <input id="yAxisId" name="yName" class="form-control" placeholder="Y轴名称" type="text" value="自定义Y轴名称">
 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>背景：</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">颜色</span>
+                                        <input  id="backgroundColorId"  class="form-control"  type="color" oninput="setBackgroundColor(this)" value="#040f3c">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>字体：</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">字体色</span>
+                                        <input  id="fontColorId"  class="form-control"  type="color" oninput="setFontColor(this)" value="#ffffff">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>坐标：</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">坐标线</span>
+                                        <input  id="lineColorId"  class="form-control"  type="color" oninput="setAxisLineColor(this)" value="#24214e">
                                     </div>
                                 </div>
                             </div>

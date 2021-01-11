@@ -119,6 +119,8 @@ let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 var legendData = ['系列1'];
 var pieColorArr = [];
+let fontColor = "#ffffff";
+let axisLineColor = "#24214e";
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
@@ -145,7 +147,7 @@ let legend = {
         top: '6px',
         textStyle: {
             fontSize: 12,
-            color: '#fff'
+            color: fontColor
         }
     };
 
@@ -199,7 +201,7 @@ function barChart() {
                     show: true,
                     position: "top",
                     textStyle: {
-                        color: "#fff",
+                        color: fontColor,
                         fontSize: 12
                     }
                 }
@@ -225,7 +227,7 @@ function barChart() {
             axisPointer: {
                 type:'shadow',
                 lineStyle: {
-                    color: '#fff',
+                    color: fontColor,
                     type:'dashed'
                 }
             }
@@ -244,20 +246,20 @@ function barChart() {
             show:true,
             name:'',
             nameTextStyle:{
-                color:"#fff",
+                color:fontColor,
                 fontSize:12,//坐标值得具体的颜色，
             },
             data: xAxisDataType,       //横坐标
             axisLabel:{
                 textStyle: {
-                    color:'#fff',
+                    color:fontColor,
                     fontSize:12,
                 }
             },
             axisLine: {
                 lineStyle: {
-                    type: 'solid',
-                    color:'#24214e',
+                    type: 'dotted',
+                    color:axisLineColor,
                     width:'1',                                                //坐标线的宽度
                 }
             },
@@ -266,7 +268,7 @@ function barChart() {
             show:true,
             name: yAxisPortraitName,
             nameTextStyle:{
-                color:"#fff",
+                color:fontColor,
                 fontSize:12,//坐标值得具体的颜色，
             },
             nameLocation:"center",
@@ -274,21 +276,21 @@ function barChart() {
             nameRotate:0,
             axisLabel: {
                 textStyle: {
-                    color: '#fff',
+                    color: fontColor,
                     fontSize:10,//坐标值得具体的颜色
                 }
             },
             axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#24214e',
+                    color:axisLineColor,
                     width:'1  ',                                                //坐标线的宽度
 
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: "#24214e",
+                    color: axisLineColor,
                 }
             }
         }],
@@ -328,7 +330,7 @@ function pieChart() {
             top: '6px',
             textStyle: {
                 fontSize: 12,
-                color: '#fff'
+                color: fontColor
             }
         },
         series: [
@@ -411,20 +413,20 @@ function lineChart() {
             type: 'category',
             boundaryGap: false,
             nameTextStyle:{
-                color:"#fff",
+                color:fontColor,
                 fontSize:12,//坐标值得具体的颜色，
             },
             data: xAxisDataType,       //横坐标
             axisLabel:{
                 textStyle: {
-                    color:'#fff',
+                    color:fontColor,
                     fontSize:12,
                 }
             },
             axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#24214e',
+                    color:axisLineColor,
                     width:'1',                                                //坐标线的宽度
                 }
             },
@@ -432,7 +434,7 @@ function lineChart() {
         yAxis: {
             name: yAxisPortraitName,
             nameTextStyle:{
-                color:"#fff",
+                color:fontColor,
                 fontSize:12,//坐标值得具体的颜色，
             },
             nameLocation:"center",
@@ -440,21 +442,21 @@ function lineChart() {
             nameRotate:0,
             axisLabel: {
                 textStyle: {
-                    color: '#fff',
+                    color: fontColor,
                     fontSize:10,//坐标值得具体的颜色
                 }
             },
             axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#24214e',
+                    color:axisLineColor,
                     width:'1  ',                                                //坐标线的宽度
 
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: "#24214e",
+                    color: axisLineColor,
                 }
             }
         },
@@ -517,7 +519,7 @@ function radarChart() {
                 formatter: '{value}',
                 textStyle: {
                     fontSize: 12, //外圈标签字体大小
-                    color: '#FFF' //外圈标签字体颜色
+                    color: fontColor //外圈标签字体颜色
                 }
             },
             splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
@@ -528,12 +530,12 @@ function radarChart() {
             },
             axisLine: { //指向外圈文本的分隔线样式
                 lineStyle: {
-                    color: '#24214e'
+                    color: axisLineColor
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: '#24214e', // 分隔线颜色
+                    color: axisLineColor, // 分隔线颜色
                     width: 1, // 分隔线线宽
                 }
             }
@@ -567,7 +569,7 @@ function funnelChart() {
             top: '6px',
             textStyle: {
                 fontSize: 12,
-                color: '#fff'
+                color: fontColor
             }
         },
         series: [
@@ -644,7 +646,7 @@ function gaugeChart() {
             right: '20px',
             top: '6px',
             textStyle: {
-                fontSize: 12,
+                fontSize: fontColor,
                 color: '#fff'
             }
         },
@@ -658,13 +660,13 @@ function gaugeChart() {
                     lineStyle: {       // 属性lineStyle控制线条样式
                         color: colorRateArr,//修改指针颜色,指针颜色根据仪表盘颜色变化
                         width: 3,
-                        shadowColor : '#fff', //默认透明
+                        shadowColor : fontColor, //默认透明
                         shadowBlur: 10
                     }
                 },
                 title: {
                     show:false,
-                    color:'#fff'
+                    color:fontColor
                 },
                 data: data
             }
@@ -790,6 +792,28 @@ function removeTr(obj) {
 
 function setBackgroundColor(obj){
      $(".main-middle").css("background", $(obj).val());
+}
+
+function setFontColor(obj) {
+    fontColor = $(obj).val();
+    legend = {
+        icon: 'rect',
+        itemWidth: 14,
+        itemHeight: 5,
+        itemGap: 13,
+        data: legendData,
+        right: '20px',
+        top: '6px',
+        textStyle: {
+            fontSize: 12,
+            color: fontColor
+        }
+    };
+    optionChart();
+}
+function setAxisLineColor(obj) {
+    axisLineColor = $(obj).val();
+    optionChart();
 }
 
 function showTableTr() {
