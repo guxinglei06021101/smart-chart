@@ -66,6 +66,11 @@ public class IndexController extends BaseController{
 		return "chart/index";
 	}
 
+	@GetMapping(value={"/chart/gallery"})
+	public String gallery(){
+		return "chart/gallery";
+	}
+
 	@GetMapping(value={"/chart/img"})
 	public String img(){
 		return "chart/img";

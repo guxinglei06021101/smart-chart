@@ -76,6 +76,12 @@
                         </a>
                     </li>
                     <li>
+                        <a class="J_menuItem" href="${ctx!}/chart/gallery">
+                            <i class="fa fa-history"></i>
+                            <span class="nav-label">画廊</span>
+                        </a>
+                    </li>
+                    <li>
                         <a class="J_menuItem" href="${ctx!}/chart/index">
                             <i class="fa fa-history"></i>
                             <span class="nav-label">数据</span>
