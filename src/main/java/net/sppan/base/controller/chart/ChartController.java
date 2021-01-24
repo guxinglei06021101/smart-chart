@@ -44,7 +44,7 @@ public class ChartController extends BaseController {
         queryWrapper.eq("dr",0);
         queryWrapper.orderByDesc("create_time");
         PageRequest pageRequest = getPageRequest();
-        IPage<Chart> page = new Page<>(pageRequest.getPageNumber()+1,pageRequest.getPageSize());
+        IPage<Chart> page = new Page<>(pageRequest.getPageNumber(),pageRequest.getPageSize());
         return chartService.page(page,queryWrapper);
     }
 

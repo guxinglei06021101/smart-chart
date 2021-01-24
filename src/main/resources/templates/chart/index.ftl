@@ -63,7 +63,7 @@
         <div class="col-sm-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>图表列表</h5>
+                    <h5>数据列表</h5>
                 </div>
                 <div class="ibox-content">
                     <p>
@@ -152,7 +152,7 @@
             //每页显示的记录数
             pageSize: 10,
             //当前第几页
-            pageNumber: 1,
+            pageNumber: 0,
             //记录数可选列表
             pageList: [ 10, 20, 30, 50,100],
             //是否启用查询

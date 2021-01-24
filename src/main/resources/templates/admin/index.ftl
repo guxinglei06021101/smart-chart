@@ -70,9 +70,15 @@
                             </a>
                     </li>
                     <li>
-                        <a class="J_menuItem" href="${ctx!}/chart/index">
+                        <a class="J_menuItem" href="${ctx!}/chart/img">
                             <i class="fa fa-history"></i>
                             <span class="nav-label">图表</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="${ctx!}/chart/index">
+                            <i class="fa fa-history"></i>
+                            <span class="nav-label">数据</span>
                         </a>
                     </li>
                     <li>
