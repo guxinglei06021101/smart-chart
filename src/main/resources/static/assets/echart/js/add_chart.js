@@ -46,7 +46,7 @@ $(function(){
 
                     if(result.code == 0){
                         if(window.parent.document.getElementById("J_iframe") != null){
-                            window.parent.document.getElementById("J_iframe").src="${ctx!}/chart/index";
+                            window.parent.document.getElementById("J_iframe").src="/chart/index";
                         }
                     }
 

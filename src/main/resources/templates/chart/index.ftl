@@ -183,7 +183,7 @@
                     //return index+1; //序号正序排序从1开始
                     var pageSize=$("#table_list").bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
                     var pageNumber=$("#table_list").bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
-                    return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
+                    return pageSize * pageNumber + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
                 }
             },{
                 title: "",
