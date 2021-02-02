@@ -37,7 +37,7 @@
                     <div class="ibox-content">
                         <form class="form-horizontal m-t" id="frm" method="" action="${ctx!}/chart/save">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>类型：</label>
+                                <label class="col-sm-2 control-label">类型：</label>
                                 <div class="col-sm-5">
                                     <select id="chartTypeId" name="type" class="form-control selectpicker"  style="height: min-content;width: 180px">
                                         <option value="bar" selected="selected">柱状图</option>
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>标题：</label>
+                                <label class="col-sm-2 control-label">标题：</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <span class="input-group-addon">标题</span>
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>名称：</label>
+                                <label class="col-sm-2 control-label">名称：</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <span class="input-group-addon">名称</span>
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>X轴：</label>
+                                <label class="col-sm-2 control-label">X轴：</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <span class="input-group-addon">名称</span>
@@ -77,7 +77,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>Y轴：</label>
+                                <label class="col-sm-2 control-label">Y轴：</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <span class="input-group-addon">名称</span>
@@ -87,17 +87,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>背景：</label>
-                                <div class="col-sm-3">
+                                <label class="col-sm-2 control-label">背景：</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
-                                        <span class="input-group-addon">颜色</span>
+                                        <span class="input-group-addon">&nbsp;&nbsp;颜色&nbsp;&nbsp;</span>
                                         <input  id="backgroundColorId"  class="form-control"  type="color" oninput="setBackgroundColor(this)" value="#040f3c">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>字体：</label>
-                                <div class="col-sm-3">
+                                <label class="col-sm-2 control-label">字体：</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon">字体色</span>
                                         <input  id="fontColorId"  class="form-control"  type="color" oninput="setFontColor(this)" value="#ffffff">
@@ -105,8 +105,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"><span class="text-danger " style="font-size: large;">*</span>坐标：</label>
-                                <div class="col-sm-3">
+                                <label class="col-sm-2 control-label">坐标：</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon">坐标线</span>
                                         <input  id="lineColorId"  class="form-control"  type="color" oninput="setAxisLineColor(this)" value="#24214e">

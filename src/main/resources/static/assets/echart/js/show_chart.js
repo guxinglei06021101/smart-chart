@@ -97,11 +97,20 @@ function settingOption(){
 //柱状图
 function barChart() {
     var series = [];
+    var barWidth = 0;
+    var xAxisLength = xAxisData.length;
+    if(xAxisLength < 3){
+        barWidth = 15;
+    }else if(xAxisLength < 5){
+        barWidth = 11;
+    }else{
+        barWidth = 9;
+    }
     for(let i=0;i<xAxisData.length;i++){
         series.push({
             name:legendData[i],
             type: chartType,
-            barWidth:20,
+            barWidth:barWidth,
             data:xAxisData[i],
             label: {
                 normal: {

@@ -190,11 +190,20 @@ function settingOption(){
 //柱状图
 function barChart() {
     var series = [];
+    var barWidth = 0;
+    var xAxisLength = xAxisData.length;
+    if(xAxisLength < 3){
+        barWidth = 15;
+    }else if(xAxisLength < 5){
+        barWidth = 11;
+    }else{
+        barWidth = 9;
+    }
     for(let i=0;i<xAxisData.length;i++){
         series.push({
             name:legendData[i],
             type: chartType,
-            barWidth:20,
+            barWidth:barWidth,
             data:xAxisData[i],
             label: {
                 normal: {
@@ -742,7 +751,7 @@ function tableHead() {
         result +="<th>"+item+"</th>";
     });
     result += "<th id=\"colorthId_0\">颜色</th>";
-    result +="<th id=\"operatethId_0\">操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+    result +="<th id=\"operatethId_0\"> <a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
 
     result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
     result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
@@ -762,8 +771,8 @@ function tableHead() {
 }
 function addTableTr() {
     let trLen = $("#tableId").find("tr").length;
-    if(trLen > 5){
-        alert("最多只能添加5条数据");
+    if(trLen > 10){
+        alert("最多只能添加10条数据");
         return;
     }
     let val = 0;
