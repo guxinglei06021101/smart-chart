@@ -790,6 +790,7 @@ function addTableTr() {
 }
 
 function dataKeyup() {
+    fontColor = $("#fontColorId").val();
     tableChange();
     optionChart();
 }
