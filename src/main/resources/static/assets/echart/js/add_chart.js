@@ -77,14 +77,6 @@ $(function(){
          for(let i=0;i<yAxisNameArr.length;i++){
              yAxisPortraitName = yAxisPortraitName + yAxisNameArr[i] + '\n';
          }
-          toolbox = {
-             feature: {
-                 saveAsImage: {
-                     backgroundColor: '#040f3c',
-                     name: yAxisName
-                 },
-             }
-         }
          optionChart();
           });
 
@@ -165,6 +157,15 @@ window.onresize = function(){
 var option;
 function settingOption(){
     //var type = $("#chartTypeId").val();
+    toolbox = {
+        feature: {
+            saveAsImage: {
+                backgroundColor: $("#backgroundColorId").val(),
+                name: yAxisName,
+                title:'下载图表'
+            },
+        }
+    };
     switch(chartType){
         case 'bar':
             barChart();

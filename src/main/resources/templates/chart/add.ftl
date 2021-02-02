@@ -87,29 +87,23 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">背景：</label>
-                                <div class="col-sm-4">
+                                <label class="col-sm-2 control-label">颜色：</label>
+                                <div class="col-sm-3">
                                     <div class="input-group">
-                                        <span class="input-group-addon">&nbsp;&nbsp;颜色&nbsp;&nbsp;</span>
-                                        <input  id="backgroundColorId"  class="form-control"  type="color" oninput="setBackgroundColor(this)" value="#040f3c">
+                                        <span class="input-group-addon">背景</span>
+                                        <input  id="backgroundColorId"  class="form-control" style="width: 30px;padding: 5px;text-align: center"   type="color" oninput="setBackgroundColor(this)" value="#040f3c">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">字体：</label>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="input-group">
-                                        <span class="input-group-addon">字体色</span>
-                                        <input  id="fontColorId"  class="form-control"  type="color" oninput="setFontColor(this)" value="#ffffff">
+                                        <span class="input-group-addon">字体</span>
+                                        <input  id="fontColorId"  class="form-control" style="width: 30px;padding: 5px;text-align: center"   type="color" oninput="setFontColor(this)" value="#ffffff">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">坐标：</label>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="input-group">
-                                        <span class="input-group-addon">坐标线</span>
-                                        <input  id="lineColorId"  class="form-control"  type="color" oninput="setAxisLineColor(this)" value="#24214e">
+                                        <span class="input-group-addon">坐标</span>
+                                        <input  id="lineColorId"  class="form-control" style="width: 30px;padding: 5px;text-align: center"   type="color" oninput="setAxisLineColor(this)" value="#24214e">
                                     </div>
                                 </div>
                             </div>
