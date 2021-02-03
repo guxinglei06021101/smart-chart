@@ -51,6 +51,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">风格：</label>
+                                <div class="col-sm-5">
+                                    <select id="themeStyleId" name="themeStyle" class="form-control selectpicker"  style="height: min-content;width: 180px">
+                                        <option value="vintage" selected="selected">vintage</option>
+                                        <option value="shine" >shine</option>
+                                        <option value="roma" >roma</option>
+                                        <option value="macarons" >macarons</option>
+                                        <option value="infographic" >infographic</option>
+                                        <option value="dark" >dark</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">标题：</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
@@ -132,12 +145,16 @@
 </div>
 
 <script type="text/javascript"  src="${ctx!}/assets/js/jquery.min.js?v=2.1.4"></script>
-<script type="text/javascript" src="${ctx!}/assets/echart/js/echarts.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/echarts.min.5.0.1.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/dark.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/infographic.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/macarons.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/roma.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/shine.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/vintage.js"></script>
 <script type="text/javascript" src="${ctx!}/assets/echart/js/maps.js"></script>
 <script src="${ctx!}/assets/echart/js/xcConfirm.js"></script>
 <script src="${ctx!}/assets/js/plugins/layer/layer.min.js"></script>
 <script type="text/javascript" src="${ctx!}/assets/echart/js/add_chart.js"></script>
-
-
 </body>
 </html>

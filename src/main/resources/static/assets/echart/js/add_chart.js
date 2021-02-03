@@ -70,6 +70,11 @@ $(function(){
         showTableTr();
      });
 
+    $("#themeStyleId").change(function(){
+        themeStyle = $(this).val();
+        optionChart();
+    });
+
      $("#yAxisId").keyup(function(){
          yAxisName = $(this).val();
          let yAxisNameArr = yAxisName.split("");
@@ -111,8 +116,9 @@ let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 var legendData = ['系列1'];
 var pieColorArr = [];
-let fontColor = "#ffffff";
+let fontColor = "#000000";
 let axisLineColor = "#24214e";
+let themeStyle = 'vintage';
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
@@ -123,7 +129,6 @@ let reg5 = new RegExp("、","g");//g,表示全部替换。
 let toolbox = {
     feature: {
         saveAsImage: {
-            backgroundColor: '#040f3c',
             name: yAxisName,
             title:'下载图表'
         },
@@ -146,7 +151,10 @@ let legend = {
 let chart="";
 function optionChart(){
     settingOption();
-    chart= echarts.init(document.getElementById("bar-chart"));
+    if(chart != ""){
+        chart.dispose();
+    }
+    chart= echarts.init(document.getElementById("bar-chart"),themeStyle);
     chart.setOption(option,true);
 }
 
@@ -157,15 +165,6 @@ window.onresize = function(){
 var option;
 function settingOption(){
     //var type = $("#chartTypeId").val();
-    toolbox = {
-        feature: {
-            saveAsImage: {
-                backgroundColor: $("#backgroundColorId").val(),
-                name: yAxisName,
-                title:'下载图表'
-            },
-        }
-    };
     switch(chartType){
         case 'bar':
             barChart();
@@ -218,14 +217,7 @@ function barChart() {
             },
             itemStyle: {
                 normal: {
-                    color: new echarts.graphic.LinearGradient(
-                        0, 0, 0, 1,
-                        [
-                            {offset: 0, color: chartColor[i]},                   //柱图渐变色
-                            {offset: 0.5, color: chartColor[i]},                 //柱图渐变色
-                            {offset: 1, color: chartColor[i]},                   //柱图渐变色
-                        ]
-                    )
+                    color:chartColor[i],
                 }
             },
         });
@@ -284,25 +276,6 @@ function barChart() {
             nameLocation:"center",
             nameGap:40,
             nameRotate:0,
-            axisLabel: {
-                textStyle: {
-                    color: fontColor,
-                    fontSize:10,//坐标值得具体的颜色
-                }
-            },
-            axisLine: {
-                lineStyle: {
-                    type: 'solid',
-                    color:axisLineColor,
-                    width:'1  ',                                                //坐标线的宽度
-
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: axisLineColor,
-                }
-            }
         }],
         series: series,
     };
@@ -427,13 +400,7 @@ function lineChart() {
             },
             areaStyle: {
                 normal: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: chartColor[i].colorRgb(0.5),
-                    }, {
-                        offset: 1,
-                        color: chartColor[i].colorRgb(0),
-                    }], false),
+                    color:chartColor[i],
                     shadowColor: 'rgba(0, 0, 0, 0.1)',
                     shadowBlur: 10
                 }

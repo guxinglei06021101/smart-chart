@@ -38,7 +38,7 @@ body{
 .border-container {
     position: relative;
     margin-top: 5px;
-    /*border: 1px solid #24214e;*/
+    border: 1px solid #24214e;
 }
 /*.main-middle .borderno-container{
 	border-top: none;

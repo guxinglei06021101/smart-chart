@@ -32,7 +32,6 @@ body {
     width: 60%;
     height: 60%;
     padding: 5px 5px;
-    background: #040f3c;
 }
 .main-form{
     float: left;
@@ -48,7 +47,8 @@ body {
     position: relative;
     margin-top: 2px;
     /*padding: 10px;*/
-    /*border: 1px solid #24214e;*/
+	border: 1px solid #ffffff;
+	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 /*.main-middle .borderno-container{
 	border-top: none;
