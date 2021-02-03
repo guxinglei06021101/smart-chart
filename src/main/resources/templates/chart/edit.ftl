@@ -45,7 +45,6 @@
                                         <option value="pie" >饼状图</option>
                                         <option value="radar" >雷达图</option>
                                         <option value="funnel" >漏斗图</option>
-                                        <option value="gauge" >仪表盘</option>
                                     </select>
                                 </div>
                             </div>

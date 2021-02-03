@@ -3,7 +3,7 @@ $(function(){
     $("#submitId").click(function(){
 
     layer.confirm('确定要提交吗?', {icon: 3, title:'提示'}, function(index){
-        if(chartType == 'pie' || chartType == 'funnel' || chartType == 'gauge'){
+        if(chartType == 'pie' || chartType == 'funnel' || chartType == 'annular'){
             chartColor = pieColorArr;
         }
         var data = {
@@ -182,8 +182,8 @@ function settingOption(){
         case 'funnel':
             funnelChart();
             break;
-        case 'gauge':
-            gaugeChart();
+        case 'annular':
+            annularChart();
             break;
     };
 }
@@ -355,6 +355,57 @@ function pieChart() {
                         position: 'outside',
                         formatter: "{b}: {d}%"
                     }
+                },
+                data:data,
+            }
+        ]
+    };
+}
+//环状图
+function annularChart(){
+    var data = [];
+    pieColorArr = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        pieColorArr.push($("#colorPieId_"+i).val());
+    }
+    option = {
+        color:pieColorArr,
+        tooltip: {
+            formatter:'{b}: {c}',
+            trigger:'item',
+            axisPointer: {
+                type:'none',
+                lineStyle: {
+                    color: '#fff',
+                    type:'dashed'
+                }
+            }
+        },
+        toolbox: toolbox,
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '5px',
+            textStyle: {
+                fontSize: 12,
+                color: fontColor
+            }
+        },
+        series: [
+            {
+                name:xAxisDataType,
+                type:'pie',
+                selectedMode: 'single',
+                radius: ['40%', '60%'],
+                center:["50%","48%"],
+                label: {
+                    show: false
                 },
                 data:data,
             }
@@ -623,66 +674,6 @@ function funnelChart() {
         ]
     };
 }
-//仪表盘
-function gaugeChart() {
-    let data = [];
-    let colorArr = [];
-    const  length =  xAxisDataType.length;
-    var dataTotal = 0.0;
-    var colorRateArr = [];
-    for(let i=0;i<length;i++){
-        dataTotal = dataTotal + parseFloat(xAxisData[0][i]);
-        data.push({name: xAxisDataType[i],value: xAxisData[0][i]});
-        colorArr.push($("#colorPieId_"+i).val());
-    }
-
-    var rate = 0.0;
-    for(let i=0;i<length;i++){
-        rate =  rate + parseFloat(xAxisData[0][i])/parseFloat(dataTotal);
-        let x = [(rate).toFixed(1),colorArr[i]];
-        colorRateArr.push(x);
-    }
-    option = {
-        tooltip: {
-            formatter: '{a} <br/>{b} : {c}'
-        },
-        toolbox: toolbox,
-        legend: {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '20px',
-            top: '6px',
-            textStyle: {
-                fontSize: fontColor,
-                color: '#fff'
-            }
-        },
-        series: [
-            {
-                name: xAxisDataType,
-                type: 'gauge',
-                max: xAxisMaxVal,
-                detail: {formatter: '{value}'},
-                axisLine: {            // 坐标轴线
-                    lineStyle: {       // 属性lineStyle控制线条样式
-                        color: colorRateArr,//修改指针颜色,指针颜色根据仪表盘颜色变化
-                        width: 3,
-                        shadowColor : fontColor, //默认透明
-                        shadowBlur: 10
-                    }
-                },
-                title: {
-                    show:false,
-                    color:fontColor
-                },
-                data: data
-            }
-        ]
-    };
-}
 
 function ajax_get(url,successfunction){
     $.ajax({
@@ -835,7 +826,7 @@ function showTableTr() {
         case 'funnel':
             showTableOperate = false;
             break;
-        case 'gauge':
+        case "annular":
             showTableOperate = false;
             break;
         default:

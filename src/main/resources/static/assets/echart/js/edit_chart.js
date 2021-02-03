@@ -52,9 +52,6 @@ $(function(){
             case 'funnel':
                 showTableOperate = false;
                 break;
-            case 'gauge':
-                showTableOperate = false;
-                break;
             default:
                 showTableOperate = true;
                 pieColorArr = colorArr;
@@ -67,7 +64,7 @@ $(function(){
     $("#submitId").click(function(){
 
     layer.confirm('确定要保存吗?', {icon: 3, title:'提示'}, function(index){
-        if(chartType == 'pie' || chartType == 'funnel' || chartType == 'gauge'){
+        if(chartType == 'pie' || chartType == 'funnel'){
             chartColor = pieColorArr;
         }
         var data = {
@@ -240,9 +237,6 @@ function settingOption(){
             break;
         case 'funnel':
             funnelChart();
-            break;
-        case 'gauge':
-            gaugeChart();
             break;
     };
 }
@@ -673,66 +667,6 @@ function funnelChart() {
         ]
     };
 }
-//仪表盘
-function gaugeChart() {
-    let data = [];
-    let colorArr = [];
-    const  length =  xAxisDataType.length;
-    var dataTotal = 0.0;
-    var colorRateArr = [];
-    for(let i=0;i<length;i++){
-        dataTotal = dataTotal + parseFloat(xAxisData[0][i]);
-        data.push({name: xAxisDataType[i],value: xAxisData[0][i]});
-        colorArr.push($("#colorPieId_"+i).val());
-    }
-
-    var rate = 0.0;
-    for(let i=0;i<length;i++){
-        rate =  rate + parseFloat(xAxisData[0][i])/parseFloat(dataTotal);
-        let x = [(rate).toFixed(1),colorArr[i]];
-        colorRateArr.push(x);
-    }
-    option = {
-        tooltip: {
-            formatter: '{a} <br/>{b} : {c}'
-        },
-        toolbox: toolbox,
-        legend: {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '20px',
-            top: '6px',
-            textStyle: {
-                fontSize: 12,
-                color: '#fff'
-            }
-        },
-        series: [
-            {
-                name: xAxisDataType,
-                type: 'gauge',
-                max: xAxisMaxVal,
-                detail: {formatter: '{value}'},
-                axisLine: {            // 坐标轴线
-                    lineStyle: {       // 属性lineStyle控制线条样式
-                        color: colorRateArr,//修改指针颜色,指针颜色根据仪表盘颜色变化
-                        width: 3,
-                        shadowColor : '#fff', //默认透明
-                        shadowBlur: 10
-                    }
-                },
-                title: {
-                    show:false,
-                    color:'#fff'
-                },
-                data: data
-            }
-        ]
-    };
-}
 
 function ajax_get(url,successfunction){
     $.ajax({
@@ -873,9 +807,6 @@ function showTableTr() {
             showTableOperate = false;
             break;
         case 'funnel':
-            showTableOperate = false;
-            break;
-        case 'gauge':
             showTableOperate = false;
             break;
         default:
