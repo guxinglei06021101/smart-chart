@@ -19,17 +19,15 @@ public class Chart extends BaseEntity {
     private String title;
     private String type;
     private String status;
+    private String themeCode;
     private String legendData;
     private String xName;
     private String xData;
     private String yName;
-    private BigDecimal yMin;
     private BigDecimal yMax;
-    private Integer yInterval;
     private String seriesName;
     private String seriesType;
     private String seriesData;
-    private String seriesColor;
     private Integer userId;
     private String remark;
 

@@ -131,7 +131,14 @@
 </div>
 
 <script type="text/javascript"  src="${ctx!}/assets/js/jquery.min.js?v=2.1.4"></script>
-<script type="text/javascript" src="${ctx!}/assets/echart/js/echarts.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/echarts.min.5.0.1.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/dark.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/infographic.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/macarons.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/roma.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/shine.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/vintage.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/blue.js"></script>
 <script type="text/javascript" src="${ctx!}/assets/echart/js/maps.js"></script>
 <script src="${ctx!}/assets/echart/js/xcConfirm.js"></script>
 <script src="${ctx!}/assets/js/plugins/layer/layer.min.js"></script>

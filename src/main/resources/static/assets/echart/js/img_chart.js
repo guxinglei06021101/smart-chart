@@ -24,10 +24,9 @@ $(function(){
     });
 });
 
-let chartColor = ["#3b5ede"];
-let colorArr = ["#3b5ede","#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"];
 let xAxisMaxVal = 500;
 let chartType = "bar";
+let themeStyle = 'blue';
 let yAxisName = "自定义Y轴名称";
 let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [[100,200,300,400,500]];
@@ -86,6 +85,7 @@ function getData() {
 function optionChart(result){
     chartType = result.type;
     yAxisName = result.yName;
+    themeStyle = result.themeCode;
     var  yAxisNameArr = yAxisName.split("");
     yAxisPortraitName = "";
     yAxisNameArr.forEach(function(item){
@@ -94,9 +94,8 @@ function optionChart(result){
     xAxisDataType = JSON.parse(result.xData);
     legendData = JSON.parse(result.seriesName);
     xAxisData = JSON.parse(result.seriesData);
-    chartColor = JSON.parse(result.seriesColor);
     settingOption();
-    var chart = echarts.init(document.getElementById("id_"+result.id));
+    var chart = echarts.init(document.getElementById("id_"+result.id),themeStyle);
     chart.setOption(option,true);
     charArr.push(chart);
 }
@@ -107,10 +106,10 @@ function settingOption(){
     switch(chartType){
         case 'bar':
             barChart();
-        break;
+            break;
         case 'pie':
             pieChart();
-        break;
+            break;
         case 'line':
             lineChart();
             break;
@@ -120,9 +119,16 @@ function settingOption(){
         case 'funnel':
             funnelChart();
             break;
+        case 'annular':
+            annularChart();
+            break;
+        case 'rose':
+            roseChart();
+            break;
+        default:
+
     };
 }
-
 //柱状图
 function barChart() {
     var series = [];
@@ -141,28 +147,6 @@ function barChart() {
             type: chartType,
             barWidth:barWidth,
             data:xAxisData[i],
-            label: {
-                normal: {
-                    show: true,
-                    position: "top",
-                    textStyle: {
-                        color: "#625B5B",
-                        fontSize: 10
-                    }
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: new echarts.graphic.LinearGradient(
-                        0, 0, 0, 1,
-                        [
-                            {offset: 0, color: chartColor[i]},                   //柱图渐变色
-                            {offset: 0.5, color: chartColor[i]},                 //柱图渐变色
-                            {offset: 1, color: chartColor[i]},                   //柱图渐变色
-                        ]
-                    )
-                }
-            },
         });
     }
 
@@ -172,7 +156,6 @@ function barChart() {
             axisPointer: {
                 type:'shadow',
                 lineStyle: {
-                    color: '#fff',
                     type:'dashed'
                 }
             }
@@ -190,54 +173,14 @@ function barChart() {
         xAxis: [{
             show:true,
             name:'',
-            nameTextStyle:{
-                color:"#625B5B",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             data: xAxisDataType,       //横坐标
-            axisLabel:{
-                textStyle: {
-                    color:'#625B5B',
-                    fontSize:12,
-                }
-            },
-            axisLine: {
-                lineStyle: {
-                    type: 'solid',
-                    color:'#EFEFF0',
-                    width:'1',                                                //坐标线的宽度
-                }
-            },
         }],
         yAxis: [{
             show:true,
             name: yAxisPortraitName,
-            nameTextStyle:{
-                color:"#625B5B",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             nameLocation:"center",
-            nameGap:30,
+            nameGap:40,
             nameRotate:0,
-            axisLabel: {
-                textStyle: {
-                    color: '#625B5B',
-                    fontSize:10,//坐标值得具体的颜色
-                }
-            },
-            axisLine: {
-                lineStyle: {
-                    type: 'solid',
-                    color:'#EFEFF0',
-                    width:'1  ',                                                //坐标线的宽度
-
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: "#EFEFF0",
-                }
-            }
         }],
         series: series,
     };
@@ -250,14 +193,56 @@ function pieChart() {
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
     option = {
-        color:chartColor,
         tooltip: {
-            formatter:'{b}: {c} <br/>占比：{d}%',
+            formatter:'{b}: {c}',
+            trigger:'item',
+        },
+        toolbox: toolbox,
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '5px',
+            top: '5px',
+            textStyle: {
+                fontSize: 10,
+                color: '#625B5B'
+            }
+        },
+        series: [
+            {
+                name:xAxisDataType,
+                type:'pie',
+                selectedMode: 'single',
+                radius: [0, '50%'],
+                center:["50%","48%"],
+                label: {
+                    normal: {
+                        position: 'outside',
+                        formatter: "{b}: {d}%"
+                    }
+                },
+                data:data,
+            }
+        ]
+    };
+}
+//环状图
+function annularChart(){
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+    }
+    option = {
+        tooltip: {
+            formatter:'{b}: {c}',
             trigger:'item',
             axisPointer: {
                 type:'none',
                 lineStyle: {
-                    color: '#fff',
                     type:'dashed'
                 }
             }
@@ -281,13 +266,10 @@ function pieChart() {
                 name:xAxisDataType,
                 type:'pie',
                 selectedMode: 'single',
-                radius: [0, '70%'],
-                center:["50%","50%"],
+                radius: ['40%', '60%'],
+                center:["50%","48%"],
                 label: {
-                    normal: {
-                        position: 'inside',
-                        formatter: "{b}: {d}%"
-                    }
+                    show: false
                 },
                 data:data,
             }
@@ -309,22 +291,11 @@ function lineChart() {
             },
             /*areaStyle: {
                 normal: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: chartColor[i].colorRgb(0.5),
-                    }, {
-                        offset: 1,
-                        color: chartColor[i].colorRgb(0),
-                    }], false),
+                    color:chartColor[i],
                     shadowColor: 'rgba(0, 0, 0, 0.1)',
                     shadowBlur: 10
                 }
             },*/
-            itemStyle: {
-                normal: {
-                    color: chartColor[i],
-                }
-            },
             data: xAxisData[i],
         });
     }
@@ -335,10 +306,6 @@ function lineChart() {
             //formatter: '{b}: {c0}',
             axisPointer: {
                 type:'cross',
-                lineStyle: {
-                    color: '#625B5B',
-                    type:'dashed'
-                }
             }
         },
         toolbox: toolbox,
@@ -355,53 +322,26 @@ function lineChart() {
             name:'',
             type: 'category',
             boundaryGap: false,
-            nameTextStyle:{
-                color:"#24214e",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             data: xAxisDataType,       //横坐标
-            axisLabel:{
-                textStyle: {
-                    color:'#625B5B',
-                    fontSize:12,
-                }
-            },
             axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#625B5B',
                     width:'1',                                                //坐标线的宽度
                 }
             },
         },
         yAxis: {
             name: yAxisPortraitName,
-            nameTextStyle:{
-                color:"#625B5B",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             nameLocation:"center",
-            nameGap:35,
+            nameGap:40,
             nameRotate:0,
-            axisLabel: {
-                textStyle: {
-                    color: '#625B5B',
-                    fontSize:10,//坐标值得具体的颜色
-                }
-            },
-            axisLine: {
+            /*axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#625B5B',
+                    color:axisLineColor,
                     width:'1  ',                                                //坐标线的宽度
-
                 }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: "#EFEFF0",
-                }
-            }
+            },*/
         },
         series: series
     };
@@ -425,22 +365,6 @@ function radarChart() {
                     symbolSize:5,
                     areaStyle: {
                         normal: { // 单项区域填充样式
-                            color: {
-                                type: 'linear',
-                                x: 0, //右
-                                y: 0, //下
-                                x2: 1, //左
-                                y2: 1, //上
-                                colorStops: [{
-                                    offset: 0,
-                                    color: chartColor[i]
-                                },
-                                    {
-                                        offset: 1,
-                                        color: chartColor[i]
-                                    }],
-                                globalCoord: false
-                            },
                             opacity: 0.3 // 区域透明度
                         }
                     },
@@ -448,7 +372,6 @@ function radarChart() {
         });
     }
     option = {
-        color: chartColor,
         toolbox: toolbox,
         legend: legend,
         tooltip: {},
@@ -460,10 +383,6 @@ function radarChart() {
             startAngle: 90,
             name: {
                 formatter: '{value}',
-                textStyle: {
-                    fontSize: 12, //外圈标签字体大小
-                    color: '#625B5B' //外圈标签字体颜色
-                }
             },
             splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
                 show: true,
@@ -471,17 +390,6 @@ function radarChart() {
                     color: [], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
                 }
             },
-            axisLine: { //指向外圈文本的分隔线样式
-                lineStyle: {
-                    color: '#EFEFF0'
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: '#EFEFF0', // 分隔线颜色
-                    width: 1, // 分隔线线宽
-                }
-            }
         }, ],
         series: series
     }
@@ -489,14 +397,11 @@ function radarChart() {
 //漏斗图
 function funnelChart() {
     var data = [];
-    var colorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
-        colorArr.push($("#colorPieId_"+i).val());
     }
     option = {
-        color:colorArr,
         tooltip: {
             trigger: 'item',
             formatter: "{b} : {c}"
@@ -542,13 +447,9 @@ function funnelChart() {
                         type: 'solid'
                     }
                 },
-                itemStyle: {
-                    borderColor: '#57617B',
-                    borderWidth: 1
-                },
                 emphasis: {
                     label: {
-                        fontSize: 20
+                        fontSize: 16
                     }
                 },
                 data:data
@@ -556,28 +457,42 @@ function funnelChart() {
         ]
     };
 }
-//十六进制颜色值的正则表达式
-var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-/*16进制颜色转为RGB格式*/
-String.prototype.colorRgb = function(opacity){
-    var sColor = this.toLowerCase();
-    if(sColor && reg.test(sColor)){
-        if(sColor.length === 4){
-            var sColorNew = "#";
-            for(var i=1; i<4; i+=1){
-                sColorNew += sColor.slice(i,i+1).concat(sColor.slice(i,i+1));
-            }
-            sColor = sColorNew;
-        }
-        //处理六位的颜色值
-        var sColorChange = [];
-        for(var i=1; i<7; i+=2){
-            sColorChange.push(parseInt("0x"+sColor.slice(i,i+2)));
-        }
-       // return "rgb(" + sColorChange.join(",") + ")";
-//或
-        return "rgba(" + sColorChange.join(",") + ","+opacity+")";
-    }else{
-        return sColor;
+//南丁格尔玫瑰图
+function roseChart() {
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
-};
+    option = {
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '5px',
+            top: '5px',
+            textStyle: {
+                fontSize: 10,
+                color: '#625B5B'
+            }
+        },
+        toolbox: toolbox,
+        series: [
+            {
+                name: xAxisDataType,
+                type: 'pie',
+                radius: [20, 100],
+                center: ['50%', '48%'],
+                roseType: 'area',
+                itemStyle: {
+                    borderRadius: 5
+                },
+                data: data
+            }
+        ]
+    };
+}
+
+

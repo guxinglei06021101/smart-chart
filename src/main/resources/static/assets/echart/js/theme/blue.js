@@ -18,19 +18,51 @@
         log('ECharts is not Loaded');
         return;
     }
+    var contrastColor = '#aaa';
+    var axisCommon = function () {
+        return {
+            axisLine: {
+                lineStyle: {
+                    color: contrastColor
+                }
+            },
+            axisTick: {
+                lineStyle: {
+                    color: contrastColor
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: contrastColor
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed',
+                    color: '#24214e'
+                }
+            },
+            splitArea: {
+                areaStyle: {
+                    color: contrastColor
+                }
+            }
+        };
+    };
 
     var colorPalette = [
-        '#c12e34','#e6b600','#0098d9','#2b821d',
-        '#005eaa','#339ca8','#cda819','#32a487'
+        "#3b5ede","#6A5ACD","#fea31e","#7cb5ec",
+        "#99cc33","#3a8bf9","#4682B4","#30a605",
+        "#27a08d"
     ];
 
     var theme = {
-
         color: colorPalette,
+        backgroundColor: '#040f3c',
         legend: {
             textStyle: {
                 fontSize: 12,
-                color: '#000000'
+                color: '#ffffff'
             }
         },
         title: {
@@ -58,6 +90,13 @@
             }
         },
 
+        timeAxis: axisCommon(),
+        logAxis: axisCommon(),
+        valueAxis: axisCommon(),
+        categoryAxis: axisCommon(),
+        line: {
+            symbol: 'circle'
+        },
         dataZoom: {
             dataBackgroundColor: '#dedede',
             fillerColor: 'rgba(154,217,247,0.2)',
@@ -66,7 +105,7 @@
 
         timeline: {
             lineStyle: {
-                color: '#005eaa'
+                color: '#ffffff'
             },
             controlStyle: {
                 normal: {
@@ -161,5 +200,5 @@
             }
         }
     };
-    echarts.registerTheme('shine', theme);
+    echarts.registerTheme('blue', theme);
 }));

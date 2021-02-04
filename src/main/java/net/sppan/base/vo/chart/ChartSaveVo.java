@@ -19,6 +19,8 @@ public class ChartSaveVo {
 
     private String yMax;
 
+    private String themeCode;
+
     @NotBlank(message = "图表数值不能为空")
     private String xData;
 
@@ -31,9 +33,6 @@ public class ChartSaveVo {
     private String seriesType;
 
     private String seriesData;
-
-    @NotBlank(message = "图表颜色不能为空")
-    private String seriesColor;
 
     private String remark;
 }

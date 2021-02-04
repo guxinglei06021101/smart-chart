@@ -114,10 +114,19 @@
         </div>
     </div>
 </div>
+<div id="chartId"></div>
 
 <!-- 全局js -->
 <script src="${ctx!}/assets/js/jquery.min.js?v=2.1.4"></script>
 <script src="${ctx!}/assets/js/bootstrap.min.js?v=3.3.6"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/echarts.min.5.0.1.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/dark.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/infographic.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/macarons.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/roma.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/shine.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/vintage.js"></script>
+<script type="text/javascript" src="${ctx!}/assets/echart/js/theme/blue.js"></script>
 
 <!-- Bootstrap table -->
 <script src="${ctx!}/assets/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
@@ -135,6 +144,7 @@
 
 <!-- Page-Level Scripts -->
 <script>
+    var chartDataArr = [];
     $(document).ready(function () {
 
         //初始化表格,动态从服务器加载数据
@@ -152,7 +162,7 @@
             //每页显示的记录数
             pageSize: 10,
             //当前第几页
-            pageNumber: 0,
+            pageNumber: 1,
             //记录数可选列表
             pageList: [ 10, 20, 30, 50,100],
             //是否启用查询
@@ -174,40 +184,12 @@
             },
             //数据列
             columns: [{
-                field: 'number',
-                title: '序号',
-                width:5 ,
-                align:'center',
-                switchable:false,
-                formatter:function(value,row,index){
-                    //return index+1; //序号正序排序从1开始
-                    var pageSize=$("#table_list").bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
-                    var pageNumber=$("#table_list").bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
-                    return pageSize * pageNumber + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
-                }
-            },{
-                title: "",
+                title: "图表",
                 field: "type",
                 formatter: function(value,row,index){
-                    if (value == 'bar'){
-                        return '<img class="chartImg"  src="${ctx!}/assets/img/bar.png"/>';
-                    }else if(value == 'pie'){
-                        return '<img class="chartImg"  src="${ctx!}/assets/img/pie.png"/>';
-                    }else if(value == 'line'){
-                        return '<img class="chartImg"  src="${ctx!}/assets/img/line.png"/>';
-                    }
-                    return '';
+                    chartDataArr.push(row);
+                    return "<div style=\"height: 40px;width: 60px\" id=\"id_"+row.id+"\"></div>";
                 }
-
-            },{
-                title: "名称",
-                field: "name"
-            },{
-                title: "标题",
-                field: "title"
-            },{
-                title: "Y轴名称",
-                field: "yName"
             },{
                 title: "类型",
                 field: "type",
@@ -222,6 +204,15 @@
                     return '-';
                 }
             },{
+                title: "名称",
+                field: "name"
+            },{
+                title: "标题",
+                field: "title"
+            },{
+                title: "Y轴名称",
+                field: "yName"
+            },{
                 title: "状态",
                 field: "status",
                 formatter: function(value,row,index){
@@ -233,9 +224,6 @@
                 title: "创建时间",
                 field: 'createTime',
                 sortable: true
-            },{
-                title: "更新时间",
-                field: 'updateTime'
             },{
                 title: "备注",
                 field: 'remark'
@@ -254,11 +242,19 @@
                     operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-times-circle"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
-            }]
+            }],
+            onPostBody: function() {
+                chartDataArr.forEach(function (item) {
+                    optionChart(item);
+                });
+                chartDataArr = [];
+            },
         });
     });
 
     function detailFormatter(index, row) {
+
+
 
     var result = "<div class=\"subTable\"><table class=\"table table-bordered table-hover table-striped\"><thead><tr>";
     result += "<th>系列名称</th>";
@@ -402,6 +398,294 @@
                 });
             }
         });
+    }
+
+
+
+    let xAxisMaxVal = 500;
+    let themeStyle = 'vintage';
+    let chartType = "bar";
+    let yAxisName = "自定义Y轴名称";
+    let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
+    let xAxisData = [[100,200,300,400,500]];
+    let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
+
+    window.onresize = function(){
+        chart.resize();    //若有多个图表变动，可多写
+    }
+
+    var legendData = [];
+
+    let chart="";
+    function optionChart(result){
+        chartType = result.type;
+        yAxisName = result.yName;
+        themeStyle = result.themeCode;
+        var  yAxisNameArr = yAxisName.split("");
+        yAxisPortraitName = "";
+        yAxisNameArr.forEach(function(item){
+            yAxisPortraitName = yAxisPortraitName + item + "\n";
+        });
+        xAxisDataType = JSON.parse(result.xData);
+        legendData = JSON.parse(result.seriesName);
+        xAxisData = JSON.parse(result.seriesData);
+        settingOption();
+        chart = echarts.init(document.getElementById("id_"+result.id),themeStyle);
+        chart.setOption(option,true);
+    }
+
+    var option;
+    function settingOption(){
+        //var type = $("#chartTypeId").val();
+        switch(chartType){
+            case 'bar':
+                barChart();
+                break;
+            case 'pie':
+                pieChart();
+                break;
+            case 'line':
+                lineChart();
+                break;
+            case 'radar':
+                radarChart();
+                break;
+            case 'funnel':
+                funnelChart();
+                break;
+            case 'annular':
+                annularChart();
+                break;
+            case 'rose':
+                roseChart();
+                break;
+            default:
+        };
+    }
+    //柱状图
+    function barChart() {
+        var series = [];
+        var barWidth = 0;
+        var xAxisLength = xAxisData.length;
+        if(xAxisLength < 3){
+            barWidth = 5;
+        }else if(xAxisLength < 5){
+            barWidth = 3;
+        }else{
+            barWidth = 1;
+        }
+        for(let i=0;i<xAxisData.length;i++){
+            series.push({
+                name:legendData[i],
+                type: chartType,
+                barWidth:barWidth,
+                data:xAxisData[i],
+            });
+        }
+
+        option = {
+            grid: {
+            },
+            xAxis: {
+                show:true,
+                name:'',
+                data: xAxisDataType,       //横坐标
+            },
+            yAxis: {
+                show:false,
+            },
+            series: series,
+        };
+    }
+    //饼状图
+    function pieChart() {
+        var data = [];
+        const  length =  xAxisDataType.length;
+        for(let i=0;i<length;i++){
+            data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        }
+        option = {
+            series: [
+                {
+                    name:'',
+                    type:'pie',
+                    selectedMode: 'single',
+                    radius: [0, '80%'],
+                    center:["50%","48%"],
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    data:data,
+                }
+            ]
+        };
+    }
+    //环状图
+    function annularChart(){
+        var data = [];
+        const  length =  xAxisDataType.length;
+        for(let i=0;i<length;i++){
+            data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        }
+        option = {
+            series: [
+                {
+                    name:xAxisDataType,
+                    type:'pie',
+                    selectedMode: 'single',
+                    radius: ['40%', '80%'],
+                    center:["50%","48%"],
+                    label: {
+                        show: false
+                    },
+                    data:data,
+                }
+            ]
+        };
+    }
+    //折线图
+    function lineChart() {
+        var series = [];
+        for(let i=0;i<xAxisData.length;i++){
+            series.push({
+                name:legendData[i],
+                type: 'line',
+                smooth: true,
+                data: xAxisData[i],
+            });
+        }
+
+        option = {
+            grid: {
+            },
+            xAxis: {
+                name:'',
+                type: 'category',
+                boundaryGap: false,
+                data: xAxisDataType,       //横坐标
+                axisLine: {
+                    lineStyle: {
+                        type: 'solid',
+                        width:'1',                                                //坐标线的宽度
+                    }
+                },
+            },
+            yAxis: {},
+            series: series
+        };
+    }
+    //雷达图
+    function radarChart() {
+        const  length =  xAxisDataType.length;
+        let indicator  = [];
+        for(let i=0;i<length;i++){
+            indicator.push({text: xAxisDataType[i],max: xAxisMaxVal});
+        }
+        var series = [];
+        for(let i=0;i<xAxisData.length;i++) {
+            series.push({
+                name:legendData[i],
+                type: 'radar',
+                data: [
+                    {
+                        name: legendData[i],
+                        value: xAxisData[i],
+                        symbolSize:3,
+                        areaStyle: {
+                            normal: { // 单项区域填充样式
+                                opacity: 0.3 // 区域透明度
+                            }
+                        },
+                    }]
+            });
+        }
+        option = {
+            radar: [{
+                indicator: indicator,
+                center: ['50%', '52%'],
+                radius: '90%',
+                startAngle: 90,
+                name: {
+                    formatter: '{value}',
+                },
+                splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
+                    show: true,
+                    areaStyle: { // 分隔区域的样式设置。
+                        color: [], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
+                    }
+                },
+            }, ],
+            series: series
+        }
+    }
+    //漏斗图
+    function funnelChart() {
+        var data = [];
+        const  length =  xAxisDataType.length;
+        for(let i=0;i<length;i++){
+            data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        }
+        option = {
+            series: [
+                {
+                    name:xAxisDataType,
+                    type:'funnel',
+                    left: '10%',
+                    top: 60,
+                    //x2: 80,
+                    bottom: 30,
+                    width: '80%',
+                    // height: {totalHeight} - y - y2,
+                    min: 0,
+                    max: xAxisMaxVal,
+                    minSize: '0',
+                    maxSize: xAxisMaxVal,
+                    sort: 'ascending',
+                    gap: 4,
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    labelLine: {
+                        length: 10,
+                        lineStyle: {
+                            width: 3,
+                            type: 'solid'
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            fontSize: 16
+                        }
+                    },
+                    data:data
+                }
+            ]
+        };
+    }
+    //南丁格尔玫瑰图
+    function roseChart() {
+        var data = [];
+        const  length =  xAxisDataType.length;
+        for(let i=0;i<length;i++){
+            data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+        }
+        option = {
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    radius: [5, 20],
+                    center: ['50%', '48%'],
+                    roseType: 'area',
+                    itemStyle: {
+                        borderRadius: 5
+                    },
+                    data: data
+                }
+            ]
+        };
     }
 </script>
 </body>

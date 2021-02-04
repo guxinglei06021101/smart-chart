@@ -21,8 +21,8 @@ public class ChartUpdateVo {
     private String type;
 
     private String xName;
-
     private String yMax;
+    private String themeCode;
 
     @NotBlank(message = "图表数值不能为空")
     private String xData;
@@ -34,11 +34,6 @@ public class ChartUpdateVo {
 
     @NotBlank(message = "图表系列类型不能为空")
     private String seriesType;
-
     private String seriesData;
-
-    @NotBlank(message = "图表颜色不能为空")
-    private String seriesColor;
-
     private String remark;
 }
