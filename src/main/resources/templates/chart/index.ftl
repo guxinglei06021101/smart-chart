@@ -593,6 +593,7 @@
                 type: 'line',
                 smooth: true,
                 data: xAxisData[i],
+                symbolSize:0,
             });
         }
 
