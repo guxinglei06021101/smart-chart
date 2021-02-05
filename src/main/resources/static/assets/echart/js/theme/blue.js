@@ -61,7 +61,6 @@
         backgroundColor: '#040f3c',
         legend: {
             textStyle: {
-                fontSize: 12,
                 color: '#ffffff'
             }
         },
@@ -156,7 +155,16 @@
                 }
             }
         },
-
+        radar:{
+            splitLine: { // (这里是指所有圆环)坐标轴在 grid 区域中的分隔线。
+                lineStyle: {
+                    color: '#999',
+                    // 分隔线颜色
+                    width: 1,
+                    // 分隔线线宽
+                }
+            }
+        },
         gauge: {
             axisLine: {
                 show: true,

@@ -106,7 +106,7 @@ let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 var legendData = ['系列1'];
-let themeStyle = 'vintage';
+let themeStyle = 'shine';
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
@@ -399,10 +399,10 @@ function radarChart() {
                 {
                     name: legendData[i],
                     value: xAxisData[i],
-                    symbolSize:5,
+                    symbolSize:3,
                     areaStyle: {
                         normal: { // 单项区域填充样式
-                            opacity: 0.3 // 区域透明度
+                            opacity: 0.5 // 区域透明度
                         }
                     },
                 }]

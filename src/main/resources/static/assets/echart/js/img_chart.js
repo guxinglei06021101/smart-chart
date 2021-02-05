@@ -50,7 +50,6 @@ let legend = {
             top: '5px',
             textStyle: {
                 fontSize: 10,
-                color: '#625B5B'
             }
         };
 var legendData = [];
@@ -129,6 +128,7 @@ function settingOption(){
 
     };
 }
+
 //柱状图
 function barChart() {
     var series = [];
@@ -208,7 +208,6 @@ function pieChart() {
             top: '5px',
             textStyle: {
                 fontSize: 10,
-                color: '#625B5B'
             }
         },
         series: [
@@ -258,7 +257,6 @@ function annularChart(){
             top: '5px',
             textStyle: {
                 fontSize: 10,
-                color: '#625B5B'
             }
         },
         series: [
@@ -362,10 +360,10 @@ function radarChart() {
                 {
                     name: legendData[i],
                     value: xAxisData[i],
-                    symbolSize:5,
+                    symbolSize:3,
                     areaStyle: {
                         normal: { // 单项区域填充样式
-                            opacity: 0.3 // 区域透明度
+                            opacity: 0.5 // 区域透明度
                         }
                     },
                 }]
@@ -417,7 +415,6 @@ function funnelChart() {
             top: '5px',
             textStyle: {
                 fontSize: 10,
-                color: '#625B5B'
             }
         },
         series: [
@@ -475,7 +472,6 @@ function roseChart() {
             top: '5px',
             textStyle: {
                 fontSize: 10,
-                color: '#625B5B'
             }
         },
         toolbox: toolbox,
@@ -494,5 +490,6 @@ function roseChart() {
         ]
     };
 }
+
 
 

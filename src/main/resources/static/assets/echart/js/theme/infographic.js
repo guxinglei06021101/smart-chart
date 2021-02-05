@@ -130,6 +130,15 @@
             symbol: 'circle',
             symbolSize: 3.5
         },
+        radar:{
+            name: { // (圆外的标签)雷达图每个指示器名称的配置项。
+                formatter: '{value}',
+                textStyle: {
+                    fontSize: 15,
+                    color: '#777'
+                }
+            }
+        },
 
         candlestick: {
             itemStyle: {

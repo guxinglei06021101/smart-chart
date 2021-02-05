@@ -31,7 +31,10 @@ $(function(){
             itemGap: 13,
             data: legendData,
             right: '20px',
-            top: '6px',
+            top: '5px',
+            textStyle: {
+                fontSize: 10,
+            }
         };
         toolbox = {
             feature: {
@@ -198,7 +201,10 @@ let legend = {
     itemGap: 13,
     data: legendData,
     right: '20px',
-    top: '6px',
+    top: '5px',
+    textStyle: {
+        fontSize: 10,
+    }
 };
 
 let chart="";
@@ -321,7 +327,10 @@ function pieChart() {
             itemGap: 13,
             data: xAxisDataType,
             right: '20px',
-            top: '6px',
+            top: '5px',
+            textStyle: {
+                fontSize: 10,
+            }
         },
         series: [
             {
@@ -368,6 +377,9 @@ function annularChart(){
             data: xAxisDataType,
             right: '20px',
             top: '5px',
+            textStyle: {
+                fontSize: 10,
+            }
         },
         series: [
             {
@@ -522,7 +534,10 @@ function funnelChart() {
             itemGap: 13,
             data: xAxisDataType,
             right: '20px',
-            top: '6px',
+            top: '5px',
+            textStyle: {
+                fontSize: 10,
+            }
         },
         series: [
             {
@@ -576,7 +591,10 @@ function roseChart() {
             itemGap: 13,
             data: xAxisDataType,
             right: '20px',
-            top: '6px',
+            top: '5px',
+            textStyle: {
+                fontSize: 10,
+            }
         },
         toolbox: toolbox,
         series: [
@@ -645,11 +663,10 @@ function tableChange() {
         itemGap: 13,
         data: legendData,
         right: '20px',
-        top: '6px',
-        /*textStyle: {
-            fontSize: 12,
-            color: '#fff'
-        }*/
+        top: '5px',
+        textStyle: {
+            fontSize: 10,
+        }
     };
 }
 

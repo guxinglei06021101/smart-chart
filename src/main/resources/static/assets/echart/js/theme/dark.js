@@ -51,10 +51,17 @@
         };
     };
 
-    var colorPalette = ['#dd6b66','#759aa0','#e69d87','#8dc1a9','#ea7e53','#eedd78','#73a373','#73b9bc','#7289ab', '#91ca8c','#f49f42'];
+    var colorPalette = ['#dd6b66','#759aa0','#e69d87','#8dc1a9',
+        '#ea7e53','#eedd78','#73a373','#73b9bc','#7289ab',
+        '#91ca8c','#f49f42'];
     var theme = {
         color: colorPalette,
         backgroundColor: '#333',
+        legend: {
+            textStyle: {
+                color: contrastColor
+            }
+        },
         tooltip: {
             axisPointer: {
                 lineStyle: {
@@ -63,11 +70,6 @@
                 crossStyle: {
                     color: contrastColor
                 }
-            }
-        },
-        legend: {
-            textStyle: {
-                color: contrastColor
             }
         },
         textStyle: {
@@ -120,6 +122,16 @@
 
         line: {
             symbol: 'circle'
+        },
+        radar:{
+            splitLine: { // (这里是指所有圆环)坐标轴在 grid 区域中的分隔线。
+                lineStyle: {
+                    color: '#999',
+                    // 分隔线颜色
+                    width: 1,
+                    // 分隔线线宽
+                }
+            }
         },
         graph: {
             color: colorPalette
