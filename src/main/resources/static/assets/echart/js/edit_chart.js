@@ -44,22 +44,7 @@ $(function(){
                 },
             }
         };
-        switch (chartType) {
-            case 'pie':
-                showTableOperate = false;
-                break;
-            case 'rose':
-                showTableOperate = false;
-                break;
-            case 'annular':
-                showTableOperate = false;
-                break;
-            case 'funnel':
-                showTableOperate = false;
-                break;
-            default:
-                showTableOperate = true;
-        }
+        console.log(JSON.stringify(xAxisData));
         tableHead();
         tableChange();
         showTableTr();
@@ -327,10 +312,7 @@ function pieChart() {
             itemGap: 13,
             data: xAxisDataType,
             right: '20px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
+            top: '6px',
         },
         series: [
             {
@@ -377,9 +359,6 @@ function annularChart(){
             data: xAxisDataType,
             right: '20px',
             top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
         },
         series: [
             {
@@ -482,10 +461,10 @@ function radarChart() {
                 {
                     name: legendData[i],
                     value: xAxisData[i],
-                    symbolSize:5,
+                    symbolSize:3,
                     areaStyle: {
                         normal: { // 单项区域填充样式
-                            opacity: 0.3 // 区域透明度
+                            opacity: 0.5 // 区域透明度
                         }
                     },
                 }]
@@ -534,10 +513,7 @@ function funnelChart() {
             itemGap: 13,
             data: xAxisDataType,
             right: '20px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
+            top: '6px',
         },
         series: [
             {
@@ -591,10 +567,7 @@ function roseChart() {
             itemGap: 13,
             data: xAxisDataType,
             right: '20px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
+            top: '6px',
         },
         toolbox: toolbox,
         series: [
@@ -638,6 +611,7 @@ function ajax_get(url,successfunction){
     });
 }
 
+
 function tableChange() {
     xAxisData = [];
     legendData = [];
@@ -663,7 +637,7 @@ function tableChange() {
         itemGap: 13,
         data: legendData,
         right: '20px',
-        top: '5px',
+        top: '6px',
         textStyle: {
             fontSize: 10,
         }
@@ -677,22 +651,33 @@ function tableHead() {
     xAxisDataType.forEach(function (item) {
         result +="<th>"+item+"</th>";
     });
-    result +="<th id=\"operatethId_0\"> <a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+    result +="<th id=\"operatethId_0\">操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+    result +="</tr></thead><tbody id=\"tbodyId\">";
 
-    result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
-    result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
-    var val = 0;
+    var len = legendData.length;
     let length = xAxisDataType.length;
-    for(let i=0;i<length;i++){
-        val = val + 100;
-        result += "<td>" ;
-        result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\">" ;
-        result += "</td>";
+    for(let i=0;i<len;i++){
+        if(i == 0){
+            result +="<tr>";
+        }else{
+            result +="<tr id=\"datatrId_"+i+"\">";
+        }
+        result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+legendData[i]+"\"></td>";
+        for(let k=0;k<length;k++){
+            result += "<td>" ;
+            result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+ xAxisData[i][k]+"\">" ;
+            result += "</td>";
+        }
+        if(i == 0 ){
+            result +="<td id=\"operatethId_"+(i+1)+"\"></td></tr>";
+        }else{
+            result +="<td id=\"operatethId_"+(i+1)+"\"><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
+        }
     }
-    result +="<td id=\"operatethId_1\"></td>";
-    result +="</tr></tbody>";
+    result +="</tbody>";
     $("#tableId").html(result);
 }
+
 function addTableTr() {
     let trLen = $("#tableId").find("tr").length;
     if(trLen > 10){
@@ -712,7 +697,6 @@ function addTableTr() {
 }
 
 function dataKeyup() {
-    fontColor = $("#fontColorId").val();
     tableChange();
     optionChart();
 }

@@ -495,11 +495,11 @@
         var barWidth = 0;
         var xAxisLength = xAxisData.length;
         if(xAxisLength < 3){
-            barWidth = 5;
+            barWidth = 6;
         }else if(xAxisLength < 5){
-            barWidth = 3;
+            barWidth = 4;
         }else{
-            barWidth = 1;
+            barWidth = 2;
         }
         for(let i=0;i<xAxisData.length;i++){
             series.push({
