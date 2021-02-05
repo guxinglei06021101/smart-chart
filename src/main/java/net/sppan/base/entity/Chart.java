@@ -31,7 +31,7 @@ public class Chart extends BaseEntity {
     private Integer userId;
     private String remark;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss" )
+    @JSONField(format = "yyyy-MM-dd" )
     private Date createTime;
 
     @JSONField(format = "yyyy-MM-dd HH:mm:ss" )

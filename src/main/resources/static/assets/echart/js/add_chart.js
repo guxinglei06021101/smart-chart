@@ -106,7 +106,6 @@ let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 var legendData = ['系列1'];
-let fontColor = "#000000";
 let themeStyle = 'vintage';
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
@@ -625,7 +624,6 @@ function addTableTr() {
 }
 
 function dataKeyup() {
-    fontColor = $("#fontColorId").val();
     tableChange();
     optionChart();
 }
@@ -634,24 +632,6 @@ function removeTr(obj) {
     let tr = $(obj).parent().parent();
     tr.remove();
     dataKeyup();
-}
-
-function setBackgroundColor(obj){
-     $(".main-middle").css("background", $(obj).val());
-}
-
-function setFontColor(obj) {
-    fontColor = $(obj).val();
-    legend = {
-        icon: 'rect',
-        itemWidth: 14,
-        itemHeight: 5,
-        itemGap: 13,
-        data: legendData,
-        right: '20px',
-        top: '6px',
-    };
-    optionChart();
 }
 
 function showTableTr() {

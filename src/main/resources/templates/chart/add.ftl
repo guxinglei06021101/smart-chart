@@ -31,93 +31,89 @@
     </div>
 
     <div class="main-form">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="ibox float-e-margins" style="align-content: center">
-                    <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="frm" method="" action="${ctx!}/chart/save">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">类型：</label>
-                                <div class="col-sm-5">
-                                    <select id="chartTypeId" name="type" class="form-control selectpicker"  style="height: min-content;width: 180px">
-                                        <option value="bar" selected="selected">柱状图</option>
-                                        <option value="line" >折线图</option>
-                                        <option value="pie" >饼状图</option>
-                                        <option value="annular" >环形图</option>
-                                        <option value="rose" >南丁格尔玫瑰图</option>
-                                        <option value="radar" >雷达图</option>
-                                        <option value="funnel" >漏斗图</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">风格：</label>
-                                <div class="col-sm-5">
-                                    <select id="themeStyleId" name="themeStyle" class="form-control selectpicker"  style="height: min-content;width: 180px">
-                                        <option value="shine" selected="selected">shine</option>
-                                        <option value="roma" >roma</option>
-                                        <option value="macarons" >macarons</option>
-                                        <option value="infographic" >infographic</option>
-                                        <option value="vintage" >vintage</option>
-                                        <option value="blue" >blue</option>
-                                        <option value="dark" >dark</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">标题：</label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">标题</span>
-                                        <input id="titleId" name="title" class="form-control" placeholder="图表标题" type="text" value="自定义图表标题">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">名称：</label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">名称</span>
-                                        <input id="nameId" name="name" class="form-control" placeholder="图表名称" type="text" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">X轴：</label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">名称</span>
-                                        <input id="xAxisDataTypeId" name="seriesType" class="form-control" placeholder="X轴" type="text" value="自定义1,自定义2,自定义3,自定义4,自定义5">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Y轴：</label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">名称</span>
-                                        <input id="yAxisId" name="yName" class="form-control" placeholder="Y轴名称" type="text" value="自定义Y轴名称">
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">描述：</label>
-                                <div class="col-sm-9">
-                                    <textarea class="form-control" name="remark" id="remarkId" placeholder="内容…"></textarea>
-                                </div>
-
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-3 col-sm-offset-3">
-                                    <br/>
-                                    <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="hidden" value="500">
-                                    <button class="btn btn-primary" type="button" id="submitId">提交</button>
-                                </div>
-                            </div>
-                        </form>
+        <div class="ibox float-e-margins" style="align-content: center">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="frm" method="" action="${ctx!}/chart/save">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">类型：</label>
+                        <div class="col-sm-5">
+                            <select id="chartTypeId" name="type" class="form-control selectpicker"  style="height: min-content;width: 180px">
+                                <option value="bar" selected="selected">柱状图</option>
+                                <option value="line" >折线图</option>
+                                <option value="pie" >饼状图</option>
+                                <option value="annular" >环形图</option>
+                                <option value="rose" >南丁格尔玫瑰图</option>
+                                <option value="radar" >雷达图</option>
+                                <option value="funnel" >漏斗图</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">样式：</label>
+                        <div class="col-sm-5">
+                            <select id="themeStyleId" name="themeStyle" class="form-control selectpicker"  style="height: min-content;width: 180px">
+                                <option value="shine" selected="selected">shine</option>
+                                <option value="roma" >roma</option>
+                                <option value="macarons" >macarons</option>
+                                <option value="infographic" >infographic</option>
+                                <option value="vintage" >vintage</option>
+                                <option value="blue" >blue</option>
+                                <option value="dark" >dark</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">标题：</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-addon">标题</span>
+                                <input id="titleId" name="title" class="form-control" placeholder="图表标题" type="text" value="自定义图表标题">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称：</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-addon">名称</span>
+                                <input id="nameId" name="name" class="form-control" placeholder="图表名称" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">X轴：</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-addon">名称</span>
+                                <input id="xAxisDataTypeId" name="seriesType" class="form-control" placeholder="X轴" type="text" value="自定义1,自定义2,自定义3,自定义4,自定义5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Y轴：</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-addon">名称</span>
+                                <input id="yAxisId" name="yName" class="form-control" placeholder="Y轴名称" type="text" value="自定义Y轴名称">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">描述：</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" name="remark" id="remarkId" placeholder="内容…"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3 col-sm-offset-3">
+                            <br/>
+                            <input id="xAxisMaxValId" name="xAxisMaxVal" class="form-control" placeholder="" type="hidden" value="500">
+                            <button class="btn btn-primary" type="button" id="submitId">提交</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

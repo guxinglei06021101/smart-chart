@@ -81,14 +81,18 @@
                             <div class="example-wrap">
                                 <div class="example">
                                     <div class="form-group">
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <div class="input-group">
                                                 <span class="input-group-addon">类型</span>
-                                                <select id="type" onchange="return search(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 80%;">
-                                                    <option value="">全部</option>
-                                                    <option value="pie">饼状图</option>
-                                                    <option value="line">折线图</option>
-                                                    <option value="bar">柱状图</option>
+                                                <select id="type" onchange="return search(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 90%;">
+                                                    <option value="" selected="selected">全部</option>
+                                                    <option value="bar" >柱状图</option>
+                                                    <option value="line" >折线图</option>
+                                                    <option value="pie" >饼状图</option>
+                                                    <option value="annular" >环形图</option>
+                                                    <option value="rose" >南丁格尔图</option>
+                                                    <option value="radar" >雷达图</option>
+                                                    <option value="funnel" >漏斗图</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -157,6 +161,7 @@
             url: "${ctx!}/chart/list",
             //表格显示条纹
             striped: true,
+            sortable: false,
             //启动分页
             pagination: true,
             //每页显示的记录数
@@ -166,7 +171,15 @@
             //记录数可选列表
             pageList: [ 10, 20, 30, 50,100],
             //是否启用查询
-            search: true,
+            search: false,
+            showColumns: true, // 开启自定义列显示功能
+            showRefresh: false, // 开启刷新功能
+            minimumCountColumns: 5,// 设置最少显示列个数
+            clickToSelect: true,
+            smartDisplay: true,
+            clickToSelect: true, // 单击行即可以选中
+            smartDisplay: true, // 智能显示 pagination 和 cardview 等
+            striped: true, // 隔行加亮
             //是否启用详细信息视图
             detailView:true,
             detailFormatter:detailFormatter,
@@ -186,32 +199,51 @@
             columns: [{
                 title: "图表",
                 field: "type",
+                visible: true,
+                width:120,
                 formatter: function(value,row,index){
                     chartDataArr.push(row);
-                    return "<div style=\"height: 40px;width: 60px\" id=\"id_"+row.id+"\"></div>";
+                    return "<div style=\"height: 80px;width: 100px\" id=\"id_"+row.id+"\"></div>";
                 }
             },{
                 title: "类型",
                 field: "type",
+                visible: true,
                 formatter: function(value,row,index){
-                    if (value == 'bar'){
-                        return '柱状图';
-                    }else if(value == 'pie'){
-                        return '饼图';
-                    }else if(value == 'line'){
-                        return '折线图';
+                    switch (value){
+                        case 'bar':
+                            return '柱状图';
+                        case 'pie':
+                            return '饼状图';
+                        case 'line':
+                            return '折线图';
+                        case 'line':
+                            return '折线图';
+                        case 'radar':
+                            return '雷达图';
+                        case 'funnel':
+                            return '；漏斗图';
+                        case 'annular':
+                            return '环状图';
+                        case 'rose':
+                            return '南丁格尔图';
+                        default:
+                            return '-';
                     }
-                    return '-';
                 }
             },{
                 title: "名称",
-                field: "name"
+                field: "name",
+                visible: true
+
             },{
                 title: "标题",
-                field: "title"
+                field: "title",
+                visible: true
             },{
                 title: "Y轴名称",
-                field: "yName"
+                field: "yName",
+                visible: false
             },{
                 title: "状态",
                 field: "status",
@@ -223,10 +255,7 @@
             },{
                 title: "创建时间",
                 field: 'createTime',
-                sortable: true
-            },{
-                title: "备注",
-                field: 'remark'
+                visible: true
             },{
                 title: "操作",
                 field: "id",
@@ -253,9 +282,6 @@
     });
 
     function detailFormatter(index, row) {
-
-
-
     var result = "<div class=\"subTable\"><table class=\"table table-bordered table-hover table-striped\"><thead><tr>";
     result += "<th>系列名称</th>";
     var xData = JSON.parse(row.xData);
@@ -275,6 +301,7 @@
      result +="</tr>";
     }
     result +="</tbody></table></div>";
+    result +="<p>备注："+row.remark+"</p>";
         return result;
     }
     
@@ -487,9 +514,22 @@
             grid: {
             },
             xAxis: {
-                show:true,
+                axisTick: {
+                    show: false
+                },
                 name:'',
+                type: 'category',
+                boundaryGap: false,
                 data: xAxisDataType,       //横坐标
+                axisLine: {
+                    lineStyle: {
+                        type: 'solid',
+                        width:'0',                                                //坐标线的宽度
+                    }
+                },
+                axisLabel: {
+                    show: false,
+                },
             },
             yAxis: {
                 show:false,
@@ -560,6 +600,9 @@
             grid: {
             },
             xAxis: {
+                axisTick: {
+                    show: false
+                },
                 name:'',
                 type: 'category',
                 boundaryGap: false,
@@ -567,11 +610,19 @@
                 axisLine: {
                     lineStyle: {
                         type: 'solid',
-                        width:'1',                                                //坐标线的宽度
+                        width:'0',                                                //坐标线的宽度
                     }
                 },
+                axisLabel: {
+                    show: false,
+                },
             },
-            yAxis: {},
+
+            yAxis: {
+                axisLabel: {
+                    show: false,
+                },
+            },
             series: series
         };
     }
@@ -607,7 +658,7 @@
                 radius: '90%',
                 startAngle: 90,
                 name: {
-                    formatter: '{value}',
+                    show:false,
                 },
                 splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
                     show: true,
@@ -676,11 +727,14 @@
                 {
                     name: '',
                     type: 'pie',
-                    radius: [5, 20],
-                    center: ['50%', '48%'],
+                    radius: [10, 45],
+                    center: ['60%', '55%'],
                     roseType: 'area',
                     itemStyle: {
                         borderRadius: 5
+                    },
+                    label: {
+                        show: false
                     },
                     data: data
                 }

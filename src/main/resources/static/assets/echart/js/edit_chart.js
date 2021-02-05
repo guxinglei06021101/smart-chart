@@ -7,9 +7,11 @@ $(function(){
         $("#titleId").val(result.title);
         chartType = result.type;
         $("#chartTypeId").val(chartType);
+        themeStyle = result.themeCode;
+        $("#themeStyleId").val(themeStyle);
         $("#nameId").val(result.name);
         $("#yAxisId").val(result.yName);
-        yAxisName = result.yName;
+        yAxisName = result.yName ;
         var  yAxisNameArr = yAxisName.split("");
         yAxisPortraitName = "";
         yAxisNameArr.forEach(function(item){
@@ -22,7 +24,6 @@ $(function(){
         xAxisMaxVal = result.yMax;
         legendData = JSON.parse(result.seriesName);
         xAxisData = JSON.parse(result.seriesData);
-        chartColor = JSON.parse(result.seriesColor);
         legend = {
             icon: 'rect',
             itemWidth: 14,
@@ -31,15 +32,10 @@ $(function(){
             data: legendData,
             right: '20px',
             top: '6px',
-            textStyle: {
-                fontSize: 12,
-                color: '#fff'
-            }
         };
         toolbox = {
             feature: {
                 saveAsImage: {
-                    backgroundColor: '#040f3c',
                     name: yAxisName,
                     title:'下载图表'
                 },
@@ -49,12 +45,17 @@ $(function(){
             case 'pie':
                 showTableOperate = false;
                 break;
+            case 'rose':
+                showTableOperate = false;
+                break;
+            case 'annular':
+                showTableOperate = false;
+                break;
             case 'funnel':
                 showTableOperate = false;
                 break;
             default:
                 showTableOperate = true;
-                pieColorArr = colorArr;
         }
         tableHead();
         tableChange();
@@ -64,9 +65,6 @@ $(function(){
     $("#submitId").click(function(){
 
     layer.confirm('确定要保存吗?', {icon: 3, title:'提示'}, function(index){
-        if(chartType == 'pie' || chartType == 'funnel'){
-            chartColor = pieColorArr;
-        }
         var data = {
             id:parseInt(id),
             name:$("#nameId").val(),
@@ -75,11 +73,11 @@ $(function(){
             xName:'',
             yMax:xAxisMaxVal,
             yName:yAxisName,
+            themeCode:themeStyle,
             xData:JSON.stringify(xAxisDataType),
             seriesName:JSON.stringify(legendData),
             seriesType:chartType,
             seriesData:JSON.stringify(xAxisData),
-            seriesColor:JSON.stringify(chartColor),
             remark:$("#remarkId").val()
         }
             $.ajax({
@@ -129,6 +127,10 @@ $(function(){
         chartType = $(this).val();
         showTableTr();
      });
+    $("#themeStyleId").change(function(){
+        themeStyle = $(this).val();
+        optionChart();
+    });
 
      $("#yAxisId").keyup(function(){
          yAxisName = $(this).val();
@@ -164,10 +166,7 @@ $(function(){
 
 });
 
-/*let showTableColor = true;*/
 let showTableOperate = true;
-let chartColor = ["#3b5ede"];
-let colorArr = ["#3b5ede","#6A5ACD","#fea31e","#7cb5ec","#99cc33","#4f8bf9","#4682B4","#959595","#24998d"];
 let xAxisMaxVal = 500;
 let chartType = "bar";
 let yAxisName = "自定义Y轴名称";
@@ -175,7 +174,7 @@ let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 var legendData = ['系列1'];
-var pieColorArr = [];
+var themeStyle = "vintage";
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
@@ -193,23 +192,22 @@ let toolbox = {
     }
 };
 let legend = {
-        icon: 'rect',
-        itemWidth: 14,
-        itemHeight: 5,
-        itemGap: 13,
-        data: legendData,
-        right: '20px',
-        top: '6px',
-        textStyle: {
-            fontSize: 12,
-            color: '#fff'
-        }
-    };
+    icon: 'rect',
+    itemWidth: 14,
+    itemHeight: 5,
+    itemGap: 13,
+    data: legendData,
+    right: '20px',
+    top: '6px',
+};
 
 let chart="";
 function optionChart(){
     settingOption();
-    chart= echarts.init(document.getElementById("bar-chart"));
+    if(chart != ""){
+        chart.dispose();
+    }
+    chart= echarts.init(document.getElementById("bar-chart"),themeStyle);
     chart.setOption(option,true);
 }
 
@@ -225,10 +223,10 @@ function settingOption(){
     switch(chartType){
         case 'bar':
             barChart();
-        break;
+            break;
         case 'pie':
             pieChart();
-        break;
+            break;
         case 'line':
             lineChart();
             break;
@@ -238,40 +236,33 @@ function settingOption(){
         case 'funnel':
             funnelChart();
             break;
+        case 'annular':
+            annularChart();
+            break;
+        case 'rose':
+            roseChart();
+            break;
     };
 }
 
 //柱状图
 function barChart() {
     var series = [];
+    var barWidth = 0;
+    var xAxisLength = xAxisData.length;
+    if(xAxisLength < 3){
+        barWidth = 15;
+    }else if(xAxisLength < 5){
+        barWidth = 11;
+    }else{
+        barWidth = 9;
+    }
     for(let i=0;i<xAxisData.length;i++){
         series.push({
             name:legendData[i],
             type: chartType,
-            barWidth:20,
+            barWidth:barWidth,
             data:xAxisData[i],
-            label: {
-                normal: {
-                    show: true,
-                    position: "top",
-                    textStyle: {
-                        color: "#fff",
-                        fontSize: 12
-                    }
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: new echarts.graphic.LinearGradient(
-                        0, 0, 0, 1,
-                        [
-                            {offset: 0, color: chartColor[i]},                   //柱图渐变色
-                            {offset: 0.5, color: chartColor[i]},                 //柱图渐变色
-                            {offset: 1, color: chartColor[i]},                   //柱图渐变色
-                        ]
-                    )
-                }
-            },
         });
     }
 
@@ -281,7 +272,6 @@ function barChart() {
             axisPointer: {
                 type:'shadow',
                 lineStyle: {
-                    color: '#fff',
                     type:'dashed'
                 }
             }
@@ -299,54 +289,14 @@ function barChart() {
         xAxis: [{
             show:true,
             name:'',
-            nameTextStyle:{
-                color:"#fff",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             data: xAxisDataType,       //横坐标
-            axisLabel:{
-                textStyle: {
-                    color:'#fff',
-                    fontSize:12,
-                }
-            },
-            axisLine: {
-                lineStyle: {
-                    type: 'solid',
-                    color:'#24214e',
-                    width:'1',                                                //坐标线的宽度
-                }
-            },
         }],
         yAxis: [{
             show:true,
             name: yAxisPortraitName,
-            nameTextStyle:{
-                color:"#fff",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             nameLocation:"center",
             nameGap:40,
             nameRotate:0,
-            axisLabel: {
-                textStyle: {
-                    color: '#fff',
-                    fontSize:10,//坐标值得具体的颜色
-                }
-            },
-            axisLine: {
-                lineStyle: {
-                    type: 'solid',
-                    color:'#24214e',
-                    width:'1  ',                                                //坐标线的宽度
-
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: "#24214e",
-                }
-            }
         }],
         series: series,
     };
@@ -354,24 +304,14 @@ function barChart() {
 //饼状图
 function pieChart() {
     var data = [];
-    pieColorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
-        pieColorArr.push($("#colorPieId_"+i).val());
     }
     option = {
-        color:pieColorArr,
         tooltip: {
             formatter:'{b}: {c}',
             trigger:'item',
-            axisPointer: {
-                type:'none',
-                lineStyle: {
-                    color: '#fff',
-                    type:'dashed'
-                }
-            }
         },
         toolbox: toolbox,
         legend: {
@@ -382,10 +322,6 @@ function pieChart() {
             data: xAxisDataType,
             right: '20px',
             top: '6px',
-            textStyle: {
-                fontSize: 12,
-                color: '#fff'
-            }
         },
         series: [
             {
@@ -405,6 +341,49 @@ function pieChart() {
         ]
     };
 }
+//环状图
+function annularChart(){
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+    }
+    option = {
+        tooltip: {
+            formatter:'{b}: {c}',
+            trigger:'item',
+            axisPointer: {
+                type:'none',
+                lineStyle: {
+                    type:'dashed'
+                }
+            }
+        },
+        toolbox: toolbox,
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '5px',
+        },
+        series: [
+            {
+                name:xAxisDataType,
+                type:'pie',
+                selectedMode: 'single',
+                radius: ['40%', '60%'],
+                center:["50%","48%"],
+                label: {
+                    show: false
+                },
+                data:data,
+            }
+        ]
+    };
+}
 //折线图
 function lineChart() {
     var series = [];
@@ -418,24 +397,13 @@ function lineChart() {
                     width: 2
                 }
             },
-            areaStyle: {
+            /*areaStyle: {
                 normal: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: chartColor[i].colorRgb(0.5),
-                    }, {
-                        offset: 1,
-                        color: chartColor[i].colorRgb(0),
-                    }], false),
+                    color:chartColor[i],
                     shadowColor: 'rgba(0, 0, 0, 0.1)',
                     shadowBlur: 10
                 }
-            },
-            itemStyle: {
-                normal: {
-                    color: chartColor[i],
-                }
-            },
+            },*/
             data: xAxisData[i],
         });
     }
@@ -446,10 +414,6 @@ function lineChart() {
             //formatter: '{b}: {c0}',
             axisPointer: {
                 type:'cross',
-                lineStyle: {
-                    color: '#fff',
-                    type:'dashed'
-                }
             }
         },
         toolbox: toolbox,
@@ -466,53 +430,26 @@ function lineChart() {
             name:'',
             type: 'category',
             boundaryGap: false,
-            nameTextStyle:{
-                color:"#fff",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             data: xAxisDataType,       //横坐标
-            axisLabel:{
-                textStyle: {
-                    color:'#fff',
-                    fontSize:12,
-                }
-            },
             axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#24214e',
                     width:'1',                                                //坐标线的宽度
                 }
             },
         },
         yAxis: {
             name: yAxisPortraitName,
-            nameTextStyle:{
-                color:"#fff",
-                fontSize:12,//坐标值得具体的颜色，
-            },
             nameLocation:"center",
             nameGap:40,
             nameRotate:0,
-            axisLabel: {
-                textStyle: {
-                    color: '#fff',
-                    fontSize:10,//坐标值得具体的颜色
-                }
-            },
-            axisLine: {
+            /*axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    color:'#24214e',
+                    color:axisLineColor,
                     width:'1  ',                                                //坐标线的宽度
-
                 }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: "#24214e",
-                }
-            }
+            },*/
         },
         series: series
     };
@@ -536,22 +473,6 @@ function radarChart() {
                     symbolSize:5,
                     areaStyle: {
                         normal: { // 单项区域填充样式
-                            color: {
-                                type: 'linear',
-                                x: 0, //右
-                                y: 0, //下
-                                x2: 1, //左
-                                y2: 1, //上
-                                colorStops: [{
-                                    offset: 0,
-                                    color: chartColor[i]
-                                },
-                                    {
-                                        offset: 1,
-                                        color: chartColor[i]
-                                    }],
-                                globalCoord: false
-                            },
                             opacity: 0.3 // 区域透明度
                         }
                     },
@@ -559,7 +480,6 @@ function radarChart() {
         });
     }
     option = {
-        color: chartColor,
         toolbox: toolbox,
         legend: legend,
         tooltip: {},
@@ -571,10 +491,6 @@ function radarChart() {
             startAngle: 90,
             name: {
                 formatter: '{value}',
-                textStyle: {
-                    fontSize: 12, //外圈标签字体大小
-                    color: '#FFF' //外圈标签字体颜色
-                }
             },
             splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
                 show: true,
@@ -582,17 +498,6 @@ function radarChart() {
                     color: [], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
                 }
             },
-            axisLine: { //指向外圈文本的分隔线样式
-                lineStyle: {
-                    color: '#24214e'
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: '#24214e', // 分隔线颜色
-                    width: 1, // 分隔线线宽
-                }
-            }
         }, ],
         series: series
     }
@@ -600,14 +505,11 @@ function radarChart() {
 //漏斗图
 function funnelChart() {
     var data = [];
-    var colorArr = [];
     const  length =  xAxisDataType.length;
     for(let i=0;i<length;i++){
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
-        colorArr.push($("#colorPieId_"+i).val());
     }
     option = {
-        color:colorArr,
         tooltip: {
             trigger: 'item',
             formatter: "{b} : {c}"
@@ -621,10 +523,6 @@ function funnelChart() {
             data: xAxisDataType,
             right: '20px',
             top: '6px',
-            textStyle: {
-                fontSize: 12,
-                color: '#fff'
-            }
         },
         series: [
             {
@@ -653,13 +551,9 @@ function funnelChart() {
                         type: 'solid'
                     }
                 },
-                itemStyle: {
-                    borderColor: '#57617B',
-                    borderWidth: 1
-                },
                 emphasis: {
                     label: {
-                        fontSize: 20
+                        fontSize: 16
                     }
                 },
                 data:data
@@ -667,35 +561,67 @@ function funnelChart() {
         ]
     };
 }
+//南丁格尔玫瑰图
+function roseChart() {
+    var data = [];
+    const  length =  xAxisDataType.length;
+    for(let i=0;i<length;i++){
+        data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
+    }
+    option = {
+        legend: {
+            icon: 'rect',
+            itemWidth: 14,
+            itemHeight: 5,
+            itemGap: 13,
+            data: xAxisDataType,
+            right: '20px',
+            top: '6px',
+        },
+        toolbox: toolbox,
+        series: [
+            {
+                name: xAxisDataType,
+                type: 'pie',
+                radius: [20, 100],
+                center: ['50%', '48%'],
+                roseType: 'area',
+                itemStyle: {
+                    borderRadius: 5
+                },
+                data: data
+            }
+        ]
+    };
+}
 
 function ajax_get(url,successfunction){
     $.ajax({
-                    //请求方式
-                    type : "GET",
-                    //请求的媒体类型
-                    //contentType: "application/json;charset=UTF-8",
-                    dataType: "json",
-                    //请求地址
-                    url : url,
-                    async: true,
-                    //数据，json字符串
-                    //data : JSON.stringify(list),
-                    //请求成功
-                    success : function(result) {
-                        console.log(result);
-                       	successfunction(result);
-                    },
-                    //请求失败，包含具体的错误信息
-                    error : function(e){
-                        console.log(e.status);
-                        console.log(e.responseText);
-                    }
-                });
+        //请求方式
+        type : "GET",
+        //请求的媒体类型
+        //contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        //请求地址
+        url : url,
+        async: true,
+        //数据，json字符串
+        //data : JSON.stringify(list),
+        //请求成功
+        success : function(result) {
+            console.log(result);
+            successfunction(result);
+        },
+        //请求失败，包含具体的错误信息
+        error : function(e){
+            console.log(e.status);
+            console.log(e.responseText);
+        }
+    });
 }
 
 function tableChange() {
     xAxisData = [];
-    chartColor = [];
     legendData = [];
     var xAxisMaxData = [];
     $("#tbodyId").find("tr").each(function(){
@@ -708,7 +634,6 @@ function tableChange() {
             xAxisMaxData.push(tdArr.eq(i).find('input').val());
         }
         xAxisData.push(xAxisArr);
-        chartColor.push(tdArr.eq(len+1).find('input').val());
     });
     const max = Math.max.apply(null,xAxisMaxData);
     $("#xAxisMaxValId").val(max);
@@ -721,10 +646,10 @@ function tableChange() {
         data: legendData,
         right: '20px',
         top: '6px',
-        textStyle: {
+        /*textStyle: {
             fontSize: 12,
             color: '#fff'
-        }
+        }*/
     };
 }
 
@@ -735,42 +660,26 @@ function tableHead() {
     xAxisDataType.forEach(function (item) {
         result +="<th>"+item+"</th>";
     });
-    result += "<th id=\"colorthId_0\">颜色</th>";
-    result +="<th id=\"operatethId_0\">操作 &nbsp;&nbsp;<a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
+    result +="<th id=\"operatethId_0\"> <a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
 
-    result +="</tr></thead><tbody id=\"tbodyId\">";
-
-    var len = legendData.length;
+    result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
+    result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
+    var val = 0;
     let length = xAxisDataType.length;
-    for(let i=0;i<len;i++){
-        if(i == 0){
-            result +="<tr>";
-        }else{
-            result +="<tr id=\"datatrId_"+i+"\">";
-        }
-        result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+legendData[i]+"\"></td>";
-        for(let k=0;k<length;k++){
-            result += "<td>" ;
-            result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+ xAxisData[i][k]+"\">" ;
-            if(i == 0){
-                result += "<input id=\"colorPieId_"+k+"\" style=\"width: 60px;height: 25px;padding: 2px;margin-top:5px;text-align: center;display:none\" oninput=\"dataKeyup()\" class=\"form-control\" type=\"color\" value=\""+pieColorArr[k]+"\">" ;
-            }
-            result += "</td>";
-        }
-        result += "<td id=\"colorthId_"+(i+1)+"\"><input style=\"width: 60px;padding: 2px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\""+colorArr[i]+"\" ></td>";
-        if(i == 0 ){
-            result +="<td id=\"operatethId_"+(i+1)+"\"></td></tr>";
-        }else{
-            result +="<td id=\"operatethId_"+(i+1)+"\"><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
-        }
+    for(let i=0;i<length;i++){
+        val = val + 100;
+        result += "<td>" ;
+        result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\">" ;
+        result += "</td>";
     }
-    result +="</tbody>";
+    result +="<td id=\"operatethId_1\"></td>";
+    result +="</tr></tbody>";
     $("#tableId").html(result);
 }
 function addTableTr() {
     let trLen = $("#tableId").find("tr").length;
-    if(trLen > 5){
-        alert("最多只能添加5条数据");
+    if(trLen > 10){
+        alert("最多只能添加10条数据");
         return;
     }
     let val = 0;
@@ -779,7 +688,6 @@ function addTableTr() {
         val = val+100*trLen;
         result +="<td><input style=\"width: 60px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\"></td>";
     });
-    result +="<td id=\"colorthId_"+trLen+"\"><input style=\"width: 60px;padding: 0px;text-align: center\" oninput='dataKeyup()' class=\"form-control\" type=\"color\" value=\""+colorArr[trLen-1]+"\"></td>";
     result +="<td id=\"operatethId_"+trLen+"\"><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
     result +="</tr>";
     $("#tableId").append(result);
@@ -787,6 +695,7 @@ function addTableTr() {
 }
 
 function dataKeyup() {
+    fontColor = $("#fontColorId").val();
     tableChange();
     optionChart();
 }
@@ -797,10 +706,6 @@ function removeTr(obj) {
     dataKeyup();
 }
 
-function setBackgroundColor(obj){
-     $(".main-middle").css("background", $(obj).val());
-}
-
 function showTableTr() {
     switch (chartType) {
         case 'pie':
@@ -809,58 +714,29 @@ function showTableTr() {
         case 'funnel':
             showTableOperate = false;
             break;
+        case "annular":
+            showTableOperate = false;
+            break;
+        case "rose":
+            showTableOperate = false;
+            break;
         default:
             showTableOperate = true;
-            pieColorArr = colorArr;
     }
 
-    let typeLen = xAxisDataType.length;
     let trLen = $("#tableId").find("tr").length;
     if(showTableOperate){
         for(let i=0;i<=trLen;i++){
-            $("#colorthId_"+i).show();
             $("#operatethId_"+i).show();
             $("#datatrId_"+(i+1)).show();
-        }
-        for(let i=0;i<=typeLen;i++){
-            $("#colorPieId_"+i).hide();
         }
 
     }else {
         for(let i=0;i<=trLen;i++){
-            $("#colorthId_"+i).hide();
             $("#operatethId_"+i).hide();
             $("#datatrId_"+(i+1)).hide();
-        }
-        for(let i=0;i<=typeLen;i++){
-            $("#colorPieId_"+i).show();
         }
     }
     optionChart();
 }
 
-//十六进制颜色值的正则表达式
-var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-/*16进制颜色转为RGB格式*/
-String.prototype.colorRgb = function(opacity){
-    var sColor = this.toLowerCase();
-    if(sColor && reg.test(sColor)){
-        if(sColor.length === 4){
-            var sColorNew = "#";
-            for(var i=1; i<4; i+=1){
-                sColorNew += sColor.slice(i,i+1).concat(sColor.slice(i,i+1));
-            }
-            sColor = sColorNew;
-        }
-        //处理六位的颜色值
-        var sColorChange = [];
-        for(var i=1; i<7; i+=2){
-            sColorChange.push(parseInt("0x"+sColor.slice(i,i+2)));
-        }
-       // return "rgb(" + sColorChange.join(",") + ")";
-//或
-        return "rgba(" + sColorChange.join(",") + ","+opacity+")";
-    }else{
-        return sColor;
-    }
-};
