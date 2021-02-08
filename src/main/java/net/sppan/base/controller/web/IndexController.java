@@ -93,4 +93,12 @@ public class IndexController extends BaseController{
 		return "/chart/edit";
 	}
 
+	@GetMapping(value={"/chartView/index"})
+	public String chartView(){
+		return "chartView/index";
+	}
+
+
+
+
 }

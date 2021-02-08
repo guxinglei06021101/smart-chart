@@ -174,6 +174,10 @@ function barChart() {
             show:true,
             name:'',
             data: xAxisDataType,       //横坐标
+            axisLabel: {
+                interval:0,
+                rotate:40
+            }
         }],
         yAxis: [{
             show:true,
@@ -327,6 +331,10 @@ function lineChart() {
                     width:'1',                                                //坐标线的宽度
                 }
             },
+            axisLabel: {
+                interval:0,
+                rotate:40
+            }
         },
         yAxis: {
             name: yAxisPortraitName,
@@ -462,6 +470,16 @@ function roseChart() {
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
     option = {
+        tooltip: {
+            formatter:'{b}: {c}',
+            trigger:'item',
+            axisPointer: {
+                type:'none',
+                lineStyle: {
+                    type:'dashed'
+                }
+            }
+        },
         legend: {
             icon: 'rect',
             itemWidth: 14,

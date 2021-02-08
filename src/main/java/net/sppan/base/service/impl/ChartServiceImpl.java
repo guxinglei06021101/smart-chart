@@ -8,7 +8,7 @@ import net.sppan.base.vo.ChartUpdateStatusVo;
 import org.springframework.stereotype.Service;
 
 @Service
-public class IChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements IChartService {
+public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements IChartService {
     @Override
     public void del(Integer id) {
         this.baseMapper.del(id);

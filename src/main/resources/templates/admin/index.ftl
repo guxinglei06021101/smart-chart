@@ -93,6 +93,12 @@
                             <span class="nav-label">制图</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="J_menuItem" href="${ctx!}/chartView/index">
+                            <i class="fa fa-pie-chart"></i>
+                            <span class="nav-label">看板</span>
+                        </a>
+                    </li>
 
                     <@shiro.hasPermission name="system:user:index">
                     <li>
