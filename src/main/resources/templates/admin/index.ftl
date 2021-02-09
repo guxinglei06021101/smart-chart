@@ -72,7 +72,7 @@
                     <li>
                         <a class="J_menuItem" href="${ctx!}/chart/img">
                             <i class="fa fa-history"></i>
-                            <span class="nav-label">图表</span>
+                            <span class="nav-label">图表列表</span>
                         </a>
                     </li>
                     <li>
@@ -84,7 +84,7 @@
                     <li>
                         <a class="J_menuItem" href="${ctx!}/chart/index">
                             <i class="fa fa-history"></i>
-                            <span class="nav-label">数据</span>
+                            <span class="nav-label">图表数据</span>
                         </a>
                     </li>
                     <li>
@@ -94,9 +94,16 @@
                         </a>
                     </li>
                     <li>
+                        <a class="J_menuItem" href="${ctx!}/chartView/list">
+                            <i class="fa fa-pie-chart"></i>
+                            <span class="nav-label">看板列表</span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a class="J_menuItem" href="${ctx!}/chartView/index">
                             <i class="fa fa-pie-chart"></i>
-                            <span class="nav-label">看板</span>
+                            <span class="nav-label">看板数据</span>
                         </a>
                     </li>
 

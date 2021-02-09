@@ -5,4 +5,9 @@
     <delete id="del" parameterType="java.lang.Integer">
         UPDATE tb_chart_view SET dr = true  WHERE id = #{id}
     </delete>
+    <select id="findChartById" parameterType="java.lang.Integer" resultType="net.sppan.base.entity.Chart">
+        SELECT chart.* FROM tb_chart_view_detail chartView
+        INNER JOIN tb_chart chart ON chart.id = chartView.chart_id AND chart.dr = '0' AND chartView.dr = '0'
+        WHERE chart_view_id = #{id}
+    </select>
 </mapper>

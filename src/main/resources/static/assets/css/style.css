@@ -509,14 +509,14 @@ body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
     top: 0px;
     background-color: #2f4050;
     padding: 10px 10px 0 10px;
-    font-size: 12px;
+    font-size: 10px;
     display: block;
     min-width: 140px;
     border-radius: 2px;
 }
 
 body.fixed-sidebar.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
-    font-size: 12px;
+    font-size: 10px;
     border-radius: 3px;
 }
 
@@ -534,7 +534,7 @@ body.canvas-menu.mini-navbar .navbar-default .nav > li > .nav-second-level li a 
 .canvas-menu.mini-navbar .nav-second-level {
     position: relative;
     padding: 0;
-    font-size: 13px;
+    font-size: 10px;
 }
 
 .fixed-sidebar.mini-navbar li.active .nav-second-level,
@@ -3369,7 +3369,7 @@ a.forum-item-title:hover {
 
 body {
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    /*font-size: 12px;*/
+    font-size: 10px;
     color: #676a6c;
     overflow-x: hidden;
 }

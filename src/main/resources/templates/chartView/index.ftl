@@ -69,7 +69,7 @@
                     <p>
                     <@shiro.hasPermission name="system:role:add">
                         <div class="input-file">
-                            <input type="button" id="chartBtn" class="btn btn-success"  onclick="addChart();" value="添加">
+                            <input type="button" id="chartBtn" class="btn btn-success"  onclick="addChartView();" value="添加">
                             <div id="loader" ></div>
                         </div>
                     </@shiro.hasPermission>
@@ -80,33 +80,6 @@
                             <!-- Example Card View -->
                             <div class="example-wrap">
                                 <div class="example">
-                                    <div class="form-group">
-                                        <div class="col-sm-3">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">类型</span>
-                                                <select id="type" onchange="return search(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 90%;">
-                                                    <option value="" selected="selected">全部</option>
-                                                    <option value="bar" >柱状图</option>
-                                                    <option value="line" >折线图</option>
-                                                    <option value="pie" >饼状图</option>
-                                                    <option value="annular" >环形图</option>
-                                                    <option value="rose" >南丁格尔图</option>
-                                                    <option value="radar" >雷达图</option>
-                                                    <option value="funnel" >漏斗图</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">状态</span>
-                                                <select id="status" onchange="return searchStatus(this.options[this.selectedIndex].value)" name="direction" class="form-control selectpicker" style="height: min-content;width: 80%;">
-                                                    <option value="">全部</option>
-                                                    <option value="enable">可用</option>
-                                                    <option value="disable">禁用</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <table id="table_list"></table>
                                 </div>
                             </div>
@@ -158,7 +131,7 @@
             //必须设置，不然request.getParameter获取不到请求参数
             contentType: "application/x-www-form-urlencoded",
             //获取数据的Servlet地址
-            url: "${ctx!}/chart/list",
+            url: "${ctx!}/chartView/page/list",
             //表格显示条纹
             striped: true,
             sortable: false,
@@ -197,8 +170,8 @@
             },
             //数据列
             columns: [{
-                title: "图表",
-                field: "type",
+                title: "ID",
+                field: "id",
                 visible: true,
                 width:120,
                 formatter: function(value,row,index){
@@ -206,78 +179,16 @@
                     return "<div style=\"height: 80px;width: 100px\" id=\"id_"+row.id+"\"></div>";
                 }
             },{
-                title: "类型",
-                field: "type",
-                visible: true,
-                formatter: function(value,row,index){
-                    switch (value){
-                        case 'bar':
-                            return '柱状图';
-                        case 'pie':
-                            return '饼状图';
-                        case 'line':
-                            return '折线图';
-                        case 'line':
-                            return '折线图';
-                        case 'radar':
-                            return '雷达图';
-                        case 'funnel':
-                            return '；漏斗图';
-                        case 'annular':
-                            return '环状图';
-                        case 'rose':
-                            return '南丁格尔图';
-                        default:
-                            return '-';
-                    }
-                }
-            },{
                 title: "名称",
-                field: "name",
-                visible: true
-
-            },{
-                title: "标题",
-                field: "title",
-                visible: true
-            },{
-                title: "Y轴名称",
-                field: "yName",
-                visible: false
-            },{
-                title: "状态",
-                field: "status",
-                formatter: function(value,row,index){
-                    if (value == 'enable')
-                        return '<span class="label label-success">可用</span>';
-                    return '<span class="label label-danger">已禁用</span>';
-                }
-            },{
-                title: "创建时间",
-                field: 'createTime',
-                visible: true
+                field: "name"
             },{
                 title: "操作",
                 field: "id",
                 formatter: function (value, row, index) {
-
-                    var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-info btn-xs" type="button" onclick="showDataChart(\''+row.id+'\')"><i class="fa fa-info-circle"></i>&nbsp;详情</button> &nbsp;</@shiro.hasPermission>';
-                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:edit"><button class="btn btn-primary btn-xs" type="button" onclick="editDataChart(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;修改</button> &nbsp;</@shiro.hasPermission>';
-                    if(row.status == 'enable'){
-                        operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:grant"><button class="btn btn-danger btn-xs" type="button" onclick="updateStatus(\''+row.id+'\',\'disable\')"><i class="fa fa-ban"></i>&nbsp;禁用</button> &nbsp;</@shiro.hasPermission>';
-                    }else{
-                        operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:grant"><button class="btn btn-success btn-xs" type="button" onclick="updateStatus(\''+row.id+'\',\'enable\')"><i class="fa fa-check-square-o"></i>&nbsp;启用</button> &nbsp;</@shiro.hasPermission>';
-                    }
-                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-times-circle"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
+                    var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-times-circle"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
-            }],
-            onPostBody: function() {
-                chartDataArr.forEach(function (item) {
-                    optionChart(item);
-                });
-                chartDataArr = [];
-            },
+            }]
         });
     });
 
@@ -325,7 +236,7 @@
         });
     }
 
-    function addChart() {
+    function addChartView() {
         /*// 判断浏览器种类
         elem=document.body;
         if(elem.webkitRequestFullScreen){

@@ -98,6 +98,10 @@ public class IndexController extends BaseController{
 		return "chartView/index";
 	}
 
+	@GetMapping(value={"/chartView/list"})
+	public String chartViewList(){
+		return "chartView/list";
+	}
 
 
 
