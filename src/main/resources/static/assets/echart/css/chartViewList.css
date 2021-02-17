@@ -196,6 +196,10 @@ Single Item
     width:370px;
     height:300px;
 }
+
+/*#contentId:-webkit-full-screen {
+  background-color: #056197 !important;
+}*/
 .no-touch .cd-single-item:hover .cd-customization, .cd-single-item.hover .cd-customization {
   /* product customization visible */
   pointer-events: auto;

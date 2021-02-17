@@ -16,21 +16,23 @@
 <body id="bodyId">
     <div class="row row-lg">
         <div class="col-sm-12">
-            <!-- Example Card View -->
             <div class="example-wrap">
                 <div class="example">
                     <div class="form-group">
-                        <div class="col-sm-10">
+                        <div class="col-sm-1">
                             <div class="input-group">
-                                <select id="chartViewId" name="direction" class="form-control selectpicker" style="height: min-content;width: 90%">
+                                <input type="button" id="fullscreenId" value="全屏"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <select id="chartViewId" name="direction" class="form-control selectpicker" style="height: min-content;width: 300px;">
                                 </select>
-                                <button id="fullscreenId">全屏</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Example Card View -->
         </div>
     </div>
     <div id="contentId">

@@ -170,15 +170,6 @@
             },
             //数据列
             columns: [{
-                title: "ID",
-                field: "id",
-                visible: true,
-                width:120,
-                formatter: function(value,row,index){
-                    chartDataArr.push(row);
-                    return "<div style=\"height: 80px;width: 100px\" id=\"id_"+row.id+"\"></div>";
-                }
-            },{
                 title: "名称",
                 field: "name"
             },{
@@ -188,32 +179,42 @@
                     var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-times-circle"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
-            }]
+            }],
+            onPostBody:function (data) {
+                expand();
+            }
         });
     });
 
-    function detailFormatter(index, row) {
-    var result = "<div class=\"subTable\"><table class=\"table table-bordered table-hover table-striped\"><thead><tr>";
-    result += "<th>系列名称</th>";
-    var xData = JSON.parse(row.xData);
-    xData.forEach(function (item) {
-        result +="<th>"+item+"</th>";
-    });
-    result +="</tr></thead><tbody>";
-
-    var seriesData = JSON.parse(row.seriesData);
-    var seriesName = JSON.parse(row.seriesName);
-    var dataLen = seriesData.length;
-    for(let i=0;i<dataLen;i++){
-     result +="<tr><td>"+seriesName[i]+"</td>";
-     seriesData[i].forEach(function (item) {
-          result +="<td>"+item+"</td>";
-     });
-     result +="</tr>";
+    function expand (){
+        $("#table_list").bootstrapTable('expandAllRows');
+        alert(JSON.stringify(chartArr));
+        chartArr.forEach(function (item) {
+            optionChart(item);
+        });
     }
-    result +="</tbody></table></div>";
-    result +="<p>备注："+row.remark+"</p>";
-        return result;
+
+    var chartArr = [];
+    function detailFormatter(index, row) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/chartView/findChartById/"+row.id,
+            success: function(result){
+                if(result != null){
+                    chartArr = [];
+                    var divhtml = "<ul>";
+                    result.forEach(function (item) {
+                        chartArr.push(item);
+                        alert(1);
+                        divhtml += "<li><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div><div class=\"cd-item-info\"><b><a href=\"#0\">"+item.title+"</a></b></div></li>";
+                    });
+                    divhtml += "</ul>";
+                    return divhtml;
+                }
+            }
+        });
+        return "";
     }
     
 
@@ -383,6 +384,25 @@
         chart.setOption(option,true);
     }
 
+
+    function optionChart(result){
+        chartType = result.type;
+        yAxisName = result.yName;
+        themeStyle = result.themeCode;
+        var  yAxisNameArr = yAxisName.split("");
+        yAxisPortraitName = "";
+        yAxisNameArr.forEach(function(item){
+            yAxisPortraitName = yAxisPortraitName + item + "\n";
+        });
+        xAxisDataType = JSON.parse(result.xData);
+        legendData = JSON.parse(result.seriesName);
+        xAxisData = JSON.parse(result.seriesData);
+        settingOption();
+        var chart = echarts.init(document.getElementById("id_"+result.id),themeStyle);
+        chart.setOption(option,true);
+        charArr.push(chart);
+    }
+
     var option;
     function settingOption(){
         //var type = $("#chartTypeId").val();
@@ -409,19 +429,21 @@
                 roseChart();
                 break;
             default:
+
         };
     }
+
     //柱状图
     function barChart() {
         var series = [];
         var barWidth = 0;
         var xAxisLength = xAxisData.length;
         if(xAxisLength < 3){
-            barWidth = 6;
+            barWidth = 15;
         }else if(xAxisLength < 5){
-            barWidth = 4;
+            barWidth = 11;
         }else{
-            barWidth = 2;
+            barWidth = 9;
         }
         for(let i=0;i<xAxisData.length;i++){
             series.push({
@@ -433,29 +455,41 @@
         }
 
         option = {
-            grid: {
-            },
-            xAxis: {
-                axisTick: {
-                    show: false
-                },
-                name:'',
-                type: 'category',
-                boundaryGap: false,
-                data: xAxisDataType,       //横坐标
-                axisLine: {
+            tooltip: {
+                trigger:'axis',
+                axisPointer: {
+                    type:'shadow',
                     lineStyle: {
-                        type: 'solid',
-                        width:'0',                                                //坐标线的宽度
+                        type:'dashed'
                     }
-                },
+                }
+            },
+            toolbox: toolbox,
+            legend: legend,
+            grid: {
+                left: '6%',
+                right: '3%',
+                bottom: '6%',
+                top: '20%',
+                containLabel: true,
+                z: 22
+            },
+            xAxis: [{
+                show:true,
+                name:'',
+                data: xAxisDataType,       //横坐标
                 axisLabel: {
-                    show: false,
-                },
-            },
-            yAxis: {
-                show:false,
-            },
+                    interval:0,
+                    rotate:40
+                }
+            }],
+            yAxis: [{
+                show:true,
+                name: yAxisPortraitName,
+                nameLocation:"center",
+                nameGap:40,
+                nameRotate:0,
+            }],
             series: series,
         };
     }
@@ -467,16 +501,35 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
+            tooltip: {
+                formatter:'{b}: {c}',
+                trigger:'item',
+            },
+            toolbox: toolbox,
+            legend: {
+                icon: 'rect',
+                itemWidth: 14,
+                itemHeight: 5,
+                itemGap: 13,
+                data: xAxisDataType,
+                right: '5px',
+                top: '5px',
+                textStyle: {
+                    fontSize: 10,
+                }
+            },
             series: [
                 {
-                    name:'',
+                    name:xAxisDataType,
                     type:'pie',
                     selectedMode: 'single',
-                    radius: [0, '80%'],
+                    radius: [0, '50%'],
                     center:["50%","48%"],
                     label: {
-                        show: false,
-                        position: 'center'
+                        normal: {
+                            position: 'outside',
+                            formatter: "{b}: {d}%"
+                        }
                     },
                     data:data,
                 }
@@ -491,12 +544,35 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
+            tooltip: {
+                formatter:'{b}: {c}',
+                trigger:'item',
+                axisPointer: {
+                    type:'none',
+                    lineStyle: {
+                        type:'dashed'
+                    }
+                }
+            },
+            toolbox: toolbox,
+            legend: {
+                icon: 'rect',
+                itemWidth: 14,
+                itemHeight: 5,
+                itemGap: 13,
+                data: xAxisDataType,
+                right: '5px',
+                top: '5px',
+                textStyle: {
+                    fontSize: 10,
+                }
+            },
             series: [
                 {
                     name:xAxisDataType,
                     type:'pie',
                     selectedMode: 'single',
-                    radius: ['40%', '80%'],
+                    radius: ['40%', '60%'],
                     center:["50%","48%"],
                     label: {
                         show: false
@@ -514,18 +590,41 @@
                 name:legendData[i],
                 type: 'line',
                 smooth: true,
+                lineStyle: {
+                    normal: {
+                        width: 2
+                    }
+                },
+                /*areaStyle: {
+                    normal: {
+                        color:chartColor[i],
+                        shadowColor: 'rgba(0, 0, 0, 0.1)',
+                        shadowBlur: 10
+                    }
+                },*/
                 data: xAxisData[i],
-                symbolSize:0,
             });
         }
 
         option = {
+            tooltip: {//鼠标指上时的标线
+                trigger: 'axis',
+                //formatter: '{b}: {c0}',
+                axisPointer: {
+                    type:'cross',
+                }
+            },
+            toolbox: toolbox,
+            legend: legend,
             grid: {
+                left: '6%',
+                right: '3%',
+                bottom: '6%',
+                top: '20%',
+                containLabel: true,
+                z: 22
             },
             xAxis: {
-                axisTick: {
-                    show: false
-                },
                 name:'',
                 type: 'category',
                 boundaryGap: false,
@@ -533,18 +632,26 @@
                 axisLine: {
                     lineStyle: {
                         type: 'solid',
-                        width:'0',                                                //坐标线的宽度
+                        width:'1',                                                //坐标线的宽度
                     }
                 },
                 axisLabel: {
-                    show: false,
-                },
+                    interval:0,
+                    rotate:40
+                }
             },
-
             yAxis: {
-                axisLabel: {
-                    show: false,
-                },
+                name: yAxisPortraitName,
+                nameLocation:"center",
+                nameGap:40,
+                nameRotate:0,
+                /*axisLine: {
+                    lineStyle: {
+                        type: 'solid',
+                        color:axisLineColor,
+                        width:'1  ',                                                //坐标线的宽度
+                    }
+                },*/
             },
             series: series
         };
@@ -568,20 +675,24 @@
                         symbolSize:3,
                         areaStyle: {
                             normal: { // 单项区域填充样式
-                                opacity: 0.3 // 区域透明度
+                                opacity: 0.5 // 区域透明度
                             }
                         },
                     }]
             });
         }
         option = {
+            toolbox: toolbox,
+            legend: legend,
+            tooltip: {},
             radar: [{
                 indicator: indicator,
+                triggerEvent:true,   //开启雷达图的边角名称可点击
                 center: ['50%', '52%'],
-                radius: '90%',
+                radius: '70%',
                 startAngle: 90,
                 name: {
-                    show:false,
+                    formatter: '{value}',
                 },
                 splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
                     show: true,
@@ -601,6 +712,23 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b} : {c}"
+            },
+            toolbox: toolbox,
+            legend: {
+                icon: 'rect',
+                itemWidth: 14,
+                itemHeight: 5,
+                itemGap: 13,
+                data: xAxisDataType,
+                right: '5px',
+                top: '5px',
+                textStyle: {
+                    fontSize: 10,
+                }
+            },
             series: [
                 {
                     name:xAxisDataType,
@@ -646,24 +774,45 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
+            tooltip: {
+                formatter:'{b}: {c}',
+                trigger:'item',
+                axisPointer: {
+                    type:'none',
+                    lineStyle: {
+                        type:'dashed'
+                    }
+                }
+            },
+            legend: {
+                icon: 'rect',
+                itemWidth: 14,
+                itemHeight: 5,
+                itemGap: 13,
+                data: xAxisDataType,
+                right: '5px',
+                top: '5px',
+                textStyle: {
+                    fontSize: 10,
+                }
+            },
+            toolbox: toolbox,
             series: [
                 {
-                    name: '',
+                    name: xAxisDataType,
                     type: 'pie',
-                    radius: [10, 45],
-                    center: ['60%', '55%'],
+                    radius: [20, 100],
+                    center: ['50%', '48%'],
                     roseType: 'area',
                     itemStyle: {
                         borderRadius: 5
-                    },
-                    label: {
-                        show: false
                     },
                     data: data
                 }
             ]
         };
     }
+
 </script>
 </body>
 

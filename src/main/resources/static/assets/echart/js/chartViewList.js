@@ -22,6 +22,7 @@ $(function(){
             //浏览器不支持全屏API或已被禁用
             alert('该浏览器暂不支持全屏');
         }
+        setBackground(themeStyle);
     });
 });
 
@@ -113,21 +114,25 @@ function search(id,themeCode){
         }
     });
 }
-
+var themeStyle;
 function setBackground(themeCode){
+    themeStyle = themeCode;
     switch (themeCode) {
         case 'dark':
             $(document.body).css("background","#333");
-            $('.cd-single-item').css("border","1px solid #24214e");
+            $("#contentId").css("background","#333");
+            // $('.cd-single-item').css("border","1px solid #24214e");
             break;
         case 'blue':
             $(document.body).css("background","#040f3c");
-            $('.cd-single-item').css("border","1px solid #24214e");
+            $("#contentId").css("background","#040f3c");
+            // $('.cd-single-item').css("border","1px solid #24214e");
             /*background-color: #ffffff;*/
             break;
         default:
             $(document.body).css("background","#ffffff");
-            $('.cd-single-item').css("border","0px");
+            $("#contentId").css("background","#ffffff");
+            // $('.cd-single-item').css("border","0px");
     }
 }
 
