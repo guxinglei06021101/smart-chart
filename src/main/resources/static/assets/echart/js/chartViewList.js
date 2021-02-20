@@ -10,6 +10,7 @@ $(function(){
     $('#fullscreenId').click(function () {
         // 判断浏览器种类
         elem=document.getElementById("contentId");
+        //elem = document.body;
         if(elem.webkitRequestFullScreen){
             elem.webkitRequestFullScreen();
         }else if(elem.mozRequestFullScreen){
@@ -100,7 +101,7 @@ function search(id,themeCode){
                 setBackground(themeCode);
                 $("#ulId").html("");
                 result.forEach(function(item){
-                    var divHtml = "<li><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div><div class=\"cd-item-info\"><b><a href=\"#0\">"+item.title+"</a></b></div></li>";
+                    var divHtml = "<li><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div><div class=\"cd-item-info\"><b><a onclick=\"chartDetail("+item.id+")\">"+item.title+"</a></b></div></li>";
                     $("#ulId").append(divHtml);
                     optionChart(item,themeCode);
                 });
@@ -134,6 +135,24 @@ function setBackground(themeCode){
             $("#contentId").css("background","#ffffff");
             // $('.cd-single-item').css("border","0px");
     }
+}
+
+function chartDetail(id) {
+    layer.open({
+        type: 2,
+        title: '图表展示',
+        shadeClose: false,
+        maxmin: true,
+        shade: 0.6,
+        area: ['70%', '80%'],
+        content: '/chart/show/' + id,
+        success: function(layero,index){
+            var mask = $(".layui-layer-shade");
+            mask.appendTo(layero.parent());
+        },
+        end: function (index) {
+        }
+    });
 }
 
 function optionChart(result,themeCode){

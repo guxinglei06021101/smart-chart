@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>图表看板</title>
+    <title>看板数据</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -22,38 +22,18 @@
     <link rel="stylesheet" type="text/css" href="${ctx!}/assets/echart/css/jquery.shCircleLoader.css" />
     <link rel="stylesheet" type="text/css" href="${ctx!}/assets/echart/css/xcConfirm.css" />
 
-    <style>
-        a[class="button-selectimg"] {
-            color: #00A2D4;
-            padding: 4px 6px;
-            border: 1px dashed #00A2D4;
-            border-radius: 2px;
-            text-decoration: none;
+    <style type="text/css">
+        .chartUl {
+            font-size: 10px;
+            font-weight: bolder;
+        }
+        .chartUl li{
+            list-style-image: none;
+            list-style-type: none;
+            float: left;
+            padding: 2px;
         }
 
-        input[id="avatval"] {
-            padding: 3px 6px;
-            padding-left: 10px;
-            border: 1px solid #E7EAEC;
-            width: 230px;
-            height: 25px;
-            line-height: 25px;
-            border-left: 3px solid #3FB7EB;
-            background: #FAFAFB;
-            border-radius: 2px;
-        }
-
-        input[type='file'] {
-            border: 0px;
-            display: none;
-        }
-        .chartImg{
-            height: 60px;
-            width: 60px;
-        }
-        .subTable{
-        margin:20px;
-        }
     </style>
 </head>
 
@@ -145,9 +125,8 @@
             pageList: [ 10, 20, 30, 50,100],
             //是否启用查询
             search: false,
-            showColumns: true, // 开启自定义列显示功能
+            showColumns: false, // 开启自定义列显示功能
             showRefresh: false, // 开启刷新功能
-            minimumCountColumns: 5,// 设置最少显示列个数
             clickToSelect: true,
             smartDisplay: true,
             clickToSelect: true, // 单击行即可以选中
@@ -156,6 +135,10 @@
             //是否启用详细信息视图
             detailView:true,
             detailFormatter:detailFormatter,
+            detailViewIcon:false,//3，隐藏图标列
+            detailViewByClick:false,//4,隐藏图标列
+            showToggle:false,  //是否显示详细视图和列表视图的切换按钮
+            cardView: false,  //是否显示详细视图
             //表示服务端请求
             sidePagination: "server",
             //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder
@@ -171,84 +154,71 @@
             //数据列
             columns: [{
                 title: "名称",
-                field: "name"
+                field: "name",
             },{
                 title: "操作",
                 field: "id",
+                width:'50px',
                 formatter: function (value, row, index) {
                     var operateHtml = '<@shiro.hasPermission name="system:role:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-times-circle"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
             }],
             onPostBody:function (data) {
-                expand();
+                expand ();
             }
         });
     });
 
     function expand (){
         $("#table_list").bootstrapTable('expandAllRows');
-        alert(JSON.stringify(chartArr));
         chartArr.forEach(function (item) {
             optionChart(item);
         });
     }
 
     var chartArr = [];
+    var chatViewArr = [];
     function detailFormatter(index, row) {
+        chatViewArr.push(row.id);
+        var divhtml = "<ul class=\"chartUl\">";
         $.ajax({
             type: "GET",
             dataType: "json",
             url: "/chartView/findChartById/"+row.id,
+            async: false,
             success: function(result){
                 if(result != null){
-                    chartArr = [];
-                    var divhtml = "<ul>";
                     result.forEach(function (item) {
                         chartArr.push(item);
-                        alert(1);
-                        divhtml += "<li><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div><div class=\"cd-item-info\"><b><a href=\"#0\">"+item.title+"</a></b></div></li>";
+                        divhtml += "<li><div style=\"height: 150px;width: 180px\" id=\"id_"+item.id+"\"></div><div class=\"cd-item-info\"><b><a onclick=\"chartDetail("+item.id+")\">"+item.title+"</a></b></div></li>";
                     });
-                    divhtml += "</ul>";
-                    return divhtml;
                 }
             }
         });
-        return "";
+        divhtml += "</ul>";
+        return divhtml;
     }
-    
 
-    function search(type) {
-        $('#table_list').bootstrapTable('refresh', {
-            query:
-                {
-                    type:type,
-                    status:$("#status").val()
-                }
-        });
-    }
-    function searchStatus(status) {
-        $('#table_list').bootstrapTable('refresh', {
-            query:
-                {
-                    type:$("#type").val(),
-                    status:status
-                }
+    function chartDetail(id) {
+        layer.open({
+            type: 2,
+            title: '图表展示',
+            shadeClose: false,
+            maxmin: true,
+            shade: 0.6,
+            area: ['70%', '80%'],
+            content: '${ctx!}/chart/show/' + id,
+            success: function(layero,index){
+                var mask = $(".layui-layer-shade");
+                mask.appendTo(layero.parent());
+            },
+            end: function (index) {
+            }
         });
     }
 
     function addChartView() {
-        /*// 判断浏览器种类
-        elem=document.body;
-        if(elem.webkitRequestFullScreen){
-            elem.webkitRequestFullScreen();
-        }else if(elem.mozRequestFullScreen){
-            elem.mozRequestFullScreen();
-        }else if(elem.requestFullScreen){
-            elem.requestFullscreen();
-        }else{
-            //浏览器不支持全屏API或已被禁用
-        }*/
         layer.open({
             type: 2,
             title: '图表添加',
@@ -288,69 +258,6 @@
             });
         });
     }
-    function updateStatus(id,option){
-        layer.confirm('确定要操作吗?', {icon: 3, title:'提示'}, function(index){
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "${ctx!}/chart/updateStatus",
-                data:{id:id,status:option},
-                success: function(msg){
-                    layer.msg(msg.message, {time: 2000},function(){
-                        $('#table_list').bootstrapTable("refresh");
-                        layer.close(index);
-                    });
-                }
-            });
-        });
-    }
-
-    function showDataChart(id) {
-        layer.open({
-            type: 2,
-            title: '图表展示',
-            shadeClose: false,
-            maxmin: true,
-            shade: 0.6,
-            area: ['70%', '80%'],
-            content: '${ctx!}/chart/show/' + id,
-            success: function(layero,index){
-                var mask = $(".layui-layer-shade");
-                mask.appendTo(layero.parent());
-                //layer.full(index);
-            },
-            end: function (index) {
-            }
-        });
-    }
-
-    function editDataChart(id) {
-        layer.open({
-            type: 2,
-            title: '图表修改',
-            shadeClose: false,
-            maxmin: true,
-            shade: 0.6,
-            area: ['90%', '90%'],
-            content: '${ctx!}/chart/edit/' + id,
-            success: function(layero,index){
-                var mask = $(".layui-layer-shade");
-                mask.appendTo(layero.parent());
-                layer.full(index);
-            },
-            end: function (index) {
-                $('#table_list').bootstrapTable('refresh', {
-                    query:
-                        {
-                            type:$("#type").val(),
-                            status:$("#status").val()
-                        }
-                });
-            }
-        });
-    }
-
-
 
     let xAxisMaxVal = 500;
     let themeStyle = 'vintage';
@@ -360,9 +267,9 @@
     let xAxisData = [[100,200,300,400,500]];
     let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 
-    window.onresize = function(){
+/*    window.onresize = function(){
         chart.resize();    //若有多个图表变动，可多写
-    }
+    }*/
 
     var legendData = [];
 
@@ -380,27 +287,8 @@
         legendData = JSON.parse(result.seriesName);
         xAxisData = JSON.parse(result.seriesData);
         settingOption();
-        chart = echarts.init(document.getElementById("id_"+result.id),themeStyle);
-        chart.setOption(option,true);
-    }
-
-
-    function optionChart(result){
-        chartType = result.type;
-        yAxisName = result.yName;
-        themeStyle = result.themeCode;
-        var  yAxisNameArr = yAxisName.split("");
-        yAxisPortraitName = "";
-        yAxisNameArr.forEach(function(item){
-            yAxisPortraitName = yAxisPortraitName + item + "\n";
-        });
-        xAxisDataType = JSON.parse(result.xData);
-        legendData = JSON.parse(result.seriesName);
-        xAxisData = JSON.parse(result.seriesData);
-        settingOption();
         var chart = echarts.init(document.getElementById("id_"+result.id),themeStyle);
         chart.setOption(option,true);
-        charArr.push(chart);
     }
 
     var option;
@@ -429,21 +317,19 @@
                 roseChart();
                 break;
             default:
-
         };
     }
-
     //柱状图
     function barChart() {
         var series = [];
         var barWidth = 0;
         var xAxisLength = xAxisData.length;
         if(xAxisLength < 3){
-            barWidth = 15;
+            barWidth = 8;
         }else if(xAxisLength < 5){
-            barWidth = 11;
+            barWidth = 6;
         }else{
-            barWidth = 9;
+            barWidth = 3;
         }
         for(let i=0;i<xAxisData.length;i++){
             series.push({
@@ -455,41 +341,35 @@
         }
 
         option = {
-            tooltip: {
-                trigger:'axis',
-                axisPointer: {
-                    type:'shadow',
-                    lineStyle: {
-                        type:'dashed'
-                    }
-                }
-            },
-            toolbox: toolbox,
-            legend: legend,
             grid: {
-                left: '6%',
-                right: '3%',
-                bottom: '6%',
-                top: '20%',
+                left: '5%',
+                right: '5%',
+                bottom: '10%',
+                top: '10%',
                 containLabel: true,
                 z: 22
             },
-            xAxis: [{
-                show:true,
+            xAxis: {
+                axisTick: {
+                    show: false
+                },
                 name:'',
+                type: 'category',
+                boundaryGap: false,
                 data: xAxisDataType,       //横坐标
+                axisLine: {
+                    lineStyle: {
+                        type: 'solid',
+                        width:'0',                                                //坐标线的宽度
+                    }
+                },
                 axisLabel: {
-                    interval:0,
-                    rotate:40
-                }
-            }],
-            yAxis: [{
-                show:true,
-                name: yAxisPortraitName,
-                nameLocation:"center",
-                nameGap:40,
-                nameRotate:0,
-            }],
+                    show: false,
+                },
+            },
+            yAxis: {
+                show:false,
+            },
             series: series,
         };
     }
@@ -501,35 +381,16 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
-            tooltip: {
-                formatter:'{b}: {c}',
-                trigger:'item',
-            },
-            toolbox: toolbox,
-            legend: {
-                icon: 'rect',
-                itemWidth: 14,
-                itemHeight: 5,
-                itemGap: 13,
-                data: xAxisDataType,
-                right: '5px',
-                top: '5px',
-                textStyle: {
-                    fontSize: 10,
-                }
-            },
             series: [
                 {
-                    name:xAxisDataType,
+                    name:'',
                     type:'pie',
                     selectedMode: 'single',
-                    radius: [0, '50%'],
+                    radius: [0, '80%'],
                     center:["50%","48%"],
                     label: {
-                        normal: {
-                            position: 'outside',
-                            formatter: "{b}: {d}%"
-                        }
+                        show: false,
+                        position: 'center'
                     },
                     data:data,
                 }
@@ -544,35 +405,12 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
-            tooltip: {
-                formatter:'{b}: {c}',
-                trigger:'item',
-                axisPointer: {
-                    type:'none',
-                    lineStyle: {
-                        type:'dashed'
-                    }
-                }
-            },
-            toolbox: toolbox,
-            legend: {
-                icon: 'rect',
-                itemWidth: 14,
-                itemHeight: 5,
-                itemGap: 13,
-                data: xAxisDataType,
-                right: '5px',
-                top: '5px',
-                textStyle: {
-                    fontSize: 10,
-                }
-            },
             series: [
                 {
                     name:xAxisDataType,
                     type:'pie',
                     selectedMode: 'single',
-                    radius: ['40%', '60%'],
+                    radius: ['40%', '80%'],
                     center:["50%","48%"],
                     label: {
                         show: false
@@ -590,41 +428,24 @@
                 name:legendData[i],
                 type: 'line',
                 smooth: true,
-                lineStyle: {
-                    normal: {
-                        width: 2
-                    }
-                },
-                /*areaStyle: {
-                    normal: {
-                        color:chartColor[i],
-                        shadowColor: 'rgba(0, 0, 0, 0.1)',
-                        shadowBlur: 10
-                    }
-                },*/
                 data: xAxisData[i],
+                symbolSize:0,
             });
         }
 
         option = {
-            tooltip: {//鼠标指上时的标线
-                trigger: 'axis',
-                //formatter: '{b}: {c0}',
-                axisPointer: {
-                    type:'cross',
-                }
-            },
-            toolbox: toolbox,
-            legend: legend,
             grid: {
-                left: '6%',
-                right: '3%',
-                bottom: '6%',
-                top: '20%',
+                left: '5%',
+                right: '5%',
+                bottom: '10%',
+                top: '10%',
                 containLabel: true,
                 z: 22
             },
             xAxis: {
+                axisTick: {
+                    show: false
+                },
                 name:'',
                 type: 'category',
                 boundaryGap: false,
@@ -632,26 +453,18 @@
                 axisLine: {
                     lineStyle: {
                         type: 'solid',
-                        width:'1',                                                //坐标线的宽度
+                        width:'0',                                                //坐标线的宽度
                     }
                 },
                 axisLabel: {
-                    interval:0,
-                    rotate:40
-                }
+                    show: false,
+                },
             },
+
             yAxis: {
-                name: yAxisPortraitName,
-                nameLocation:"center",
-                nameGap:40,
-                nameRotate:0,
-                /*axisLine: {
-                    lineStyle: {
-                        type: 'solid',
-                        color:axisLineColor,
-                        width:'1  ',                                                //坐标线的宽度
-                    }
-                },*/
+                axisLabel: {
+                    show: false,
+                },
             },
             series: series
         };
@@ -675,24 +488,20 @@
                         symbolSize:3,
                         areaStyle: {
                             normal: { // 单项区域填充样式
-                                opacity: 0.5 // 区域透明度
+                                opacity: 0.3 // 区域透明度
                             }
                         },
                     }]
             });
         }
         option = {
-            toolbox: toolbox,
-            legend: legend,
-            tooltip: {},
             radar: [{
                 indicator: indicator,
-                triggerEvent:true,   //开启雷达图的边角名称可点击
                 center: ['50%', '52%'],
-                radius: '70%',
+                radius: '90%',
                 startAngle: 90,
                 name: {
-                    formatter: '{value}',
+                    show:false,
                 },
                 splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
                     show: true,
@@ -712,23 +521,6 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
-            tooltip: {
-                trigger: 'item',
-                formatter: "{b} : {c}"
-            },
-            toolbox: toolbox,
-            legend: {
-                icon: 'rect',
-                itemWidth: 14,
-                itemHeight: 5,
-                itemGap: 13,
-                data: xAxisDataType,
-                right: '5px',
-                top: '5px',
-                textStyle: {
-                    fontSize: 10,
-                }
-            },
             series: [
                 {
                     name:xAxisDataType,
@@ -774,38 +566,18 @@
             data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
         }
         option = {
-            tooltip: {
-                formatter:'{b}: {c}',
-                trigger:'item',
-                axisPointer: {
-                    type:'none',
-                    lineStyle: {
-                        type:'dashed'
-                    }
-                }
-            },
-            legend: {
-                icon: 'rect',
-                itemWidth: 14,
-                itemHeight: 5,
-                itemGap: 13,
-                data: xAxisDataType,
-                right: '5px',
-                top: '5px',
-                textStyle: {
-                    fontSize: 10,
-                }
-            },
-            toolbox: toolbox,
             series: [
                 {
-                    name: xAxisDataType,
+                    name: '',
                     type: 'pie',
-                    radius: [20, 100],
-                    center: ['50%', '48%'],
+                    radius: [20, 60],
+                    center: ['60%', '55%'],
                     roseType: 'area',
                     itemStyle: {
                         borderRadius: 5
+                    },
+                    label: {
+                        show: false
                     },
                     data: data
                 }
