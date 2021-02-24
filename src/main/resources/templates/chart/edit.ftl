@@ -25,7 +25,9 @@
         <div class="border-container containertop">
         	<div id="chartTitleId" class="name-title tile-size-color"></div>
             <div class="bar-chart" id="bar-chart"></div>
-            <table id="tableId" class="table table-bordered table-hover table-striped"></table>
+            <div style="width:690px; height:240px; overflow:scroll;">
+                <table id="tableId" class="table table-bordered table-hover table-striped"></table>
+            </div>
         </div>
 
     </div>
@@ -67,44 +69,32 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">标题：</label>
                                 <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">标题</span>
-                                        <input id="titleId" name="title" class="form-control" placeholder="图表标题" type="text" value="自定义图表标题">
-                                    </div>
+                                    <input id="titleId" name="title" class="form-control" placeholder="图表标题" type="text" value="自定义图表标题">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">名称：</label>
                                 <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">名称</span>
-                                        <input id="nameId" name="name" class="form-control" placeholder="图表名称" type="text" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">X轴：</label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">名称</span>
-                                        <input id="xAxisDataTypeId" name="seriesType" class="form-control" placeholder="X轴" type="text" value="">
-                                    </div>
+                                    <input id="nameId" name="name" class="form-control" placeholder="图表名称" type="text" value="">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Y轴：</label>
                                 <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">名称</span>
-                                        <input id="yAxisId" name="yName" class="form-control" placeholder="Y轴名称" type="text" value="自定义Y轴名称">
-
-                                    </div>
+                                    <input id="yAxisId" name="yName" class="form-control" placeholder="Y轴名称" type="text" value="自定义Y轴名称">
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">X轴：</label>
+                                <div class="col-sm-9">
+                                    <textarea id="xAxisDataTypeId" name="seriesType" class="form-control" placeholder="X轴" type="text" value=""></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">描述：</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="remark" id="remarkId" placeholder="内容…"></textarea>
+                                    <textarea class="form-control" name="remark" id="remarkId" placeholder=""></textarea>
                                 </div>
 
                             </div>

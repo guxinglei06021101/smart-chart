@@ -219,7 +219,7 @@
     }
 
     function addChartView() {
-        layer.open({
+        /*layer.open({
             type: 2,
             title: '图表添加',
             shadeClose: false,
@@ -241,14 +241,14 @@
                         }
                 });
             }
-        });
+        });*/
     }
     function del(id){
         layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: "${ctx!}/chart/delete/" + id,
+                url: "${ctx!}/chartView/delete/" + id,
                 success: function(msg){
                     layer.msg(msg.message, {time: 2000},function(){
                         $('#table_list').bootstrapTable("refresh");

@@ -1,111 +1,7 @@
 $(function(){
 
-    var id = $("#id").val();
-
-    ajax_get("/chart/findById/"+id,function(result) {
-        $("#chartTitleId").html(result.title);
-        $("#titleId").val(result.title);
-        chartType = result.type;
-        $("#chartTypeId").val(chartType);
-        themeStyle = result.themeCode;
-        $("#themeStyleId").val(themeStyle);
-        $("#nameId").val(result.name);
-        $("#yAxisId").val(result.yName);
-        yAxisName = result.yName ;
-        var  yAxisNameArr = yAxisName.split("");
-        yAxisPortraitName = "";
-        yAxisNameArr.forEach(function(item){
-            yAxisPortraitName = yAxisPortraitName + item + "\n";
-        });
-
-        xAxisDataType = JSON.parse(result.xData);
-        $("#xAxisDataTypeId").val(xAxisDataType.join(","));
-
-        xAxisMaxVal = result.yMax;
-        legendData = JSON.parse(result.seriesName);
-        xAxisData = JSON.parse(result.seriesData);
-        legend = {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: legendData,
-            right: '20px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
-        };
-        toolbox = {
-            feature: {
-                saveAsImage: {
-                    name: yAxisName,
-                    title:'下载图表'
-                },
-            }
-        };
-        console.log(JSON.stringify(xAxisData));
-        tableHead();
-        tableChange();
-        showTableTr();
-    });
-
-    $("#submitId").click(function(){
-
-    layer.confirm('确定要保存吗?', {icon: 3, title:'提示'}, function(index){
-        var data = {
-            id:parseInt(id),
-            name:$("#nameId").val(),
-            title:$("#titleId").val(),
-            type:chartType,
-            xName:'',
-            yMax:xAxisMaxVal,
-            yName:yAxisName,
-            themeCode:themeStyle,
-            xData:JSON.stringify(xAxisDataType),
-            seriesName:JSON.stringify(legendData),
-            seriesType:chartType,
-            seriesData:JSON.stringify(xAxisData),
-            remark:$("#remarkId").val()
-        }
-            $.ajax({
-                //请求方式
-                type : "POST",
-                //请求的媒体类型
-                //contentType: "application/json;charset=UTF-8",
-                dataType: "json",
-                //请求地址
-                url : '/chart/update',
-                //数据，json字符串
-                data : data,
-                //请求成功
-                success : function(result) {
-                    if(result.code != 0){
-                        layer.msg(result.message,{icon: 2});
-                        return;
-                    }
-                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                    layer.msg(result.message, {time: 1000},function(){
-                        if(result.code == 0){
-                            parent.layer.close(index);
-                        }
-                    });
-
-                    if(result.code == 0){
-                        if(window.parent.document.getElementById("J_iframe") != null){
-                            window.parent.document.getElementById("J_iframe").src="${ctx!}/chart/index";
-                        }
-                    }
-                },
-                //请求失败，包含具体的错误信息
-                error : function(e){
-                layer.msg(e.message,{icon: 2});
-                }
-            });
-        });
-    });
-
     $("#chartTitleId").html($("#titleId").val());
+
     $("#titleId").keyup(function(){
         $("#chartTitleId").html($(this).val());
         $("#nameId").val($(this).val());
@@ -115,6 +11,7 @@ $(function(){
         chartType = $(this).val();
         showTableTr();
      });
+
     $("#themeStyleId").change(function(){
         themeStyle = $(this).val();
         optionChart();
@@ -126,14 +23,6 @@ $(function(){
          yAxisPortraitName = "";
          for(let i=0;i<yAxisNameArr.length;i++){
              yAxisPortraitName = yAxisPortraitName + yAxisNameArr[i] + '\n';
-         }
-          toolbox = {
-             feature: {
-                 saveAsImage: {
-                     backgroundColor: '#040f3c',
-                     name: yAxisName
-                 },
-             }
          }
          optionChart();
           });
@@ -151,7 +40,62 @@ $(function(){
         tableChange();
         showTableTr();
     });
+    tableHead();
+    tableChange();
+    optionChart();
 
+    $("#submitId").click(function(){
+        layer.confirm('确定要提交吗?', {icon: 3, title:'提示'}, function(index){
+            var data = {
+                name:$("#nameId").val(),
+                title:$("#titleId").val(),
+                type:chartType,
+                themeCode:themeStyle,
+                xName:'',
+                yName:yAxisName,
+                yMax:xAxisMaxVal,
+                xData:JSON.stringify(xAxisDataType),
+                seriesName:JSON.stringify(legendData),
+                seriesType:chartType,
+                seriesData:JSON.stringify(xAxisData),
+                yMax:xAxisMaxVal,
+                remark:$("#remarkId").val()
+            }
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求的媒体类型
+                //contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                //请求地址
+                url : '/chart/save',
+                //数据，json字符串
+                data : data,
+                //请求成功
+                success : function(result) {
+                    if(result.code != 0){
+                        layer.msg(result.message,{icon: 2});
+                        return;
+                    }
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    layer.msg(result.message, {time: 1000},function(){
+                        if(result.code == 0){
+                            parent.layer.close(index);
+                        }
+                    });
+                    if(result.code == 0){
+                        if(window.parent.document.getElementById("J_iframe") != null){
+                            window.parent.document.getElementById("J_iframe").src="/chart/index";
+                        }
+                    }
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    layer.msg(e.message,{icon: 2});
+                }
+            });
+        });
+    });
 });
 
 let showTableOperate = true;
@@ -162,7 +106,7 @@ let yAxisPortraitName ="自\n定\n义\nY \n轴\n名\n称";
 let xAxisData = [[100,200,300,400,500]];
 let xAxisDataType = ['自定义1','自定义2','自定义3','自定义4','自定义5'];
 var legendData = ['系列1'];
-var themeStyle = "vintage";
+let themeStyle = 'shine';
 
 let reg1 = new RegExp("，","g");//g,表示全部替换。
 let reg2 = new RegExp(";","g");//g,表示全部替换。
@@ -173,24 +117,20 @@ let reg5 = new RegExp("、","g");//g,表示全部替换。
 let toolbox = {
     feature: {
         saveAsImage: {
-            backgroundColor: '#040f3c',
             name: yAxisName,
             title:'下载图表'
         },
     }
 };
 let legend = {
-    icon: 'rect',
-    itemWidth: 14,
-    itemHeight: 5,
-    itemGap: 13,
-    data: legendData,
-    right: '20px',
-    top: '5px',
-    textStyle: {
-        fontSize: 10,
-    }
-};
+        icon: 'rect',
+        itemWidth: 14,
+        itemHeight: 5,
+        itemGap: 13,
+        data: legendData,
+        right: '20px',
+        top: '6px',
+    };
 
 let chart="";
 function optionChart(){
@@ -203,9 +143,7 @@ function optionChart(){
 }
 
 window.onresize = function(){
-    if(chart != ""){
-        chart.resize();    //若有多个图表变动，可多写
-    }
+    chart.resize();    //若有多个图表变动，可多写
 }
 
 var option;
@@ -214,10 +152,10 @@ function settingOption(){
     switch(chartType){
         case 'bar':
             barChart();
-            break;
+        break;
         case 'pie':
             pieChart();
-            break;
+        break;
         case 'line':
             lineChart();
             break;
@@ -588,29 +526,28 @@ function roseChart() {
 
 function ajax_get(url,successfunction){
     $.ajax({
-        //请求方式
-        type : "GET",
-        //请求的媒体类型
-        //contentType: "application/json;charset=UTF-8",
-        dataType: "json",
-        //请求地址
-        url : url,
-        async: true,
-        //数据，json字符串
-        //data : JSON.stringify(list),
-        //请求成功
-        success : function(result) {
-            console.log(result);
-            successfunction(result);
-        },
-        //请求失败，包含具体的错误信息
-        error : function(e){
-            console.log(e.status);
-            console.log(e.responseText);
-        }
-    });
+                    //请求方式
+                    type : "GET",
+                    //请求的媒体类型
+                    //contentType: "application/json;charset=UTF-8",
+                    dataType: "json",
+                    //请求地址
+                    url : url,
+                    async: true,
+                    //数据，json字符串
+                    //data : JSON.stringify(list),
+                    //请求成功
+                    success : function(result) {
+                        console.log(result);
+                       	successfunction(result);
+                    },
+                    //请求失败，包含具体的错误信息
+                    error : function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
+                    }
+                });
 }
-
 
 function tableChange() {
     xAxisData = [];
@@ -638,9 +575,10 @@ function tableChange() {
         data: legendData,
         right: '20px',
         top: '6px',
-        textStyle: {
-            fontSize: 10,
-        }
+        /*textStyle: {
+            fontSize: 12,
+            color: '#fff'
+        }*/
     };
 }
 
@@ -651,33 +589,22 @@ function tableHead() {
     xAxisDataType.forEach(function (item) {
         result +="<th>"+item+"</th>";
     });
-    result +="<th id=\"operatethId_0\"><a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
-    result +="</tr></thead><tbody id=\"tbodyId\">";
+    result +="<th id=\"operatethId_0\"> <a href=\"#\" onclick=\"addTableTr()\"  class=\"btn btn-success\">✚</a></th>";
 
-    var len = legendData.length;
+    result +="</tr></thead><tbody id=\"tbodyId\"><tr v-for=\"item in search(keywords)\" >";
+    result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\"系列1\"></td>";
+    var val = 0;
     let length = xAxisDataType.length;
-    for(let i=0;i<len;i++){
-        if(i == 0){
-            result +="<tr>";
-        }else{
-            result +="<tr id=\"datatrId_"+i+"\">";
-        }
-        result +="<td><input style=\"width: 120px;padding: 0px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+legendData[i]+"\"></td>";
-        for(let k=0;k<length;k++){
-            result += "<td>" ;
-            result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+ xAxisData[i][k]+"\">" ;
-            result += "</td>";
-        }
-        if(i == 0 ){
-            result +="<td id=\"operatethId_"+(i+1)+"\"></td></tr>";
-        }else{
-            result +="<td id=\"operatethId_"+(i+1)+"\"><a href=\"#\" onclick=\"removeTr(this)\" >删除</a></td>";
-        }
+    for(let i=0;i<length;i++){
+        val = val + 100;
+        result += "<td>" ;
+        result += "<input style=\"width: 60px;padding: 2px;text-align: center\" onkeyup=\"dataKeyup()\" class=\"form-control\" type=\"text\" value=\""+val+"\">" ;
+        result += "</td>";
     }
-    result +="</tbody>";
+    result +="<td id=\"operatethId_1\"></td>";
+    result +="</tr></tbody>";
     $("#tableId").html(result);
 }
-
 function addTableTr() {
     let trLen = $("#tableId").find("tr").length;
     if(trLen > 10){

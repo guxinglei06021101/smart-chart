@@ -19,4 +19,9 @@ public class ChartViewServiceImpl extends ServiceImpl<ChartViewMapper, ChartView
     public List<Chart> findChartById(Integer id) {
         return  chartViewMapper.findChartById(id);
     }
+
+    @Override
+    public void del(Integer id) {
+        chartViewMapper.del(id);
+    }
 }

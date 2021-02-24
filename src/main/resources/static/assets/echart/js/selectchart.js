@@ -69,7 +69,7 @@ function getData() {
                 var chartList = result.records;
                 chartList.forEach(function(item){
                     //var divHtml = "<li><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div><div class=\"cd-item-info\"><b><a href=\"#0\">"+item.title+"</a></b></div></li>";
-                    var divHtml = "<li> <div class=\"main\" style=\"position:relative;\"><div class=\"img\"><label for=\"box\"><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div></label></div><div class=\"checkbox\" style=\"position:absolute;top:0;right:0;z-index:1000\"><input id=\"box\" type=\"checkbox\" name=\"box\" ></div></div>    <div class=\"cd-item-info\"><b><a href=\"#0\">"+item.title+"</a></b></div></li>";
+                    var divHtml = "<li> <div class=\"main\" style=\"position:relative;\"><div class=\"img\"><label for=\"box_"+item.id+"\"><div class=\"cd-single-item\" id=\"id_"+item.id+"\"></div></label></div><div class=\"checkbox\" style=\"position:absolute;top:0;right:0;z-index:1000\"><input id=\"box_"+item.id+"\" type=\"checkbox\" ></div></div>    <div class=\"cd-item-info\"><b><a href=\"#0\">"+item.title+"</a></b></div></li>";
                     $("#ulId").append(divHtml);
                     optionChart(item);
                 });
@@ -136,11 +136,11 @@ function barChart() {
     var barWidth = 0;
     var xAxisLength = xAxisData.length;
     if(xAxisLength < 3){
-        barWidth = 15;
+        barWidth = 8;
     }else if(xAxisLength < 5){
-        barWidth = 11;
+        barWidth = 6;
     }else{
-        barWidth = 9;
+        barWidth = 3;
     }
     for(let i=0;i<xAxisData.length;i++){
         series.push({
@@ -152,41 +152,35 @@ function barChart() {
     }
 
     option = {
-        tooltip: {
-            trigger:'axis',
-            axisPointer: {
-                type:'shadow',
-                lineStyle: {
-                    type:'dashed'
-                }
-            }
-        },
-        toolbox: toolbox,
-        legend: legend,
         grid: {
-            left: '6%',
-            right: '3%',
-            bottom: '6%',
-            top: '20%',
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            top: '10%',
             containLabel: true,
             z: 22
         },
-        xAxis: [{
-            show:true,
+        xAxis: {
+            axisTick: {
+                show: false
+            },
             name:'',
+            type: 'category',
+            boundaryGap: false,
             data: xAxisDataType,       //横坐标
+            axisLine: {
+                lineStyle: {
+                    type: 'solid',
+                    width:'0',                                                //坐标线的宽度
+                }
+            },
             axisLabel: {
-                interval:0,
-                rotate:40
-            }
-        }],
-        yAxis: [{
-            show:true,
-            name: yAxisPortraitName,
-            nameLocation:"center",
-            nameGap:40,
-            nameRotate:0,
-        }],
+                show: false,
+            },
+        },
+        yAxis: {
+            show:false,
+        },
         series: series,
     };
 }
@@ -198,35 +192,16 @@ function pieChart() {
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
     option = {
-        tooltip: {
-            formatter:'{b}: {c}',
-            trigger:'item',
-        },
-        toolbox: toolbox,
-        legend: {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '5px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
-        },
         series: [
             {
-                name:xAxisDataType,
+                name:'',
                 type:'pie',
                 selectedMode: 'single',
-                radius: [0, '50%'],
+                radius: [0, '80%'],
                 center:["50%","48%"],
                 label: {
-                    normal: {
-                        position: 'outside',
-                        formatter: "{b}: {d}%"
-                    }
+                    show: false,
+                    position: 'center'
                 },
                 data:data,
             }
@@ -241,35 +216,12 @@ function annularChart(){
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
     option = {
-        tooltip: {
-            formatter:'{b}: {c}',
-            trigger:'item',
-            axisPointer: {
-                type:'none',
-                lineStyle: {
-                    type:'dashed'
-                }
-            }
-        },
-        toolbox: toolbox,
-        legend: {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '5px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
-        },
         series: [
             {
                 name:xAxisDataType,
                 type:'pie',
                 selectedMode: 'single',
-                radius: ['40%', '60%'],
+                radius: ['40%', '80%'],
                 center:["50%","48%"],
                 label: {
                     show: false
@@ -287,41 +239,24 @@ function lineChart() {
             name:legendData[i],
             type: 'line',
             smooth: true,
-            lineStyle: {
-                normal: {
-                    width: 2
-                }
-            },
-            /*areaStyle: {
-                normal: {
-                    color:chartColor[i],
-                    shadowColor: 'rgba(0, 0, 0, 0.1)',
-                    shadowBlur: 10
-                }
-            },*/
             data: xAxisData[i],
+            symbolSize:0,
         });
     }
 
     option = {
-        tooltip: {//鼠标指上时的标线
-            trigger: 'axis',
-            //formatter: '{b}: {c0}',
-            axisPointer: {
-                type:'cross',
-            }
-        },
-        toolbox: toolbox,
-        legend: legend,
         grid: {
-            left: '6%',
-            right: '3%',
-            bottom: '6%',
-            top: '20%',
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            top: '10%',
             containLabel: true,
             z: 22
         },
         xAxis: {
+            axisTick: {
+                show: false
+            },
             name:'',
             type: 'category',
             boundaryGap: false,
@@ -329,26 +264,18 @@ function lineChart() {
             axisLine: {
                 lineStyle: {
                     type: 'solid',
-                    width:'1',                                                //坐标线的宽度
+                    width:'0',                                                //坐标线的宽度
                 }
             },
             axisLabel: {
-                interval:0,
-                rotate:40
-            }
+                show: false,
+            },
         },
+
         yAxis: {
-            name: yAxisPortraitName,
-            nameLocation:"center",
-            nameGap:40,
-            nameRotate:0,
-            /*axisLine: {
-                lineStyle: {
-                    type: 'solid',
-                    color:axisLineColor,
-                    width:'1  ',                                                //坐标线的宽度
-                }
-            },*/
+            axisLabel: {
+                show: false,
+            },
         },
         series: series
     };
@@ -372,24 +299,20 @@ function radarChart() {
                     symbolSize:3,
                     areaStyle: {
                         normal: { // 单项区域填充样式
-                            opacity: 0.5 // 区域透明度
+                            opacity: 0.3 // 区域透明度
                         }
                     },
                 }]
         });
     }
     option = {
-        toolbox: toolbox,
-        legend: legend,
-        tooltip: {},
         radar: [{
             indicator: indicator,
-            triggerEvent:true,   //开启雷达图的边角名称可点击
             center: ['50%', '52%'],
-            radius: '70%',
+            radius: '90%',
             startAngle: 90,
             name: {
-                formatter: '{value}',
+                show:false,
             },
             splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
                 show: true,
@@ -409,23 +332,6 @@ function funnelChart() {
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
     option = {
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b} : {c}"
-        },
-        toolbox: toolbox,
-        legend: {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '5px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
-        },
         series: [
             {
                 name:xAxisDataType,
@@ -471,38 +377,18 @@ function roseChart() {
         data.push({name:xAxisDataType[i],value:xAxisData[0][i]});
     }
     option = {
-        tooltip: {
-            formatter:'{b}: {c}',
-            trigger:'item',
-            axisPointer: {
-                type:'none',
-                lineStyle: {
-                    type:'dashed'
-                }
-            }
-        },
-        legend: {
-            icon: 'rect',
-            itemWidth: 14,
-            itemHeight: 5,
-            itemGap: 13,
-            data: xAxisDataType,
-            right: '5px',
-            top: '5px',
-            textStyle: {
-                fontSize: 10,
-            }
-        },
-        toolbox: toolbox,
         series: [
             {
-                name: xAxisDataType,
+                name: '',
                 type: 'pie',
-                radius: [20, 100],
-                center: ['50%', '48%'],
+                radius: [20, 60],
+                center: ['60%', '55%'],
                 roseType: 'area',
                 itemStyle: {
                     borderRadius: 5
+                },
+                label: {
+                    show: false
                 },
                 data: data
             }

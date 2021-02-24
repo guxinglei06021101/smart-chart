@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface IChartViewService extends IService<ChartView> {
     List<Chart> findChartById(Integer id);
+
+    void del(Integer id);
 }

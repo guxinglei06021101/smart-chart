@@ -15,26 +15,21 @@
 </head>
 <body id="bodyId">
     <div class="row row-lg">
-        <div class="col-sm-12">
+        <div class="col-sm-3">
             <div class="example-wrap">
                 <div class="example">
                     <div class="form-group">
-                        <div class="col-sm-1">
-                            <div class="input-group">
-                                <input type="button" id="fullscreenId" value="全屏"/>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <div class="input-group">
-                                <select id="chartViewId" name="direction" class="form-control selectpicker" style="height: min-content;width: 300px;">
-                                </select>
-                            </div>
+                        <label class="col-sm-2 control-label"><i class="fa fa-arrows-alt fa-2x" style="color: #02a5fa" id="fullscreenId" aria-hidden="true"></i></label>
+                        <div class="col-sm-3">
+                            <select id="chartViewId" name="direction" class="form-control selectpicker" style="height: min-content;width: 300px;">
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <hr>
     <div id="contentId">
         <ul class="cd-gallery" id="ulId">
             <!--<li><div class="cd-single-item" id="id_6"></div><div class="cd-item-info"><b><a href="#0">图表信息</a></b></div></li>-->

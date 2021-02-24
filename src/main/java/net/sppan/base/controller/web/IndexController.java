@@ -103,6 +103,14 @@ public class IndexController extends BaseController{
 		return "chartView/list";
 	}
 
+	@GetMapping(value={"/chartView/add"})
+	public String addChartView(){
+		return "chartView/add";
+	}
 
+	@GetMapping(value={"/chartView/selectchart"})
+	public String selectchart(){
+		return "chartView/selectchart";
+	}
 
 }

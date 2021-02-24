@@ -106,6 +106,12 @@
                             <span class="nav-label">看板数据</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="J_menuItem" href="${ctx!}/chartView/add">
+                            <i class="fa fa-pie-chart"></i>
+                            <span class="nav-label">制版</span>
+                        </a>
+                    </li>
 
                     <@shiro.hasPermission name="system:user:index">
                     <li>

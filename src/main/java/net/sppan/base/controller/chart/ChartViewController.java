@@ -3,16 +3,14 @@ package net.sppan.base.controller.chart;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import net.sppan.base.common.JsonResult;
 import net.sppan.base.controller.BaseController;
 import net.sppan.base.entity.Chart;
 import net.sppan.base.entity.ChartView;
 import net.sppan.base.service.IChartViewDetailService;
 import net.sppan.base.service.IChartViewService;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -50,6 +48,16 @@ public class ChartViewController  extends BaseController {
         return  chartViewService.findChartById(id);
     }
 
+    @PostMapping("/delete/{id}")
+    public JsonResult deleteById(@PathVariable("id") Integer id){
+        try{
+            chartViewService.del(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return JsonResult.failure(e.getMessage());
+        }
+        return JsonResult.success();
+    }
 
 
 /*    @GetMapping("/detail/list")
